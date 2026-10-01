@@ -3,7 +3,7 @@ Generate the Japanese announcer callouts with ElevenLabs (key from ~/.inkdrift.e
 
   Tools/.venv/bin/python Tools/audio/elevenlabs_voices.py [--list-voices] [--only nice,good] [--sfx] [--music]
 
-Outputs Game/Assets/InkDrift/Audio/Voice/vo_<id>_<n>.ogg (2-3 variants per line, mixed voices).
+Outputs Game/Assets/InkDrift/Audio/Voice/vo_<id>_<n>.wav (2-3 variants per line, mixed voices).
 """
 import argparse, json, os, re, subprocess, sys, time, pathlib, tempfile
 import requests
