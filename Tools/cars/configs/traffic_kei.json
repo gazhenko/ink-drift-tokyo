@@ -1,0 +1,8 @@
+{
+  "_source": "Simple Kei Truck by spookyghostboo - https://sketchfab.com/3d-models/simple-kei-truck-fb477a6082c5442ca060dfcdf8eae928 (CC-BY 4.0)",
+  "traffic": true,
+  "wheelbase": 1.900,
+  "tri_budget": 15000,
+  "plates": {"style": "kei", "top": "足立 480", "kana": "え", "num": "12-34", "front_y": 0.45, "rear_y": 0.55},
+  "preview_color": [0.9, 0.9, 0.88]
+}

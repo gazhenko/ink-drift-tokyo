@@ -1,0 +1,93 @@
+{
+  "id": "traffic_kei",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 1.905,
+  "front_axle_z": 0.9525,
+  "rear_axle_z": -0.9525,
+  "front_track": 1.29,
+  "rear_track": 1.3,
+  "wheel_radius": 0.268,
+  "wheel_radius_front": 0.268,
+  "wheel_radius_rear": 0.268,
+  "wheel_width": 0.145,
+  "wheel_width_front": 0.145,
+  "wheel_width_rear": 0.145,
+  "hub_height": 0.268,
+  "length": 3.4401,
+  "width": 1.7899,
+  "width_body": 1.7899,
+  "height": 1.7647,
+  "ground_clearance": 0.2295,
+  "tris": 19660,
+  "tri_count": 19660,
+  "com_height": 0.751,
+  "wheels": {
+    "FL": [
+      -0.645,
+      0.268,
+      0.9525
+    ],
+    "FR": [
+      0.645,
+      0.268,
+      0.9525
+    ],
+    "RL": [
+      -0.65,
+      0.268,
+      -0.9525
+    ],
+    "RR": [
+      0.65,
+      0.268,
+      -0.9525
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.575,
+      0.715,
+      1.52
+    ],
+    "Light_Head_R": [
+      0.575,
+      0.715,
+      1.52
+    ],
+    "Light_Tail_L": [
+      -0.6,
+      0.53,
+      -1.92
+    ],
+    "Light_Tail_R": [
+      0.6,
+      0.53,
+      -1.92
+    ],
+    "Exhaust_L": [
+      -0.3,
+      0.33,
+      -1.55
+    ],
+    "Exhaust_R": [
+      0.3,
+      0.33,
+      -1.55
+    ]
+  },
+  "materials": [
+    "M_Chrome",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ]
+}

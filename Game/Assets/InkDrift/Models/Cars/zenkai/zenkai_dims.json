@@ -1,0 +1,101 @@
+{
+  "id": "zenkai",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 2.55,
+  "front_axle_z": 1.275,
+  "rear_axle_z": -1.275,
+  "front_track": 1.565,
+  "rear_track": 1.585,
+  "wheel_radius": 0.341,
+  "wheel_radius_front": 0.341,
+  "wheel_radius_rear": 0.341,
+  "wheel_width": 0.275,
+  "wheel_width_front": 0.255,
+  "wheel_width_rear": 0.275,
+  "hub_height": 0.341,
+  "length": 4.3899,
+  "width": 2.1002,
+  "width_body": 2.1002,
+  "height": 1.3232,
+  "ground_clearance": 0.0961,
+  "tris": 114968,
+  "tri_count": 114968,
+  "com_height": 0.464,
+  "wheels": {
+    "FL": [
+      -0.7825,
+      0.341,
+      1.275
+    ],
+    "FR": [
+      0.7825,
+      0.341,
+      1.275
+    ],
+    "RL": [
+      -0.7925,
+      0.341,
+      -1.275
+    ],
+    "RR": [
+      0.7925,
+      0.341,
+      -1.275
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.68,
+      0.645,
+      2.06
+    ],
+    "Light_Head_R": [
+      0.68,
+      0.645,
+      2.06
+    ],
+    "Light_Tail_L": [
+      -0.7,
+      0.88,
+      -2.19
+    ],
+    "Light_Tail_R": [
+      0.7,
+      0.88,
+      -2.19
+    ],
+    "Exhaust_L": [
+      -0.6,
+      0.275,
+      -2.2096
+    ],
+    "Exhaust_R": [
+      0.6,
+      0.275,
+      -2.2096
+    ]
+  },
+  "materials": [
+    "M_Brake",
+    "M_Carbon",
+    "M_Chrome",
+    "M_Decal",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ],
+  "wing": {
+    "span": 1.62,
+    "chord": 0.28,
+    "wing_z": 1.209
+  }
+}

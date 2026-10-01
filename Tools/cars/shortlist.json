@@ -1,0 +1,546 @@
+{
+ "generated": "2026-09-30",
+ "policy": "Only CC0 / CC-BY (4.0) Sketchfab models. Sketchfab licenses are declared by the uploader, so every candidate was also checked for provenance (uploader history, description): game rips, re-uploads of paid/NC models and AI meshes are rejected even if labelled CC-BY.",
+ "cars": {
+  "hachi": {
+   "target": "Toyota GR86 / Subaru BRZ (2022+)",
+   "chosen": "bcab5a68e83645cd83d48f1b5cf3923d",
+   "candidates": [
+    {
+     "uid": "bcab5a68e83645cd83d48f1b5cf3923d",
+     "name": "Subaru BRZ (ZD8)",
+     "author": "ilvskf",
+     "authorName": "ilvskf",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 2790654,
+     "vertexCount": 1400822,
+     "url": "https://sketchfab.com/3d-models/none-bcab5a68e83645cd83d48f1b5cf3923d",
+     "thumbnail": "https://media.sketchfab.com/models/bcab5a68e83645cd83d48f1b5cf3923d/thumbnails/d5dc5ccb4a1049d88e7343180b5a59db/764741c819374035b854c80a1cb38ed8.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/bcab5a68e83645cd83d48f1b5cf3923d.jpg",
+     "glbSizeMB": 98.6,
+     "provenance": "low risk",
+     "notes": "Author's own model ('based on my real car'); uploader models Subaru cars and RAYS wheels from scratch. ZD8 BRZ = GR86 twin. 2.79M tris trackbuild -> heavy decimation needed; RAYS wheel decals + Subaru badges to remove."
+    },
+    {
+     "uid": "4919d14eba9640599e838230e8e5ed74",
+     "name": "Toyota GR86 (ZN8)",
+     "author": "Car2022",
+     "authorName": "Mona x Supercars",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 284062,
+     "vertexCount": 161029,
+     "url": "https://sketchfab.com/3d-models/none-4919d14eba9640599e838230e8e5ed74",
+     "thumbnail": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/8b3cd03ba8374fca8910e1c0a542bcf8.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/4919d14eba9640599e838230e8e5ed74.jpg",
+     "glbSizeMB": 15.9,
+     "provenance": "HIGH risk",
+     "notes": "Exact GR86 ZN8 and good topology, but the uploader posts hundreds of cars with game-style stat blocks ('Class: B, Weight: Medium...') -> very likely ripped game assets. Not used."
+    },
+    {
+     "uid": "d079f59271df4702bcfdd449ec8241c1",
+     "name": "Subaru BRZ 2022",
+     "author": "mixmamo.studio",
+     "authorName": "Mixmamo.studio:   An effortless 3D collections.",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 618501,
+     "vertexCount": 353487,
+     "url": "https://sketchfab.com/3d-models/none-d079f59271df4702bcfdd449ec8241c1",
+     "thumbnail": "https://media.sketchfab.com/models/d079f59271df4702bcfdd449ec8241c1/thumbnails/8ee1658bc0024da4b4c52a32cead442b/7fc00c972f044a7697be2c16aa780579.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/d079f59271df4702bcfdd449ec8241c1.jpg",
+     "glbSizeMB": 27.0,
+     "provenance": "medium risk",
+     "notes": "Claims original modular model, but the account re-uploads work credited to others (ships, cars). Backup only."
+    }
+   ]
+  },
+  "kaiju": {
+   "target": "Toyota GR Supra A90 (2020+)",
+   "chosen": "41b83cfb912b4eab9af19a802bcf5ffc",
+   "candidates": [
+    {
+     "uid": "41b83cfb912b4eab9af19a802bcf5ffc",
+     "name": "Toyota Supra 3D Model (Free)",
+     "author": "mpgs.studio",
+     "authorName": "Mpgs.studio3DModels",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 2713084,
+     "vertexCount": 1374049,
+     "url": "https://sketchfab.com/3d-models/none-41b83cfb912b4eab9af19a802bcf5ffc",
+     "thumbnail": "https://media.sketchfab.com/models/41b83cfb912b4eab9af19a802bcf5ffc/thumbnails/4815986581214e79917633f10532eeef/4c65227cc97146eba025985bad26f6f8.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/41b83cfb912b4eab9af19a802bcf5ffc.jpg",
+     "glbSizeMB": 79.6,
+     "provenance": "low-medium risk",
+     "notes": "Uploader states it was made in Blender (studio account with several self-made cars). 2.7M tris, no textures -> decimate; badges are geometry."
+    },
+    {
+     "uid": "30528ef37af844919074498f979b9515",
+     "name": "Toyota Supra MK5 A90",
+     "author": "lbrtwlk",
+     "authorName": "lbrtwlk",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 857092,
+     "vertexCount": 476612,
+     "url": "https://sketchfab.com/3d-models/none-30528ef37af844919074498f979b9515",
+     "thumbnail": "https://media.sketchfab.com/models/30528ef37af844919074498f979b9515/thumbnails/05062e22e10c4c2a80a69f361ddd93fc/0b354e2e883b4d148a1b176c32ba7966.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/30528ef37af844919074498f979b9515.jpg",
+     "glbSizeMB": 29.7,
+     "provenance": "medium risk",
+     "notes": "Single-upload account, 857k tris with interior; origin not stated."
+    },
+    {
+     "uid": "9231f2d5e71a43dd87603dc0b339d99d",
+     "name": "Toyota GR Supra",
+     "author": "thelightning",
+     "authorName": "thelightning",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 1443778,
+     "vertexCount": 754812,
+     "url": "https://sketchfab.com/3d-models/none-9231f2d5e71a43dd87603dc0b339d99d",
+     "thumbnail": "https://media.sketchfab.com/models/9231f2d5e71a43dd87603dc0b339d99d/thumbnails/83ba0acce1c04e4bb643dee3a3e9021c/d165ce1e2ceb4611a5ba300dc37752ab.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/9231f2d5e71a43dd87603dc0b339d99d.jpg",
+     "glbSizeMB": 57.5,
+     "provenance": "medium-high risk",
+     "notes": "Best-looking modded A90 (1.44M tris, 4k textures) but the same account also posts CSR2 game rips."
+    }
+   ]
+  },
+  "zenkai": {
+   "target": "Nissan Z RZ34 (2023+)",
+   "chosen": "db9a5f7ae9d84a0fb01cac96afe3e69c",
+   "candidates": [
+    {
+     "uid": "db9a5f7ae9d84a0fb01cac96afe3e69c",
+     "name": "Nissan Z Proto",
+     "author": "Lexyc16",
+     "authorName": "Lexyc16",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 67294,
+     "vertexCount": 36881,
+     "url": "https://sketchfab.com/3d-models/none-db9a5f7ae9d84a0fb01cac96afe3e69c",
+     "thumbnail": "https://media.sketchfab.com/models/db9a5f7ae9d84a0fb01cac96afe3e69c/thumbnails/7b354987b00049e6b8e5f228a760302f/2eeeb7fa2272466bb046ea4490fc4ded.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/db9a5f7ae9d84a0fb01cac96afe3e69c.jpg",
+     "glbSizeMB": 2.9,
+     "provenance": "low risk",
+     "notes": "Self-made in Blender 2.82 by a freelance car modeller (takes commissions). It is the 2020 Z Proto, which is the production RZ34 body almost 1:1 (same panels, lights, grille shape). 67k tris, clean."
+    },
+    {
+     "uid": "17668144004c4e7d96bcee3e418d1b66",
+     "name": "2023 Nissan Z (RZ34)",
+     "author": "supercarmodels",
+     "authorName": "DisneyCars",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 66898,
+     "vertexCount": 37866,
+     "url": "https://sketchfab.com/3d-models/none-17668144004c4e7d96bcee3e418d1b66",
+     "thumbnail": "https://media.sketchfab.com/models/17668144004c4e7d96bcee3e418d1b66/thumbnails/5a73edd079ea4b129dbd070d3a30fc15/cdf1d19ad053421da7b5694247a2b4dc.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/17668144004c4e7d96bcee3e418d1b66.jpg",
+     "glbSizeMB": 5.7,
+     "provenance": "HIGH risk",
+     "notes": "Exact RZ34, but the account uploads game rips (one is labelled 'From Rennsport'). Not used."
+    },
+    {
+     "uid": "308cef927d904bcdb0931f7b21e21cb2",
+     "name": "2023 Nissan 400Z",
+     "author": "nolimitsofficial",
+     "authorName": "No Limits",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 70999,
+     "vertexCount": 39367,
+     "url": "https://sketchfab.com/3d-models/none-308cef927d904bcdb0931f7b21e21cb2",
+     "thumbnail": "https://media.sketchfab.com/models/308cef927d904bcdb0931f7b21e21cb2/thumbnails/25050b0148c64035b360b7428b155194/63e9492366264e9092a9e9057dfe2bb5.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/308cef927d904bcdb0931f7b21e21cb2.jpg",
+     "glbSizeMB": 4.8,
+     "provenance": "medium-high risk",
+     "notes": "Exact RZ34 (US 400Z naming); account posts many free supercars with no origin. Backup only."
+    }
+   ]
+  },
+  "raijin": {
+   "target": "Toyota GR Corolla (2023+), fallback GR Yaris",
+   "chosen": "ee2b94827a904360acb61987e1765983",
+   "candidates": [
+    {
+     "uid": "ee2b94827a904360acb61987e1765983",
+     "name": "Subaru WRX (VB)",
+     "author": "ilvskf",
+     "authorName": "ilvskf",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 63077,
+     "vertexCount": 35563,
+     "url": "https://sketchfab.com/3d-models/none-ee2b94827a904360acb61987e1765983",
+     "thumbnail": "https://media.sketchfab.com/models/ee2b94827a904360acb61987e1765983/thumbnails/90f5bffe58dc4bebab6a3dcd4e3ff17b/8cccb741972c4304baac6f666afeb2df.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/ee2b94827a904360acb61987e1765983.jpg",
+     "glbSizeMB": 3.8,
+     "provenance": "low risk",
+     "notes": "FALLBACK: no GR Corolla / GR Yaris with a trustworthy CC-BY origin exists on Sketchfab (all are NC/SA, rips or re-uploads). The 2022+ Subaru WRX (VB) is the closest current Japanese AWD rally-bred car; self-made by ilvskf, 63k tris."
+    },
+    {
+     "uid": "204283fa663d4ccea7f3bdfd1ba6680e",
+     "name": "2023 Toyota GR Corolla",
+     "author": "srineshchethiya",
+     "authorName": "XENVOR creations",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 482476,
+     "vertexCount": 265532,
+     "url": "https://sketchfab.com/3d-models/none-204283fa663d4ccea7f3bdfd1ba6680e",
+     "thumbnail": "https://media.sketchfab.com/models/204283fa663d4ccea7f3bdfd1ba6680e/thumbnails/7d65b5b573d34b178545c4455f3152c5/4a6038be9d464982a1592595cbb07ec0.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/204283fa663d4ccea7f3bdfd1ba6680e.jpg",
+     "glbSizeMB": 20.1,
+     "provenance": "HIGH risk",
+     "notes": "Exact GR Corolla (482k) but the account only re-posts high-poly exotics with encyclopedia blurbs; a near-identical mesh (482718 faces) was posted earlier by 'niev', who re-uploads commercial models."
+    },
+    {
+     "uid": "4571be42b9e64986901b360329625269",
+     "name": "2023 Toyota GR Corolla",
+     "author": "tonielpro520",
+     "authorName": "tonielpro520",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 574491,
+     "vertexCount": 305562,
+     "url": "https://sketchfab.com/3d-models/none-4571be42b9e64986901b360329625269",
+     "thumbnail": "https://media.sketchfab.com/models/4571be42b9e64986901b360329625269/thumbnails/6785c5458bff47e3b25d3ecea114baf4/5efb9738618540a585ec3bb87d818c38.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/4571be42b9e64986901b360329625269.jpg",
+     "glbSizeMB": 61.1,
+     "provenance": "HIGH risk",
+     "notes": "Exact GR Corolla (574k) but the account re-uploads hundreds of models ('REUPLOAD' in titles)."
+    }
+   ]
+  },
+  "tsubame": {
+   "target": "Mazda MX-5 ND (2016+)",
+   "chosen": "217b3a2db58f42e699aff41a3596997f",
+   "candidates": [
+    {
+     "uid": "217b3a2db58f42e699aff41a3596997f",
+     "name": "Mazda Miata MX5 ND Cartoon Style",
+     "author": "maurogsw",
+     "authorName": "Mauro3D",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 12508,
+     "vertexCount": 9257,
+     "url": "https://sketchfab.com/3d-models/none-217b3a2db58f42e699aff41a3596997f",
+     "thumbnail": "https://media.sketchfab.com/models/217b3a2db58f42e699aff41a3596997f/thumbnails/7acaf57cfadb431ebefe591f6633f7a6/fa055e154bc7484b9f62a7b0a1a71da4.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/217b3a2db58f42e699aff41a3596997f.jpg",
+     "glbSizeMB": 0.5,
+     "provenance": "low risk",
+     "notes": "Only clean-origin ND on Sketchfab: self-made stylised low-poly ND (12.5k tris) - below the hero budget, flat-shaded style. Other NDs are a Humster3D re-upload (plate reads 'HUMSTER3D'), NFS/RR3 rips, or AI meshes."
+    },
+    {
+     "uid": "d51fcd44b74f4daf8012c41e0400c041",
+     "name": "Mazda Miata MX-5 NA",
+     "author": "Lexyc16",
+     "authorName": "Lexyc16",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 52340,
+     "vertexCount": 27786,
+     "url": "https://sketchfab.com/3d-models/none-d51fcd44b74f4daf8012c41e0400c041",
+     "thumbnail": "https://media.sketchfab.com/models/d51fcd44b74f4daf8012c41e0400c041/thumbnails/9391e698146043e5a46477b5aa2d1293/790a95a255f6425da988205a2c835539.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/d51fcd44b74f4daf8012c41e0400c041.jpg",
+     "glbSizeMB": 1.9,
+     "provenance": "low risk",
+     "notes": "Clean, detailed (52k) but it is the 1989 NA, not current-gen."
+    },
+    {
+     "uid": "323b52ebb9be4ad0bf935ee7c02a077d",
+     "name": "2015 Pandem Mazda Mx5 Miata",
+     "author": "AnswerBlue38",
+     "authorName": "Car design",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 69466,
+     "vertexCount": 44420,
+     "url": "https://sketchfab.com/3d-models/none-323b52ebb9be4ad0bf935ee7c02a077d",
+     "thumbnail": "https://media.sketchfab.com/models/323b52ebb9be4ad0bf935ee7c02a077d/thumbnails/1f816cab5c4447ce9f1ea6f224ba7d17/69be46fcabc340f6af815e4a1e9aa0be.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/323b52ebb9be4ad0bf935ee7c02a077d.jpg",
+     "glbSizeMB": 6.7,
+     "provenance": "HIGH risk",
+     "notes": "Pandem-kit ND (69k) but the account's uploads use ripped-asset file names ('2022_arash_imperium'...). Not used."
+    }
+   ]
+  },
+  "kei": {
+   "target": "kei car / kei truck",
+   "chosen": "fb477a6082c5442ca060dfcdf8eae928",
+   "candidates": [
+    {
+     "uid": "fb477a6082c5442ca060dfcdf8eae928",
+     "name": "Simple Kei Truck",
+     "author": "spookyghostboo",
+     "authorName": "Spookyghostboo",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 17232,
+     "vertexCount": 10108,
+     "url": "https://sketchfab.com/3d-models/none-fb477a6082c5442ca060dfcdf8eae928",
+     "thumbnail": "https://media.sketchfab.com/models/fb477a6082c5442ca060dfcdf8eae928/thumbnails/9966acef6cb94adb9843b9618e999566/e2a67ea8b105402485b846f5cfcf758d.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/fb477a6082c5442ca060dfcdf8eae928.jpg",
+     "glbSizeMB": 7.1,
+     "provenance": "low risk",
+     "notes": "Self-made for a Pavlov map, 17k tris, clean white Acty-style kei truck, no visible badges."
+    },
+    {
+     "uid": "b5a40b838b414d248db2d2fab6a2bb56",
+     "name": "Asian Mini Truck",
+     "author": "evan.hiltz",
+     "authorName": "Evan Hiltz",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 14430,
+     "vertexCount": 7837,
+     "url": "https://sketchfab.com/3d-models/none-b5a40b838b414d248db2d2fab6a2bb56",
+     "thumbnail": "https://media.sketchfab.com/models/b5a40b838b414d248db2d2fab6a2bb56/thumbnails/e8936fbf9dc840ea85a087d40579a769/c9657c4e4c7245d185d81a0de5126c17.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/b5a40b838b414d248db2d2fab6a2bb56.jpg",
+     "glbSizeMB": 11.2,
+     "provenance": "low risk",
+     "notes": "Self-made (Maya/Substance), 14k tris, HiJet-style."
+    },
+    {
+     "uid": "e1654a399b9d448a9a7ce200410ac91d",
+     "name": "Carry Pickup | Suzuki | Game ready",
+     "author": "by__Rx",
+     "authorName": "by__Rx",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 23104,
+     "vertexCount": 12615,
+     "url": "https://sketchfab.com/3d-models/none-e1654a399b9d448a9a7ce200410ac91d",
+     "thumbnail": "https://media.sketchfab.com/models/e1654a399b9d448a9a7ce200410ac91d/thumbnails/1e1db099fef84e1cbdbd2d813592497b/556fffe5b1a440daa12fa77695a8f378.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/e1654a399b9d448a9a7ce200410ac91d.jpg",
+     "glbSizeMB": 53.3,
+     "provenance": "low risk",
+     "notes": "University project, 23k tris, weathered PBR textures; SUZUKI lettering on the tailgate to remove."
+    }
+   ]
+  },
+  "taxi": {
+   "target": "Japanese taxi (JPN Taxi / Crown Comfort)",
+   "chosen": "6e357d856df44d98a615cac1d0c30b56",
+   "candidates": [
+    {
+     "uid": "6e357d856df44d98a615cac1d0c30b56",
+     "name": "Toyota Crown Super Deluxe Mild Hybrid",
+     "author": "andrasfi1027",
+     "authorName": "Andrasfi Games",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 81289,
+     "vertexCount": 43441,
+     "url": "https://sketchfab.com/3d-models/none-6e357d856df44d98a615cac1d0c30b56",
+     "thumbnail": "https://media.sketchfab.com/models/6e357d856df44d98a615cac1d0c30b56/thumbnails/2a0426c7d6964c99af560012675704f1/180ce5bdfd9c47908f4115dc2fb909d3.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/6e357d856df44d98a615cac1d0c30b56.jpg",
+     "glbSizeMB": 5.4,
+     "provenance": "low risk",
+     "notes": "Self-made in Blender by an indie dev; Crown Super Deluxe (the Crown Comfort taxi body), 81k -> decimate to <30k."
+    },
+    {
+     "uid": "a8f3ad22901643809ca72450ac3cc5f6",
+     "name": "Toyota Crown Comfort (Hong Kong taxi)",
+     "author": "zxgod118",
+     "authorName": "hpgod_3dhub14",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 53620,
+     "vertexCount": 30245,
+     "url": "https://sketchfab.com/3d-models/none-a8f3ad22901643809ca72450ac3cc5f6",
+     "thumbnail": "https://media.sketchfab.com/models/a8f3ad22901643809ca72450ac3cc5f6/thumbnails/cf8ef015f1b14b30b602548186c2a0a3/b4bc60ecc83c4a84a0819e0bca5a6476.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/a8f3ad22901643809ca72450ac3cc5f6.jpg",
+     "glbSizeMB": 3.5,
+     "provenance": "low risk",
+     "notes": "Self-made Crown Comfort (HK livery), 54k. Its plate font is personal-use only -> plates get replaced anyway."
+    },
+    {
+     "uid": "4868854a744042bca248c38bfddd6441",
+     "name": "Toyota JPN Taxi",
+     "author": "niev",
+     "authorName": "Nieve5677",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 32802,
+     "vertexCount": 20577,
+     "url": "https://sketchfab.com/3d-models/none-4868854a744042bca248c38bfddd6441",
+     "thumbnail": "https://media.sketchfab.com/models/4868854a744042bca248c38bfddd6441/thumbnails/6b157682d19549c6914b75eb5a272e4b/f7086d11e41045aaa75fde606fa1c141.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/4868854a744042bca248c38bfddd6441.jpg",
+     "glbSizeMB": 3.2,
+     "provenance": "HIGH risk",
+     "notes": "Real JPN Taxi (33k) but the uploader re-posts commercial (Humster3D-style) models. Not used."
+    }
+   ]
+  },
+  "van": {
+   "target": "delivery van (Hiace-like)",
+   "chosen": "f83b4ed4d8534efb81def77b6c1b642d",
+   "candidates": [
+    {
+     "uid": "f83b4ed4d8534efb81def77b6c1b642d",
+     "name": "Low Poly 2013 Toyota HiAce",
+     "author": "Alvin.Woodly",
+     "authorName": "Alvin.Woodly",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 17958,
+     "vertexCount": 10404,
+     "url": "https://sketchfab.com/3d-models/none-f83b4ed4d8534efb81def77b6c1b642d",
+     "thumbnail": "https://media.sketchfab.com/models/f83b4ed4d8534efb81def77b6c1b642d/thumbnails/613bd840b09846f19499afc0776d8014/70b1e02a184a4f3f929e21fcd39d9d48.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/f83b4ed4d8534efb81def77b6c1b642d.jpg",
+     "glbSizeMB": 1.4,
+     "provenance": "low risk",
+     "notes": "Self-made low-poly H200 HiAce, 18k tris, real-world scale. Toyota emblem to remove."
+    },
+    {
+     "uid": "b8abd3caa4864f41aaba6a583591155d",
+     "name": "Low Poly Car: Toyota ToyoAce Van",
+     "author": "roh3d",
+     "authorName": "ROH3D",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 10901,
+     "vertexCount": 5914,
+     "url": "https://sketchfab.com/3d-models/none-b8abd3caa4864f41aaba6a583591155d",
+     "thumbnail": "https://media.sketchfab.com/models/b8abd3caa4864f41aaba6a583591155d/thumbnails/c2e161e4834d4a689e8a34748484ad4b/6abf33eb6c0549cea9f239d2ad23b5d8.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/b8abd3caa4864f41aaba6a583591155d.jpg",
+     "glbSizeMB": 14.6,
+     "provenance": "low risk",
+     "notes": "Self-made 11k Toyota cab-over van."
+    },
+    {
+     "uid": "8785bdc40ea64f19907bcefe86aabb11",
+     "name": "Japanese Ambulance Van",
+     "author": "paul_sawyer_11",
+     "authorName": "Pavel Gorbachev",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 5328,
+     "vertexCount": 3897,
+     "url": "https://sketchfab.com/3d-models/none-8785bdc40ea64f19907bcefe86aabb11",
+     "thumbnail": "https://media.sketchfab.com/models/8785bdc40ea64f19907bcefe86aabb11/thumbnails/48d5429183e3455ea31c4b11750352e8/6be9f7678c214e41bc59ceec19fb9aa9.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/8785bdc40ea64f19907bcefe86aabb11.jpg",
+     "glbSizeMB": 0.3,
+     "provenance": "low risk",
+     "notes": "Self-made Himedic-style van, 5k tris (very low)."
+    }
+   ]
+  },
+  "truck": {
+   "target": "box truck",
+   "chosen": "663a0953c038434a918cb85725c88ffa",
+   "candidates": [
+    {
+     "uid": "663a0953c038434a918cb85725c88ffa",
+     "name": "LCT 3000 '95 - Low poly model",
+     "author": "DanielZhabotinsky",
+     "authorName": "Daniel Zhabotinsky",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 18947,
+     "vertexCount": 11754,
+     "url": "https://sketchfab.com/3d-models/none-663a0953c038434a918cb85725c88ffa",
+     "thumbnail": "https://media.sketchfab.com/models/663a0953c038434a918cb85725c88ffa/thumbnails/a9380fd484894030aebd6934b307fdeb/260306e76b9c43c2a960a35396521693.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/663a0953c038434a918cb85725c88ffa.jpg",
+     "glbSizeMB": 11.5,
+     "provenance": "low risk",
+     "notes": "Generic (fictional) Japanese cab-over box truck, 19k tris, author grants unconditional use. No OEM badges."
+    },
+    {
+     "uid": "3be03b6a43aa41898c9ca806b8787052",
+     "name": "LCT 3000 '07- Low poly model",
+     "author": "DanielZhabotinsky",
+     "authorName": "Daniel Zhabotinsky",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 15846,
+     "vertexCount": 9785,
+     "url": "https://sketchfab.com/3d-models/none-3be03b6a43aa41898c9ca806b8787052",
+     "thumbnail": "https://media.sketchfab.com/models/3be03b6a43aa41898c9ca806b8787052/thumbnails/9e1556c1eea043df958fa92bd2343591/ae6358fecc814c0dbb30583f01c52774.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/3be03b6a43aa41898c9ca806b8787052.jpg",
+     "glbSizeMB": 11.3,
+     "provenance": "low risk",
+     "notes": "Newer-style version of the same generic truck, 16k tris."
+    },
+    {
+     "uid": "070bc8b65a224ca89a03bb6d67e22edc",
+     "name": "Isuzu Elf series",
+     "author": "Romanov13",
+     "authorName": "Romanov_13",
+     "license": {
+      "slug": "by",
+      "label": "CC Attribution"
+     },
+     "faceCount": 191469,
+     "vertexCount": 109980,
+     "url": "https://sketchfab.com/3d-models/none-070bc8b65a224ca89a03bb6d67e22edc",
+     "thumbnail": "https://media.sketchfab.com/models/070bc8b65a224ca89a03bb6d67e22edc/thumbnails/ff6dd56f49f449a5b6cf4b62fc7a0498/a3148da2c65e489586161ac3f63e1704.jpeg",
+     "thumbnail_local": "Tools/cars/thumbs/070bc8b65a224ca89a03bb6d67e22edc.jpg",
+     "glbSizeMB": 16.9,
+     "provenance": "medium risk",
+     "notes": "Isuzu Elf box truck, 191k (needs heavy decimation), origin not stated."
+    }
+   ]
+  }
+ }
+}

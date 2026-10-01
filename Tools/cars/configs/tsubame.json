@@ -1,0 +1,14 @@
+{
+  "_source": "Mazda Miata MX5 ND Cartoon Style by maurogsw - https://sketchfab.com/3d-models/mazda-miata-mx5-nd-cartoon-style-217b3a2db58f42e699aff41a3596997f (CC-BY 4.0)",
+  "wheelbase": 2.310,
+  "tri_budget": 120000,
+  "plates": {"style": "private", "top": "品川 330", "kana": "つ", "num": "15-26"},
+  "decals": [
+    {"img": "livery_name_tsubame", "where": "side", "sides": "both", "z": -0.05, "y": 0.48, "w": 0.85},
+    {"img": "livery_koi", "where": "side", "sides": "both", "z": -0.95, "y": 0.58, "w": 0.32},
+    {"img": "livery_sumi_racing", "where": "side", "sides": "both", "z": 0.95, "y": 0.58, "w": 0.28}
+  ],
+  "banner": "インクドリフト東京 ★ TSUBAME RS",
+  "banner_accent": "#FF3B30",
+  "preview_color": [1.0, 0.04, 0.03]
+}

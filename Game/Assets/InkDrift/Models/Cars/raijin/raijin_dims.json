@@ -1,0 +1,101 @@
+{
+  "id": "raijin",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 2.67,
+  "front_axle_z": 1.335,
+  "rear_axle_z": -1.335,
+  "front_track": 1.575,
+  "rear_track": 1.585,
+  "wheel_radius": 0.327,
+  "wheel_radius_front": 0.327,
+  "wheel_radius_rear": 0.327,
+  "wheel_width": 0.255,
+  "wheel_width_front": 0.255,
+  "wheel_width_rear": 0.255,
+  "hub_height": 0.327,
+  "length": 4.6991,
+  "width": 2.1,
+  "width_body": 2.1,
+  "height": 1.4584,
+  "ground_clearance": 0.111,
+  "tris": 117838,
+  "tri_count": 117838,
+  "com_height": 0.515,
+  "wheels": {
+    "FL": [
+      -0.7875,
+      0.327,
+      1.335
+    ],
+    "FR": [
+      0.7875,
+      0.327,
+      1.335
+    ],
+    "RL": [
+      -0.7925,
+      0.327,
+      -1.335
+    ],
+    "RR": [
+      0.7925,
+      0.327,
+      -1.335
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.68,
+      0.72,
+      2.22
+    ],
+    "Light_Head_R": [
+      0.68,
+      0.72,
+      2.22
+    ],
+    "Light_Tail_L": [
+      -0.72,
+      0.95,
+      -2.33
+    ],
+    "Light_Tail_R": [
+      0.72,
+      0.95,
+      -2.33
+    ],
+    "Exhaust_L": [
+      -0.46,
+      0.27,
+      -2.3692
+    ],
+    "Exhaust_R": [
+      0.46,
+      0.27,
+      -2.3692
+    ]
+  },
+  "materials": [
+    "M_Brake",
+    "M_Carbon",
+    "M_Chrome",
+    "M_Decal",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ],
+  "wing": {
+    "span": 1.6,
+    "chord": 0.28,
+    "wing_z": 1.345
+  }
+}

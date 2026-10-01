@@ -1,0 +1,18 @@
+* text=auto
+*.cs text diff=csharp
+*.shader text
+*.hlsl text
+*.unity text merge=unityyamlmerge eol=lf
+*.prefab text merge=unityyamlmerge eol=lf
+*.asset text merge=unityyamlmerge eol=lf
+*.mat text merge=unityyamlmerge eol=lf
+*.meta text eol=lf
+*.png binary
+*.jpg binary
+*.hdr binary
+*.fbx binary
+*.wav binary
+*.mp3 binary
+*.ttf binary
+*.mp4 binary
+*.gif binary

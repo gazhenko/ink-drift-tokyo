@@ -1,0 +1,14 @@
+{
+  "_source": "Nissan Z Proto by Lexyc16 - https://sketchfab.com/3d-models/nissan-z-proto-db9a5f7ae9d84a0fb01cac96afe3e69c (CC-BY 4.0)",
+  "wheelbase": 2.550,
+  "tri_budget": 150000,
+  "plates": {"style": "private", "top": "横浜 300", "kana": "す", "num": "40-00"},
+  "decals": [
+    {"img": "livery_name_zenkai", "where": "side", "sides": "both", "z": 0.0, "y": 0.50, "w": 0.95},
+    {"img": "livery_sponsor_neko_brakes", "where": "side", "sides": "both", "z": 1.05, "y": 0.64, "w": 0.30},
+    {"img": "livery_zenkai_kanji", "where": "side", "sides": "both", "z": -1.08, "y": 0.66, "w": 0.40}
+  ],
+  "banner": "インクドリフト東京 ★ ZENKAI Z",
+  "banner_accent": "#00E5FF",
+  "preview_color": [0.0, 0.79, 1.0]
+}

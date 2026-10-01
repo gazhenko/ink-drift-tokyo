@@ -1,0 +1,93 @@
+{
+  "id": "traffic_truck",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 3.0,
+  "front_axle_z": 1.5,
+  "rear_axle_z": -1.5,
+  "front_track": 1.65,
+  "rear_track": 1.6,
+  "wheel_radius": 0.347,
+  "wheel_radius_front": 0.347,
+  "wheel_radius_rear": 0.347,
+  "wheel_width": 0.195,
+  "wheel_width_front": 0.195,
+  "wheel_width_rear": 0.195,
+  "hub_height": 0.347,
+  "length": 5.9985,
+  "width": 2.4192,
+  "width_body": 2.4192,
+  "height": 3.0229,
+  "ground_clearance": 0.4195,
+  "tris": 22414,
+  "tri_count": 22414,
+  "com_height": 1.305,
+  "wheels": {
+    "FL": [
+      -0.825,
+      0.347,
+      1.5
+    ],
+    "FR": [
+      0.825,
+      0.347,
+      1.5
+    ],
+    "RL": [
+      -0.8,
+      0.347,
+      -1.5
+    ],
+    "RR": [
+      0.8,
+      0.347,
+      -1.5
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.7,
+      0.95,
+      2.62
+    ],
+    "Light_Head_R": [
+      0.7,
+      0.95,
+      2.62
+    ],
+    "Light_Tail_L": [
+      -0.62,
+      0.62,
+      -3.3
+    ],
+    "Light_Tail_R": [
+      0.62,
+      0.62,
+      -3.3
+    ],
+    "Exhaust_L": [
+      -0.55,
+      0.62,
+      -0.8
+    ],
+    "Exhaust_R": [
+      0.55,
+      0.62,
+      -0.8
+    ]
+  },
+  "materials": [
+    "M_Chrome",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "hachi",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 2.575,
+  "front_axle_z": 1.2875,
+  "rear_axle_z": -1.2875,
+  "front_track": 1.535,
+  "rear_track": 1.555,
+  "wheel_radius": 0.319,
+  "wheel_radius_front": 0.319,
+  "wheel_radius_rear": 0.319,
+  "wheel_width": 0.245,
+  "wheel_width_front": 0.235,
+  "wheel_width_rear": 0.245,
+  "hub_height": 0.319,
+  "length": 4.2682,
+  "width": 2.0405,
+  "width_body": 2.0405,
+  "height": 1.3686,
+  "ground_clearance": 0.096,
+  "tris": 117130,
+  "tri_count": 117130,
+  "com_height": 0.478,
+  "wheels": {
+    "FL": [
+      -0.7675,
+      0.319,
+      1.2875
+    ],
+    "FR": [
+      0.7675,
+      0.319,
+      1.2875
+    ],
+    "RL": [
+      -0.7775,
+      0.319,
+      -1.2875
+    ],
+    "RR": [
+      0.7775,
+      0.319,
+      -1.2875
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.66,
+      0.665,
+      2.02
+    ],
+    "Light_Head_R": [
+      0.66,
+      0.665,
+      2.02
+    ],
+    "Light_Tail_L": [
+      -0.66,
+      0.89,
+      -2.12
+    ],
+    "Light_Tail_R": [
+      0.66,
+      0.89,
+      -2.12
+    ],
+    "Exhaust_L": [
+      -0.56,
+      0.265,
+      -2.1428
+    ],
+    "Exhaust_R": [
+      0.56,
+      0.265,
+      -2.1428
+    ]
+  },
+  "materials": [
+    "M_Brake",
+    "M_Carbon",
+    "M_Chrome",
+    "M_Decal",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ],
+  "wing": {
+    "span": 1.56,
+    "chord": 0.28,
+    "wing_z": 1.255
+  }
+}

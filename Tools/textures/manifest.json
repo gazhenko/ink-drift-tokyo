@@ -1,0 +1,499 @@
+{
+ "sets": {
+  "road_asphalt_worn": {
+   "name": "Asphalt 02",
+   "authors": "Rob Tuytel",
+   "url": "https://polyhaven.com/a/asphalt_02",
+   "source": "Poly Haven",
+   "set": "road_asphalt_worn",
+   "asset_id": "asphalt_02",
+   "group": "road",
+   "note": "weathered grey asphalt with tar-sealed cracks",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.7204687595367432,
+    "smooth_mean": 0.22971558570861816,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "sidewalk_curb_granite": {
+   "name": "Granite 002 B",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Granite002B",
+   "source": "ambientCG",
+   "set": "sidewalk_curb_granite",
+   "asset_id": "Granite002B",
+   "group": "sidewalk",
+   "note": "rough grey salt-and-pepper granite (mikage-ishi) for curbs",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.38085949420928955,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "road_asphalt_fresh": {
+   "name": "Asphalt Track",
+   "authors": "Dimitrios Savva",
+   "url": "https://polyhaven.com/a/asphalt_track",
+   "source": "Poly Haven",
+   "set": "road_asphalt_fresh",
+   "asset_id": "asphalt_track",
+   "group": "road",
+   "note": "fresh dark fine tarmac",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9308071136474609,
+    "smooth_mean": 0.1687232255935669,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "road_asphalt_highway": {
+   "name": "Clean Asphalt",
+   "authors": "Dimitrios Savva",
+   "url": "https://polyhaven.com/a/clean_asphalt",
+   "source": "Poly Haven",
+   "set": "road_asphalt_highway",
+   "asset_id": "clean_asphalt",
+   "group": "road",
+   "note": "fine-grain grey highway asphalt (Shuto)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8915536403656006,
+    "smooth_mean": 0.3397972583770752,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "sidewalk_pavers_interlock": {
+   "name": "Patterned Concrete Pavers",
+   "authors": "Amal Kumar",
+   "url": "https://polyhaven.com/a/patterned_concrete_pavers",
+   "source": "Poly Haven",
+   "set": "sidewalk_pavers_interlock",
+   "asset_id": "patterned_concrete_pavers",
+   "group": "sidewalk",
+   "note": "grey interlocking concrete pavers",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9068565964698792,
+    "smooth_mean": 0.2744210958480835,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "sidewalk_tiles_square": {
+   "name": "Concrete Pavement 02",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/concrete_pavement_02",
+   "source": "Poly Haven",
+   "set": "sidewalk_tiles_square",
+   "asset_id": "concrete_pavement_02",
+   "group": "sidewalk",
+   "note": "square concrete sidewalk slabs",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9172701835632324,
+    "smooth_mean": 0.21560347080230713,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "concrete_smooth": {
+   "name": "Concrete 034",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Concrete034",
+   "source": "ambientCG",
+   "set": "concrete_smooth",
+   "asset_id": "Concrete034",
+   "group": "concrete",
+   "note": "smooth light cast concrete (expressway piers/parapets)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.4838705062866211,
+    "size": "2048x1024",
+    "has_height": true
+   }
+  },
+  "concrete_weathered": {
+   "name": "Concrete Wall 007",
+   "authors": "Dario Barresi, Rico Cilliers, Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/concrete_wall_007",
+   "source": "Poly Haven",
+   "set": "concrete_weathered",
+   "asset_id": "concrete_wall_007",
+   "group": "concrete",
+   "note": "rough weathered concrete wall, formboard lines, patches",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.963744044303894,
+    "smooth_mean": 0.22612398862838745,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "concrete_formwork": {
+   "name": "Concrete Wall 009",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/concrete_wall_009",
+   "source": "Poly Haven",
+   "set": "concrete_formwork",
+   "asset_id": "concrete_wall_009",
+   "group": "concrete",
+   "note": "fair-faced concrete with formwork seams and tie holes",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9910870790481567,
+    "smooth_mean": 0.20165526866912842,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "metal_painted": {
+   "name": "Green Metal Rust",
+   "authors": "Rob Tuytel",
+   "url": "https://polyhaven.com/a/green_metal_rust",
+   "source": "Poly Haven",
+   "set": "metal_painted",
+   "asset_id": "green_metal_rust",
+   "group": "metal",
+   "note": "green-painted steel plate, light rust (Shuto girder green)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8753349781036377,
+    "smooth_mean": 0.49662137031555176,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "metal_galvanized": {
+   "name": "Metal 040",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Metal040",
+   "source": "ambientCG",
+   "set": "metal_galvanized",
+   "asset_id": "Metal040",
+   "group": "metal",
+   "note": "hot-dip galvanized steel with zinc spangle",
+   "stats": {
+    "metal_mean": 0.9999992251396179,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.5104235410690308,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "metal_corrugated_rusty": {
+   "name": "Rusty Corrugated Iron",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/rusty_corrugated_iron",
+   "source": "Poly Haven",
+   "set": "metal_corrugated_rusty",
+   "asset_id": "rusty_corrugated_iron",
+   "group": "metal",
+   "note": "rusty corrugated iron sheet",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8100473880767822,
+    "smooth_mean": 0.06429886817932129,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "metal_brushed_aluminum": {
+   "name": "Metal 009",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Metal009",
+   "source": "ambientCG",
+   "set": "metal_brushed_aluminum",
+   "asset_id": "Metal009",
+   "group": "metal",
+   "note": "brushed silver metal (aluminum/steel trim)",
+   "stats": {
+    "metal_mean": 1.0,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.5305819511413574,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "building_plaster": {
+   "name": "White Stucco",
+   "authors": "Amal Kumar",
+   "url": "https://polyhaven.com/a/white_stucco",
+   "source": "Poly Haven",
+   "set": "building_plaster",
+   "asset_id": "white_stucco",
+   "group": "building",
+   "note": "white stucco / plaster (tintable)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9824267029762268,
+    "smooth_mean": 0.11935055255889893,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "building_tile_mosaic": {
+   "name": "Rounded Square Tiled Wall",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/rounded_square_tiled_wall",
+   "source": "Poly Haven",
+   "set": "building_tile_mosaic",
+   "asset_id": "rounded_square_tiled_wall",
+   "group": "building",
+   "note": "small square ceramic facade tiles (mansion facade)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8608430027961731,
+    "smooth_mean": 0.4269448518753052,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "building_brick_red": {
+   "name": "Bricks 101",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Bricks101",
+   "source": "ambientCG",
+   "set": "building_brick_red",
+   "asset_id": "Bricks101",
+   "group": "building",
+   "note": "clean red brick / brick tile",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9546828269958496,
+    "smooth_mean": 0.37259453535079956,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_bark_sakura": {
+   "name": "Sakura Bark",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/sakura_bark",
+   "source": "Poly Haven",
+   "set": "nature_bark_sakura",
+   "asset_id": "sakura_bark",
+   "group": "nature",
+   "note": "cherry (sakura) bark",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9032034873962402,
+    "smooth_mean": 0.3847683072090149,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_bark_cedar": {
+   "name": "Japanese Cedar Bark",
+   "authors": "Charlotte Baglioni",
+   "url": "https://polyhaven.com/a/japanese_cedar_bark",
+   "source": "Poly Haven",
+   "set": "nature_bark_cedar",
+   "asset_id": "japanese_cedar_bark",
+   "group": "nature",
+   "note": "Japanese cedar (sugi) bark",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.879082441329956,
+    "smooth_mean": 0.09189951419830322,
+    "size": "2048x4096",
+    "has_height": true
+   }
+  },
+  "nature_forest_floor_autumn": {
+   "name": "Forest Floor",
+   "authors": "eye-candy.xyz",
+   "url": "https://polyhaven.com/a/forest_floor",
+   "source": "Poly Haven",
+   "set": "nature_forest_floor_autumn",
+   "asset_id": "forest_floor",
+   "group": "nature",
+   "note": "forest floor with red/orange autumn leaves",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8590691089630127,
+    "smooth_mean": 0.2595789432525635,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_rock_mossy": {
+   "name": "Mossy Rock",
+   "authors": "Rob Tuytel",
+   "url": "https://polyhaven.com/a/mossy_rock",
+   "source": "Poly Haven",
+   "set": "nature_rock_mossy",
+   "asset_id": "mossy_rock",
+   "group": "nature",
+   "note": "mossy / lichened rock",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8502033948898315,
+    "smooth_mean": 0.19466018676757812,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_rock_cliff": {
+   "name": "Rock 030",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Rock030",
+   "source": "ambientCG",
+   "set": "nature_rock_cliff",
+   "asset_id": "Rock030",
+   "group": "nature",
+   "note": "grey layered cliff rock",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.894330620765686,
+    "smooth_mean": 0.307031512260437,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_grass": {
+   "name": "Grass 004",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Grass004",
+   "source": "ambientCG",
+   "set": "nature_grass",
+   "asset_id": "Grass004",
+   "group": "nature",
+   "note": "short grass ground",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.8072240352630615,
+    "smooth_mean": 0.2947726845741272,
+    "size": "2048x2048",
+    "has_height": true
+   },
+   "overrides": {
+    "smooth_mul": 0.4
+   }
+  },
+  "nature_gravel": {
+   "name": "Gravel 040",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Gravel040",
+   "source": "ambientCG",
+   "set": "nature_gravel",
+   "asset_id": "Gravel040",
+   "group": "nature",
+   "note": "grey crushed gravel (road shoulder / ballast)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.9016914963722229,
+    "smooth_mean": 0.46941709518432617,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "nature_dirt_shoulder": {
+   "name": "Rocky Trail",
+   "authors": "Amal Kumar",
+   "url": "https://polyhaven.com/a/rocky_trail",
+   "source": "Poly Haven",
+   "set": "nature_dirt_shoulder",
+   "asset_id": "rocky_trail",
+   "group": "nature",
+   "note": "compacted stony dirt (road shoulder)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.6266892552375793,
+    "smooth_mean": 0.3509104251861572,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "misc_rubber": {
+   "name": "Rubber 004",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Rubber004",
+   "source": "ambientCG",
+   "set": "misc_rubber",
+   "asset_id": "Rubber004",
+   "group": "misc",
+   "note": "black rubber (generic; no tire tread available)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.4093172550201416,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  },
+  "misc_carbon_fiber": {
+   "name": "Fabric 004",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Fabric004",
+   "source": "ambientCG",
+   "set": "misc_carbon_fiber",
+   "asset_id": "Fabric004",
+   "group": "misc",
+   "note": "woven carbon fiber",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 1.0,
+    "smooth_mean": 0.7661434412002563,
+    "size": "2048x2048",
+    "has_height": true
+   },
+   "overrides": {
+    "metal": 0.0
+   }
+  },
+  "misc_canvas": {
+   "name": "Fabric 061",
+   "authors": "ambientCG",
+   "url": "https://ambientcg.com/view?id=Fabric061",
+   "source": "ambientCG",
+   "set": "misc_canvas",
+   "asset_id": "Fabric061",
+   "group": "misc",
+   "note": "light woven canvas (awnings, tintable)",
+   "stats": {
+    "metal_mean": 0.0,
+    "ao_mean": 0.7893708348274231,
+    "smooth_mean": 0.16050070524215698,
+    "size": "2048x2048",
+    "has_height": true
+   }
+  }
+ },
+ "hdris": {
+  "shanghai_bund": {
+   "file": "shanghai_bund_4k.hdr",
+   "name": "Shanghai Bund",
+   "authors": "Greg Zaal",
+   "url": "https://polyhaven.com/a/shanghai_bund",
+   "source": "Poly Haven"
+  },
+  "the_sky_is_on_fire": {
+   "file": "the_sky_is_on_fire_4k.hdr",
+   "name": "The Sky Is On Fire",
+   "authors": "Greg Zaal, Rico Cilliers",
+   "url": "https://polyhaven.com/a/the_sky_is_on_fire",
+   "source": "Poly Haven"
+  },
+  "autumn_forest_04": {
+   "file": "autumn_forest_04_4k.hdr",
+   "name": "Autumn Forest 04",
+   "authors": "Alexander Scholten",
+   "url": "https://polyhaven.com/a/autumn_forest_04",
+   "source": "Poly Haven"
+  },
+  "overcast_soil_puresky": {
+   "file": "overcast_soil_puresky_2k.hdr",
+   "name": "Overcast Soil (Pure Sky)",
+   "authors": "Jarod Guest, Sergej Majboroda",
+   "url": "https://polyhaven.com/a/overcast_soil_puresky",
+   "source": "Poly Haven"
+  }
+ }
+}

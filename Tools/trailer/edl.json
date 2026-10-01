@@ -1,0 +1,434 @@
+{
+ "fps": 60,
+ "music": "/Users/jemmygazhenko/Documents/GitHub/ink-drift-tokyo/Game/Assets/InkDrift/Audio/Music/trailer.mp3",
+ "gif_start": 24.5,
+ "gif_dur": 6.4,
+ "segments": [
+  {
+   "type": "card",
+   "png": "c1_tokyo",
+   "dur": 3.2,
+   "zoom": 0.06
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_00_Scenic",
+   "in": 2.5,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_01_Flyby",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_06_Heli",
+   "in": 0.6,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "card",
+   "png": "c2_never_sleeps",
+   "dur": 3.2,
+   "zoom": 0.06,
+   "over": "shuto/shot_08_Scenic",
+   "over_in": 1.0
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_02_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.25
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_02_Front",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.25
+  },
+  {
+   "type": "card",
+   "png": "c3_neither",
+   "dur": 1.6,
+   "zoom": 0.06
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_01_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.3
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_04_Wheel",
+   "in": 0.5,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_00_Chase",
+   "in": 2.0,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_03_Front",
+   "in": 0.6,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_05_Orbit",
+   "in": 1.0,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_01_LowSide",
+   "in": 1.2,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_07_Wheel",
+   "in": 1.0,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_03_Front",
+   "in": 1.6,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_04_Heli",
+   "in": 1.0,
+   "dur": 0.8,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "black",
+   "dur": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_02_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": true,
+   "game_audio": 0.55
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_06_Chase",
+   "in": 1.7,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_00_Chase",
+   "in": 0.8,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.45
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_02_Flyby",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_09_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": false,
+   "game_audio": 0.55
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_05_Chase",
+   "in": 1.7,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_09_Heli",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.3
+  },
+  {
+   "type": "card",
+   "png": "c4_counts",
+   "dur": 1.6,
+   "zoom": 0.1,
+   "over": "shuto/shot_00_Chase",
+   "over_in": 3.0
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_09_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": true,
+   "game_audio": 0.55
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_02_Front",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_10_Flyby",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.45
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_05_Chase",
+   "in": 3.5,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.45
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_07_Wheel",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_07_LowSide",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.55
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_06_Heli",
+   "in": 1.5,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.3
+  },
+  {
+   "type": "card",
+   "png": "c5_drift",
+   "dur": 1.6,
+   "zoom": 0.1,
+   "over": "okutama/shot_05_Chase",
+   "over_in": 3.5
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_06_Orbit",
+   "in": 1.35,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": true,
+   "punch": true,
+   "game_audio": 0.55
+  },
+  {
+   "type": "clip",
+   "src": "shibuya/shot_03_Front",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.5
+  },
+  {
+   "type": "clip",
+   "src": "okutama/shot_07_Wheel",
+   "in": 1.0,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.45
+  },
+  {
+   "type": "clip",
+   "src": "shuto/shot_09_LowSide",
+   "in": 2.6,
+   "dur": 1.6,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.45
+  },
+  {
+   "type": "clip",
+   "src": "menu_0",
+   "in": 0.6,
+   "dur": 1.28,
+   "speed": 1.0,
+   "flash": true,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "menu_1",
+   "in": 0.6,
+   "dur": 1.28,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "menu_2",
+   "in": 0.6,
+   "dur": 1.28,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "menu_3",
+   "in": 0.6,
+   "dur": 1.28,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "menu_4",
+   "in": 0.6,
+   "dur": 1.28,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "clip",
+   "src": "title",
+   "in": 1.0,
+   "dur": 1.1,
+   "speed": 1.0,
+   "flash": false,
+   "punch": false,
+   "game_audio": 0.0
+  },
+  {
+   "type": "card",
+   "png": "c9_end",
+   "dur": 11.0,
+   "zoom": 0.04
+  }
+ ]
+}

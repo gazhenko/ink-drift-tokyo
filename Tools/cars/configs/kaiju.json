@@ -1,0 +1,14 @@
+{
+  "_source": "Toyota Supra 3D Model (Free) by mpgs.studio - https://sketchfab.com/3d-models/toyota-supra-3d-model-free-41b83cfb912b4eab9af19a802bcf5ffc (CC-BY 4.0)",
+  "wheelbase": 2.470,
+  "tri_budget": 175000,
+  "plates": {"style": "private", "top": "練馬 330", "kana": "ら", "num": "20-24"},
+  "decals": [
+    {"img": "livery_name_kaiju", "where": "side", "sides": "both", "z": -0.05, "y": 0.50, "w": 1.0},
+    {"img": "livery_sponsor_hayate_turbo", "where": "side", "sides": "both", "z": 1.0, "y": 0.62, "w": 0.42},
+    {"img": "livery_oni", "where": "side", "sides": "both", "z": -1.05, "y": 0.66, "w": 0.36}
+  ],
+  "banner": "インクドリフト東京 ★ KAIJU SPR-X",
+  "banner_accent": "#B6FF3B",
+  "preview_color": [0.46, 1.0, 0.04]
+}

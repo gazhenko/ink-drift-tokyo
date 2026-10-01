@@ -1,0 +1,345 @@
+{
+  "canvas": [
+    2048,
+    1024
+  ],
+  "note": "All layers share one 2048x1024 frame; stack burst (tinted, multiply) -> fx -> jp -> en to rebuild the composite. burst_*.png are grey/white with ink outlines: tint by multiplying with a colour.",
+  "callouts": [
+    {
+      "id": "nice",
+      "jp": "ナイス！",
+      "en": "NICE!",
+      "text_color": "#B6FF3B",
+      "burst_style": "pop",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_nice.png",
+        "text": "callout_nice_text.png",
+        "jp": "callout_nice_jp.png",
+        "en": "callout_nice_en.png",
+        "fx": "callout_nice_fx.png",
+        "burst": "burst_pop.png"
+      }
+    },
+    {
+      "id": "good",
+      "jp": "成功！",
+      "en": "SUCCESS!",
+      "text_color": "#00E5FF",
+      "burst_style": "spiky",
+      "burst_tint_suggestion": "#FFE600",
+      "files": {
+        "composite": "callout_good.png",
+        "text": "callout_good_text.png",
+        "jp": "callout_good_jp.png",
+        "en": "callout_good_en.png",
+        "fx": "callout_good_fx.png",
+        "burst": "burst_spiky.png"
+      }
+    },
+    {
+      "id": "great",
+      "jp": "グレートドリフト！",
+      "en": "GREAT DRIFT!",
+      "text_color": "#FFE600",
+      "burst_style": "star",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_great.png",
+        "text": "callout_great_text.png",
+        "jp": "callout_great_jp.png",
+        "en": "callout_great_en.png",
+        "fx": "callout_great_fx.png",
+        "burst": "burst_star.png"
+      }
+    },
+    {
+      "id": "awesome",
+      "jp": "すごい！",
+      "en": "AWESOME!",
+      "text_color": "#FF2D7A",
+      "burst_style": "boom",
+      "burst_tint_suggestion": "#00E5FF",
+      "files": {
+        "composite": "callout_awesome.png",
+        "text": "callout_awesome_text.png",
+        "jp": "callout_awesome_jp.png",
+        "en": "callout_awesome_en.png",
+        "fx": "callout_awesome_fx.png",
+        "burst": "burst_boom.png"
+      }
+    },
+    {
+      "id": "insane",
+      "jp": "やばい！！",
+      "en": "INSANE!!",
+      "text_color": "#FF2D7A",
+      "burst_style": "shatter",
+      "burst_tint_suggestion": "#1B1340",
+      "files": {
+        "composite": "callout_insane.png",
+        "text": "callout_insane_text.png",
+        "jp": "callout_insane_jp.png",
+        "en": "callout_insane_en.png",
+        "fx": "callout_insane_fx.png",
+        "burst": "burst_shatter.png"
+      }
+    },
+    {
+      "id": "perfect",
+      "jp": "完璧！",
+      "en": "PERFECT!",
+      "text_color": "#FFE600",
+      "burst_style": "sparkle",
+      "burst_tint_suggestion": "#00E5FF",
+      "files": {
+        "composite": "callout_perfect.png",
+        "text": "callout_perfect_text.png",
+        "jp": "callout_perfect_jp.png",
+        "en": "callout_perfect_en.png",
+        "fx": "callout_perfect_fx.png",
+        "burst": "burst_sparkle.png"
+      }
+    },
+    {
+      "id": "god",
+      "jp": "神ドリフト！！",
+      "en": "GOD DRIFT!!",
+      "text_color": "#FF3B30",
+      "burst_style": "god",
+      "burst_tint_suggestion": "#FF3B30",
+      "files": {
+        "composite": "callout_god.png",
+        "text": "callout_god_text.png",
+        "jp": "callout_god_jp.png",
+        "en": "callout_god_en.png",
+        "fx": "callout_god_fx.png",
+        "burst": "burst_god.png"
+      }
+    },
+    {
+      "id": "fail",
+      "jp": "失敗…",
+      "en": "FAIL...",
+      "text_color": "#E8584E",
+      "burst_style": "gloom",
+      "burst_tint_suggestion": "#1B1340",
+      "files": {
+        "composite": "callout_fail.png",
+        "text": "callout_fail_text.png",
+        "jp": "callout_fail_jp.png",
+        "en": "callout_fail_en.png",
+        "fx": "callout_fail_fx.png",
+        "burst": "burst_gloom.png"
+      }
+    },
+    {
+      "id": "best_lap",
+      "jp": "最高！",
+      "en": "BEST LAP!",
+      "text_color": "#FFE600",
+      "burst_style": "rosette",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_best_lap.png",
+        "text": "callout_best_lap_text.png",
+        "jp": "callout_best_lap_jp.png",
+        "en": "callout_best_lap_en.png",
+        "fx": "callout_best_lap_fx.png",
+        "burst": "burst_rosette.png"
+      }
+    },
+    {
+      "id": "new_record",
+      "jp": "新記録！",
+      "en": "NEW RECORD!",
+      "text_color": "#FF2D7A",
+      "burst_style": "confetti",
+      "burst_tint_suggestion": "#FFE600",
+      "files": {
+        "composite": "callout_new_record.png",
+        "text": "callout_new_record_text.png",
+        "jp": "callout_new_record_jp.png",
+        "en": "callout_new_record_en.png",
+        "fx": "callout_new_record_fx.png",
+        "burst": "burst_confetti.png"
+      }
+    },
+    {
+      "id": "start",
+      "jp": "スタート！",
+      "en": "START!",
+      "text_color": "#00E5FF",
+      "burst_style": "speed",
+      "burst_tint_suggestion": "#0B0B12",
+      "files": {
+        "composite": "callout_start.png",
+        "text": "callout_start_text.png",
+        "jp": "callout_start_jp.png",
+        "en": "callout_start_en.png",
+        "fx": "callout_start_fx.png",
+        "burst": "burst_speed.png"
+      }
+    },
+    {
+      "id": "count_3",
+      "jp": "さん！",
+      "en": "THREE",
+      "text_color": "#00E5FF",
+      "burst_style": "ring",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_count_3.png",
+        "text": "callout_count_3_text.png",
+        "jp": "callout_count_3_jp.png",
+        "en": "callout_count_3_en.png",
+        "fx": "callout_count_3_fx.png",
+        "burst": "burst_ring.png"
+      }
+    },
+    {
+      "id": "count_2",
+      "jp": "に！",
+      "en": "TWO",
+      "text_color": "#FFE600",
+      "burst_style": "ring",
+      "burst_tint_suggestion": "#00E5FF",
+      "files": {
+        "composite": "callout_count_2.png",
+        "text": "callout_count_2_text.png",
+        "jp": "callout_count_2_jp.png",
+        "en": "callout_count_2_en.png",
+        "fx": "callout_count_2_fx.png",
+        "burst": "burst_ring.png"
+      }
+    },
+    {
+      "id": "count_1",
+      "jp": "いち！",
+      "en": "ONE",
+      "text_color": "#FF2D7A",
+      "burst_style": "ring",
+      "burst_tint_suggestion": "#FFE600",
+      "files": {
+        "composite": "callout_count_1.png",
+        "text": "callout_count_1_text.png",
+        "jp": "callout_count_1_jp.png",
+        "en": "callout_count_1_en.png",
+        "fx": "callout_count_1_fx.png",
+        "burst": "burst_ring.png"
+      }
+    },
+    {
+      "id": "go",
+      "jp": "ゴー！",
+      "en": "GO!!",
+      "text_color": "#B6FF3B",
+      "burst_style": "boom",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_go.png",
+        "text": "callout_go_text.png",
+        "jp": "callout_go_jp.png",
+        "en": "callout_go_en.png",
+        "fx": "callout_go_fx.png",
+        "burst": "burst_boom.png"
+      }
+    },
+    {
+      "id": "final_lap",
+      "jp": "ファイナルラップ！",
+      "en": "FINAL LAP!",
+      "text_color": "#FF2D7A",
+      "burst_style": "slash",
+      "burst_tint_suggestion": "#0B0B12",
+      "files": {
+        "composite": "callout_final_lap.png",
+        "text": "callout_final_lap_text.png",
+        "jp": "callout_final_lap_jp.png",
+        "en": "callout_final_lap_en.png",
+        "fx": "callout_final_lap_fx.png",
+        "burst": "burst_slash.png"
+      }
+    },
+    {
+      "id": "goal",
+      "jp": "ゴール！",
+      "en": "GOAL!",
+      "text_color": "#FFE600",
+      "burst_style": "checker",
+      "burst_tint_suggestion": "#FFF8E7",
+      "files": {
+        "composite": "callout_goal.png",
+        "text": "callout_goal_text.png",
+        "jp": "callout_goal_jp.png",
+        "en": "callout_goal_en.png",
+        "fx": "callout_goal_fx.png",
+        "burst": "burst_checker.png"
+      }
+    },
+    {
+      "id": "drift_king",
+      "jp": "ドリフトキング！",
+      "en": "DRIFT KING!",
+      "text_color": "#FFE600",
+      "burst_style": "crown",
+      "burst_tint_suggestion": "#1B1340",
+      "files": {
+        "composite": "callout_drift_king.png",
+        "text": "callout_drift_king_text.png",
+        "jp": "callout_drift_king_jp.png",
+        "en": "callout_drift_king_en.png",
+        "fx": "callout_drift_king_fx.png",
+        "burst": "burst_crown.png"
+      }
+    },
+    {
+      "id": "ikee",
+      "jp": "いけー！",
+      "en": "GO!! GO!!",
+      "text_color": "#FF3B30",
+      "burst_style": "flame",
+      "burst_tint_suggestion": "#FF3B30",
+      "files": {
+        "composite": "callout_ikee.png",
+        "text": "callout_ikee_text.png",
+        "jp": "callout_ikee_jp.png",
+        "en": "callout_ikee_en.png",
+        "fx": "callout_ikee_fx.png",
+        "burst": "burst_flame.png"
+      }
+    },
+    {
+      "id": "near_miss",
+      "jp": "ニアミス！",
+      "en": "NEAR MISS!",
+      "text_color": "#FFE600",
+      "burst_style": "spark",
+      "burst_tint_suggestion": "#00E5FF",
+      "files": {
+        "composite": "callout_near_miss.png",
+        "text": "callout_near_miss_text.png",
+        "jp": "callout_near_miss_jp.png",
+        "en": "callout_near_miss_en.png",
+        "fx": "callout_near_miss_fx.png",
+        "burst": "burst_spark.png"
+      }
+    },
+    {
+      "id": "overtake",
+      "jp": "オーバーテイク！",
+      "en": "OVERTAKE!",
+      "text_color": "#00E5FF",
+      "burst_style": "arrow",
+      "burst_tint_suggestion": "#FF2D7A",
+      "files": {
+        "composite": "callout_overtake.png",
+        "text": "callout_overtake_text.png",
+        "jp": "callout_overtake_jp.png",
+        "en": "callout_overtake_en.png",
+        "fx": "callout_overtake_fx.png",
+        "burst": "burst_arrow.png"
+      }
+    }
+  ]
+}

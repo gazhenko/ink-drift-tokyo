@@ -1,0 +1,8 @@
+{
+  "_source": "LCT 3000 '95 - Low poly model by DanielZhabotinsky - https://sketchfab.com/3d-models/lct-3000-95-low-poly-model-663a0953c038434a918cb85725c88ffa (CC-BY 4.0)",
+  "traffic": true,
+  "wheelbase": 3.000,
+  "tri_budget": 24000,
+  "plates": {"style": "commercial", "top": "品川 100", "kana": "か", "num": "76-54"},
+  "preview_color": [0.85, 0.85, 0.85]
+}

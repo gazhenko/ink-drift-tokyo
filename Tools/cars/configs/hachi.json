@@ -1,0 +1,14 @@
+{
+  "_source": "Subaru BRZ (ZD8) by ilvskf - https://sketchfab.com/3d-models/subaru-brz-zd8-bcab5a68e83645cd83d48f1b5cf3923d (CC-BY 4.0)",
+  "wheelbase": 2.575,
+  "tri_budget": 175000,
+  "plates": {"style": "private", "top": "品川 300", "kana": "あ", "num": "86-86"},
+  "decals": [
+    {"img": "livery_name_hachi", "where": "side", "sides": "both", "z": 0.05, "y": 0.52, "w": 0.95},
+    {"img": "livery_sponsor_tanuki_tires", "where": "side", "sides": "both", "z": 1.05, "y": 0.66, "w": 0.34},
+    {"img": "livery_sakura", "where": "side", "sides": "both", "z": -1.05, "y": 0.72, "w": 0.42}
+  ],
+  "banner": "インクドリフト東京 ★ HACHI GR8",
+  "banner_accent": "#FF2D7A",
+  "preview_color": [1.0, 0.79, 0.0]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "kaiju",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 2.47,
+  "front_axle_z": 1.235,
+  "rear_axle_z": -1.235,
+  "front_track": 1.6,
+  "rear_track": 1.6,
+  "wheel_radius": 0.338,
+  "wheel_radius_front": 0.335,
+  "wheel_radius_rear": 0.338,
+  "wheel_width": 0.285,
+  "wheel_width_front": 0.265,
+  "wheel_width_rear": 0.285,
+  "hub_height": 0.3365,
+  "length": 4.3972,
+  "width": 2.0616,
+  "width_body": 2.0616,
+  "height": 1.3726,
+  "ground_clearance": 0.086,
+  "tris": 117201,
+  "tri_count": 117201,
+  "com_height": 0.472,
+  "wheels": {
+    "FL": [
+      -0.8,
+      0.335,
+      1.235
+    ],
+    "FR": [
+      0.8,
+      0.335,
+      1.235
+    ],
+    "RL": [
+      -0.8,
+      0.338,
+      -1.235
+    ],
+    "RR": [
+      0.8,
+      0.338,
+      -1.235
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.7,
+      0.62,
+      2.06
+    ],
+    "Light_Head_R": [
+      0.7,
+      0.62,
+      2.06
+    ],
+    "Light_Tail_L": [
+      -0.7,
+      0.945,
+      -2.1
+    ],
+    "Light_Tail_R": [
+      0.7,
+      0.945,
+      -2.1
+    ],
+    "Exhaust_L": [
+      -0.47,
+      0.265,
+      -2.1929
+    ],
+    "Exhaust_R": [
+      0.47,
+      0.265,
+      -2.1929
+    ]
+  },
+  "materials": [
+    "M_Brake",
+    "M_Carbon",
+    "M_Chrome",
+    "M_Decal",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ],
+  "wing": {
+    "span": 1.6,
+    "chord": 0.28,
+    "wing_z": 1.259
+  }
+}

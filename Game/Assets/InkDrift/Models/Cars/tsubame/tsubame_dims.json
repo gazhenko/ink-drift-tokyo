@@ -1,0 +1,101 @@
+{
+  "id": "tsubame",
+  "units": "meters",
+  "frame": "Unity: x right, y up, z forward; origin on the ground (tyre contact) midway between the axles",
+  "source": "original procedural model (Tools/cars/procedural), no third-party assets",
+  "wheelbase": 2.31,
+  "front_axle_z": 1.155,
+  "rear_axle_z": -1.155,
+  "front_track": 1.505,
+  "rear_track": 1.515,
+  "wheel_radius": 0.308,
+  "wheel_radius_front": 0.308,
+  "wheel_radius_rear": 0.308,
+  "wheel_width": 0.225,
+  "wheel_width_front": 0.215,
+  "wheel_width_rear": 0.225,
+  "hub_height": 0.308,
+  "length": 3.9169,
+  "width": 1.9605,
+  "width_body": 1.9605,
+  "height": 1.2941,
+  "ground_clearance": 0.086,
+  "tris": 109249,
+  "tri_count": 109249,
+  "com_height": 0.448,
+  "wheels": {
+    "FL": [
+      -0.7525,
+      0.308,
+      1.155
+    ],
+    "FR": [
+      0.7525,
+      0.308,
+      1.155
+    ],
+    "RL": [
+      -0.7575,
+      0.308,
+      -1.155
+    ],
+    "RR": [
+      0.7575,
+      0.308,
+      -1.155
+    ]
+  },
+  "empties": {
+    "Light_Head_L": [
+      -0.66,
+      0.59,
+      1.84
+    ],
+    "Light_Head_R": [
+      0.66,
+      0.59,
+      1.84
+    ],
+    "Light_Tail_L": [
+      -0.66,
+      0.78,
+      -1.97
+    ],
+    "Light_Tail_R": [
+      0.66,
+      0.78,
+      -1.97
+    ],
+    "Exhaust_L": [
+      -0.4,
+      0.255,
+      -1.9971
+    ],
+    "Exhaust_R": [
+      0.4,
+      0.255,
+      -1.9971
+    ]
+  },
+  "materials": [
+    "M_Brake",
+    "M_Carbon",
+    "M_Chrome",
+    "M_Decal",
+    "M_Glass",
+    "M_Grille",
+    "M_HeadLight",
+    "M_Paint",
+    "M_Plate",
+    "M_Rim",
+    "M_TailLight",
+    "M_Tire",
+    "M_Trim",
+    "M_Underbody"
+  ],
+  "wing": {
+    "span": 1.45,
+    "chord": 0.25,
+    "wing_z": 1.185
+  }
+}

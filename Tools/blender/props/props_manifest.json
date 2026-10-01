@@ -1,0 +1,3204 @@
+{
+ "ac_outdoor_unit_large": {
+  "name": "ac_outdoor_unit_large",
+  "category": "urban",
+  "desc": "Japanese split air-conditioner outdoor unit 0.95 x 1.3 x 0.35 m",
+  "origin": "ground (bottom of base), body centre",
+  "front": "fan grille = Unity +Z",
+  "file": "ac_outdoor_unit_large.fbx",
+  "tris": 3136,
+  "verts": 1732,
+  "size_m": [
+   1.137,
+   1.73,
+   0.591
+  ],
+  "unity_bbox_min": [
+   -0.644,
+   0.0,
+   -0.266
+  ],
+  "unity_bbox_max": [
+   0.493,
+   1.73,
+   0.325
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_DarkGray",
+   "M_PaintedMetal_Ivory",
+   "M_PlasticBlack",
+   "M_PlasticGray",
+   "M_Aluminum",
+   "M_PaintedMetal_LightGray",
+   "M_Steel_Dark",
+   "M_PlasticWhite"
+  ],
+  "empties": {},
+  "notes": [
+   "Pipes rise behind the right side to the wall plane (Unity z = -0.24); place the unit with its back ~0.07 m from a wall."
+  ],
+  "textures": []
+ },
+ "ac_outdoor_unit_small": {
+  "name": "ac_outdoor_unit_small",
+  "category": "urban",
+  "desc": "Japanese split air-conditioner outdoor unit 0.8 x 0.55 x 0.29 m",
+  "origin": "ground (bottom of base), body centre",
+  "front": "fan grille = Unity +Z",
+  "file": "ac_outdoor_unit_small.fbx",
+  "tris": 2240,
+  "verts": 1240,
+  "size_m": [
+   0.987,
+   1.06,
+   0.531
+  ],
+  "unity_bbox_min": [
+   -0.569,
+   0.0,
+   -0.236
+  ],
+  "unity_bbox_max": [
+   0.419,
+   1.06,
+   0.295
+  ],
+  "materials": [
+   "M_PlasticGray",
+   "M_PaintedMetal_DarkGray",
+   "M_PaintedMetal_Ivory",
+   "M_PlasticBlack",
+   "M_Aluminum",
+   "M_PaintedMetal_LightGray",
+   "M_Steel_Dark",
+   "M_PlasticWhite"
+  ],
+  "empties": {},
+  "notes": [
+   "Pipes rise behind the right side to the wall plane (Unity z = -0.21); place the unit with its back ~0.07 m from a wall."
+  ],
+  "textures": []
+ },
+ "akachochin_single": {
+  "name": "akachochin_single",
+  "category": "urban",
+  "desc": "Large izakaya red lantern (赤提灯, Φ0.36 x 0.6 m) on a wall bracket",
+  "origin": "wall plane at the bracket (mount ~2.4 m)",
+  "front": "projects to Unity +Z",
+  "file": "akachochin_single.fbx",
+  "tris": 1084,
+  "verts": 570,
+  "size_m": [
+   0.36,
+   0.724,
+   0.58
+  ],
+  "unity_bbox_min": [
+   -0.18,
+   -0.674,
+   -0.0
+  ],
+  "unity_bbox_max": [
+   0.18,
+   0.05,
+   0.58
+  ],
+  "materials": [
+   "M_PaintedMetal_Black",
+   "M_EmissiveLantern_Akachochin"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    -0.37,
+    0.4
+   ]
+  },
+  "notes": [
+   "LightAnchor_0 = lantern centre. Text faces Unity +Z (front 焼鳥, back 酒)."
+  ],
+  "textures": [
+   "prop_akachochin_albedo.png"
+  ]
+ },
+ "bench": {
+  "name": "bench",
+  "category": "urban",
+  "desc": "Japanese street/park bench 1.8 m: cast frames, wooden slats, centre armrest",
+  "origin": "ground, centre",
+  "front": "seat front = Unity +Z",
+  "file": "bench.fbx",
+  "tris": 2760,
+  "verts": 1432,
+  "size_m": [
+   1.8,
+   0.844,
+   0.551
+  ],
+  "unity_bbox_min": [
+   -0.9,
+   -0.001,
+   -0.281
+  ],
+  "unity_bbox_max": [
+   0.9,
+   0.842,
+   0.27
+  ],
+  "materials": [
+   "M_PaintedMetal_DarkGray",
+   "M_Wood"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "bicycle": {
+  "name": "bicycle",
+  "category": "urban",
+  "desc": "Japanese city bike (mamachari) on its two-leg stand, 26\" wheels",
+  "origin": "ground, midway between the wheel contact points",
+  "front": "bike length along Unity X",
+  "file": "bicycle.fbx",
+  "tris": 2924,
+  "verts": 1694,
+  "size_m": [
+   1.862,
+   1.045,
+   0.608
+  ],
+  "unity_bbox_min": [
+   -0.921,
+   0.0,
+   -0.304
+  ],
+  "unity_bbox_max": [
+   0.941,
+   1.045,
+   0.304
+  ],
+  "materials": [
+   "M_Rubber",
+   "M_Chrome",
+   "M_BikeFrame",
+   "M_PlasticBlack",
+   "M_PlasticGray",
+   "M_WireMesh_Silver_Cutout",
+   "M_Reflector_White",
+   "M_Reflector_Red"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_wiremesh_silver_albedo.png"
+  ]
+ },
+ "bollard_steel": {
+  "name": "bollard_steel",
+  "category": "urban",
+  "desc": "Stainless round bollard (車止め) Φ114 x 0.85 m with yellow reflective bands",
+  "origin": "ground, centre",
+  "front": "Unity +Z",
+  "file": "bollard_steel.fbx",
+  "tris": 322,
+  "verts": 199,
+  "size_m": [
+   0.174,
+   0.855,
+   0.172
+  ],
+  "unity_bbox_min": [
+   -0.087,
+   0.0,
+   -0.086
+  ],
+  "unity_bbox_max": [
+   0.087,
+   0.855,
+   0.086
+  ],
+  "materials": [
+   "M_StainlessSteel",
+   "M_Reflector_Amber"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "bollard_u": {
+  "name": "bollard_u",
+  "category": "urban",
+  "desc": "U-shaped arch bollard (アーチ型車止め), Φ60.5 pipe, 0.8 x 0.8 m, yellow",
+  "origin": "ground, centre between the legs",
+  "front": "faces Unity +Z (pipe plane is Unity XY)",
+  "file": "bollard_u.fbx",
+  "tris": 732,
+  "verts": 396,
+  "size_m": [
+   0.78,
+   0.825,
+   0.14
+  ],
+  "unity_bbox_min": [
+   -0.39,
+   0.0,
+   -0.07
+  ],
+  "unity_bbox_max": [
+   0.39,
+   0.825,
+   0.07
+  ],
+  "materials": [
+   "M_PaintedMetal_Yellow",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "bus_stop_pole": {
+  "name": "bus_stop_pole",
+  "category": "urban",
+  "desc": "Tokyo city-bus stop pole (都営バス style): weighted round base, Φ60.5 pole, double-sided round sign Φ0.5 (M_SignFace, both sides 0-1 UV), timetable case (M_SignFace_Aux)",
+  "origin": "ground, base centre",
+  "front": "sign faces Unity +Z and -Z; timetable faces Unity +Z",
+  "file": "bus_stop_pole.fbx",
+  "tris": 844,
+  "verts": 517,
+  "size_m": [
+   0.56,
+   2.585,
+   0.56
+  ],
+  "unity_bbox_min": [
+   -0.28,
+   0.0,
+   -0.28
+  ],
+  "unity_bbox_max": [
+   0.28,
+   2.585,
+   0.28
+  ],
+  "materials": [
+   "M_PaintedMetal_DarkGray",
+   "M_PaintedMetal_White",
+   "M_Aluminum",
+   "M_SignFace",
+   "M_Galvanized",
+   "M_SignFace_Aux"
+  ],
+  "empties": {},
+  "notes": [
+   "Round sign face UV 0-1 (1:1) on both sides; timetable M_SignFace_Aux UV 0-1 (0.33 x 0.50)."
+  ],
+  "textures": []
+ },
+ "chochin_string_4m": {
+  "name": "chochin_string_4m",
+  "category": "urban",
+  "desc": "Festival red paper lanterns (祭り提灯) on a rope, 4 m tile with 5 lanterns",
+  "origin": "rope start (Unity X=0); rope along Unity X 0..4 at y=0; lanterns hang below",
+  "front": "Unity +Z",
+  "file": "chochin_string_4m.fbx",
+  "tris": 2580,
+  "verts": 1372,
+  "size_m": [
+   4.0,
+   0.474,
+   0.228
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   -0.459,
+   -0.114
+  ],
+  "unity_bbox_max": [
+   4.0,
+   0.015,
+   0.114
+  ],
+  "materials": [
+   "M_Rope",
+   "M_PaintedMetal_Black",
+   "M_EmissiveLantern_Red"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    0.4,
+    -0.255,
+    -0.0
+   ],
+   "LightAnchor_1": [
+    1.2,
+    -0.255,
+    -0.0
+   ],
+   "LightAnchor_2": [
+    2.0,
+    -0.255,
+    -0.0
+   ],
+   "LightAnchor_3": [
+    2.8,
+    -0.255,
+    -0.0
+   ],
+   "LightAnchor_4": [
+    3.6,
+    -0.255,
+    -0.0
+   ]
+  },
+  "notes": [
+   "Tile: chain at Unity X += 4. LightAnchor_0..4 = lantern centres (optional warm point lights). Body texture wraps cylindrically (u=0.5 faces Unity +Z)."
+  ],
+  "textures": [
+   "prop_chochin_matsuri_albedo.png"
+  ]
+ },
+ "coin_parking_sign": {
+  "name": "coin_parking_sign",
+  "category": "urban",
+  "desc": "Coin-parking \"P\" lightbox sign 0.9 x 0.9 m on a 3.3 m square post (fictional operator), double-sided, emissive face",
+  "origin": "ground, post centre",
+  "front": "faces Unity +Z and -Z",
+  "file": "coin_parking_sign.fbx",
+  "tris": 328,
+  "verts": 176,
+  "size_m": [
+   0.92,
+   3.37,
+   0.24
+  ],
+  "unity_bbox_min": [
+   -0.46,
+   0.0,
+   -0.12
+  ],
+  "unity_bbox_max": [
+   0.46,
+   3.37,
+   0.12
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Galvanized",
+   "M_Deco_ParkingSign"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_parking_sign_albedo.png"
+  ]
+ },
+ "cone_bar_2m": {
+  "name": "cone_bar_2m",
+  "category": "urban",
+  "desc": "Yellow/black cone bar 2 m, end rings slip over traffic_cone tips (cones at X=0 and X=2)",
+  "origin": "ground under the first cone centre (Unity X=0)",
+  "front": "Unity +Z",
+  "file": "cone_bar_2m.fbx",
+  "tris": 832,
+  "verts": 584,
+  "size_m": [
+   2.114,
+   0.034,
+   0.114
+  ],
+  "unity_bbox_min": [
+   -0.057,
+   0.603,
+   -0.057
+  ],
+  "unity_bbox_max": [
+   2.057,
+   0.637,
+   0.057
+  ],
+  "materials": [
+   "M_PlasticYellow",
+   "M_PlasticBlack"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "construction_barrier": {
+  "name": "construction_barrier",
+  "category": "urban",
+  "desc": "Japanese A-type folding barricade 1.2 x 0.8 m, yellow/black striped boards both sides, red LED blinker on top",
+  "origin": "ground, centre",
+  "front": "board faces Unity +Z / -Z",
+  "file": "construction_barrier.fbx",
+  "tris": 982,
+  "verts": 521,
+  "size_m": [
+   1.2,
+   0.97,
+   0.61
+  ],
+  "unity_bbox_min": [
+   -0.6,
+   0.0,
+   -0.305
+  ],
+  "unity_bbox_max": [
+   0.6,
+   0.97,
+   0.305
+  ],
+  "materials": [
+   "M_PaintedMetal_Yellow",
+   "M_Rubber",
+   "M_Deco_HazardStripe",
+   "M_PlasticBlack",
+   "M_EmissiveSignal_Red"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    0.92,
+    -0.0
+   ]
+  },
+  "notes": [
+   "M_EmissiveSignal_Red dome = blinking warning lamp (animate emission in Unity)."
+  ],
+  "textures": [
+   "prop_hazard_stripe_albedo.png"
+  ]
+ },
+ "convex_traffic_mirror": {
+  "name": "convex_traffic_mirror",
+  "category": "urban",
+  "desc": "Japanese road curve mirror (カーブミラー), orange 76.3 mm post, Φ800 convex mirror",
+  "origin": "ground, post centre",
+  "front": "mirror faces Unity +Z, tilted 6 deg down",
+  "file": "convex_traffic_mirror.fbx",
+  "tris": 1270,
+  "verts": 725,
+  "size_m": [
+   0.88,
+   3.39,
+   0.271
+  ],
+  "unity_bbox_min": [
+   -0.44,
+   0.0,
+   -0.053
+  ],
+  "unity_bbox_max": [
+   0.44,
+   3.39,
+   0.218
+  ],
+  "materials": [
+   "M_PaintedMetal_Orange",
+   "M_Deco_HazardStripe",
+   "M_Galvanized",
+   "M_Mirror"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_hazard_stripe_albedo.png"
+  ]
+ },
+ "convex_traffic_mirror_double": {
+  "name": "convex_traffic_mirror_double",
+  "category": "urban",
+  "desc": "Japanese road curve mirror (カーブミラー), orange 76.3 mm post, two Φ800 convex mirrors on a T bracket",
+  "origin": "ground, post centre",
+  "front": "mirror faces Unity +Z, tilted 6 deg down",
+  "file": "convex_traffic_mirror_double.fbx",
+  "tris": 1914,
+  "verts": 1115,
+  "size_m": [
+   1.839,
+   3.39,
+   0.405
+  ],
+  "unity_bbox_min": [
+   -0.92,
+   0.0,
+   -0.053
+  ],
+  "unity_bbox_max": [
+   0.92,
+   3.39,
+   0.352
+  ],
+  "materials": [
+   "M_PaintedMetal_Orange",
+   "M_Deco_HazardStripe",
+   "M_Galvanized",
+   "M_Mirror"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_hazard_stripe_albedo.png"
+  ]
+ },
+ "drain_grating_1m": {
+  "name": "drain_grating_1m",
+  "category": "urban",
+  "desc": "Steel road-gutter grating (グレーチング) 1.0 x 0.40 m over a U-gutter, flush with the road",
+  "origin": "road surface at the start of the gutter centre-line; tile spans Unity X 0..1",
+  "front": "Unity +Z",
+  "file": "drain_grating_1m.fbx",
+  "tris": 596,
+  "verts": 376,
+  "size_m": [
+   1.0,
+   0.302,
+   0.4
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   -0.3,
+   -0.2
+  ],
+  "unity_bbox_max": [
+   1.0,
+   0.002,
+   0.2
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Concrete_Dark"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "fire_hydrant_sign": {
+  "name": "fire_hydrant_sign",
+  "category": "urban",
+  "desc": "Tokyo-style fire hydrant sign: red 消火栓 board 0.4 x 0.8 m on a Φ60.5 post, top at 3.25 m",
+  "origin": "ground, post centre",
+  "front": "board faces Unity +Z",
+  "file": "fire_hydrant_sign.fbx",
+  "tris": 726,
+  "verts": 401,
+  "size_m": [
+   0.4,
+   3.332,
+   0.164
+  ],
+  "unity_bbox_min": [
+   -0.2,
+   -0.02,
+   -0.075
+  ],
+  "unity_bbox_max": [
+   0.2,
+   3.312,
+   0.089
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Concrete",
+   "M_PaintedMetal_Red",
+   "M_Deco_HydrantSign"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_hydrant_sign_albedo.png"
+  ]
+ },
+ "garbage_cage": {
+  "name": "garbage_cage",
+  "category": "urban",
+  "desc": "Garbage collection station: folding steel mesh cage 1.2 x 0.7 x 0.9 m",
+  "origin": "ground, footprint centre",
+  "front": "Unity +Z",
+  "file": "garbage_cage.fbx",
+  "tris": 1974,
+  "verts": 1052,
+  "size_m": [
+   1.268,
+   0.982,
+   0.784
+  ],
+  "unity_bbox_min": [
+   -0.634,
+   0.0,
+   -0.384
+  ],
+  "unity_bbox_max": [
+   0.634,
+   0.982,
+   0.4
+  ],
+  "materials": [
+   "M_PaintedMetal_Green",
+   "M_WireMesh_Cutout",
+   "M_GarbageBag",
+   "M_PlasticBlue",
+   "M_PlasticWhite",
+   "M_Deco_GarbageSign"
+  ],
+  "empties": {},
+  "notes": [
+   "M_WireMesh_Cutout = alpha-cutout (double-sided thin panels); needs a cutout toon material."
+  ],
+  "textures": [
+   "prop_garbage_sign_albedo.png",
+   "prop_wiremesh_green_albedo.png"
+  ]
+ },
+ "guardrail_end_finish": {
+  "name": "guardrail_end_finish",
+  "category": "urban",
+  "desc": "W-beam guardrail end wing (袖ビーム) curving away from the road + end post",
+  "origin": "ground at the joint (Unity X=0)",
+  "front": "Unity +Z",
+  "file": "guardrail_end_finish.fbx",
+  "tris": 2028,
+  "verts": 1032,
+  "size_m": [
+   0.778,
+   1.039,
+   0.438
+  ],
+  "unity_bbox_min": [
+   -0.04,
+   0.0,
+   -0.235
+  ],
+  "unity_bbox_max": [
+   0.738,
+   1.039,
+   0.203
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "guardrail_end_start": {
+  "name": "guardrail_end_start",
+  "category": "urban",
+  "desc": "W-beam guardrail end wing (袖ビーム) curving away from the road",
+  "origin": "ground at the joint (Unity X=0)",
+  "front": "Unity +Z",
+  "file": "guardrail_end_start.fbx",
+  "tris": 1036,
+  "verts": 520,
+  "size_m": [
+   0.738,
+   0.354,
+   0.438
+  ],
+  "unity_bbox_min": [
+   -0.738,
+   0.423,
+   -0.235
+  ],
+  "unity_bbox_max": [
+   -0.0,
+   0.777,
+   0.203
+  ],
+  "materials": [
+   "M_PaintedMetal_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "guardrail_wbeam_4m": {
+  "name": "guardrail_wbeam_4m",
+  "category": "urban",
+  "desc": "Japanese W-beam guardrail tile, 4 m, white, round posts every 2 m (posts at X=0 and X=2)",
+  "origin": "ground, at the start post centre (Unity X=0); tile spans Unity X 0..4",
+  "front": "Unity +Z",
+  "file": "guardrail_wbeam_4m.fbx",
+  "tris": 2140,
+  "verts": 1104,
+  "size_m": [
+   4.04,
+   1.039,
+   0.271
+  ],
+  "unity_bbox_min": [
+   -0.04,
+   0.0,
+   -0.055
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.039,
+   0.216
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile: posts at Unity X=0 and X=2; next tile starts at X=4. Close a run with guardrail_end_finish at X=4N and guardrail_end_start at X=0."
+  ],
+  "textures": []
+ },
+ "hokora_small": {
+  "name": "hokora_small",
+  "category": "urban",
+  "desc": "Small roadside shrine (祠): stone base, wooden body with lattice doors, copper gabled roof, chigi/katsuogi, mini shimenawa",
+  "origin": "ground, base centre",
+  "front": "doors face Unity +Z",
+  "file": "hokora_small.fbx",
+  "tris": 2296,
+  "verts": 1228,
+  "size_m": [
+   0.94,
+   1.347,
+   0.84
+  ],
+  "unity_bbox_min": [
+   -0.47,
+   0.0,
+   -0.42
+  ],
+  "unity_bbox_max": [
+   0.47,
+   1.347,
+   0.42
+  ],
+  "materials": [
+   "M_Stone",
+   "M_Wood_Dark",
+   "M_Wood",
+   "M_PlasticBlack",
+   "M_CopperRoof",
+   "M_Rope",
+   "M_Paper"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "kerb_stone_1m": {
+  "name": "kerb_stone_1m",
+  "category": "urban",
+  "desc": "Japanese road/sidewalk boundary kerb block (歩車道境界ブロック), 1.0 m, 180/205 x 250, 150 mm exposed",
+  "origin": "road surface level at the road-side face, start of block; tile 0..1 in Unity X; block extends 0.1 m below road and toward -Z (sidewalk side)",
+  "front": "Unity +Z",
+  "file": "kerb_stone_1m.fbx",
+  "tris": 104,
+  "verts": 54,
+  "size_m": [
+   0.997,
+   0.25,
+   0.205
+  ],
+  "unity_bbox_min": [
+   0.002,
+   -0.1,
+   -0.205
+  ],
+  "unity_bbox_max": [
+   0.998,
+   0.15,
+   -0.0
+  ],
+  "materials": [
+   "M_Concrete_Light"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "manhole_cover": {
+  "name": "manhole_cover",
+  "category": "urban",
+  "desc": "Tokyo-style decorative sewer manhole cover Φ0.6 m in a Φ0.72 frame, 6 mm proud of the road",
+  "origin": "road surface, centre",
+  "front": "Unity +Z",
+  "file": "manhole_cover.fbx",
+  "tris": 592,
+  "verts": 321,
+  "size_m": [
+   0.72,
+   0.036,
+   0.72
+  ],
+  "unity_bbox_min": [
+   -0.36,
+   -0.03,
+   -0.36
+  ],
+  "unity_bbox_max": [
+   0.36,
+   0.006,
+   0.36
+  ],
+  "materials": [
+   "M_Steel_Dark",
+   "M_Deco_Manhole"
+  ],
+  "empties": {},
+  "notes": [
+   "Top disc UV 0-1 over the lid; M_Deco_Manhole has albedo + normal map."
+  ],
+  "textures": [
+   "prop_manhole_albedo.png",
+   "prop_manhole_normal.png"
+  ]
+ },
+ "manhole_cover_hydrant": {
+  "name": "manhole_cover_hydrant",
+  "category": "urban",
+  "desc": "Yellow-painted fire hydrant lid (消火栓) Φ0.6 m in a Φ0.72 frame, 6 mm proud",
+  "origin": "road surface, centre",
+  "front": "Unity +Z",
+  "file": "manhole_cover_hydrant.fbx",
+  "tris": 592,
+  "verts": 321,
+  "size_m": [
+   0.72,
+   0.036,
+   0.72
+  ],
+  "unity_bbox_min": [
+   -0.36,
+   -0.03,
+   -0.36
+  ],
+  "unity_bbox_max": [
+   0.36,
+   0.006,
+   0.36
+  ],
+  "materials": [
+   "M_Steel_Dark",
+   "M_Deco_HydrantLid"
+  ],
+  "empties": {},
+  "notes": [
+   "Text reads correctly when viewed from Unity +Z looking toward -Z (rotate in Y as needed)."
+  ],
+  "textures": [
+   "prop_hydrant_lid_albedo.png"
+  ]
+ },
+ "noren_curtain": {
+  "name": "noren_curtain",
+  "category": "urban",
+  "desc": "Shop entrance noren: 1.8 m rod, 4 indigo panels (0.42 x 0.9 m) らーめん",
+  "origin": "wall plane under the rod centre, at rod height (~2.0 m)",
+  "front": "Unity +Z",
+  "file": "noren_curtain.fbx",
+  "tris": 1504,
+  "verts": 924,
+  "size_m": [
+   1.9,
+   0.934,
+   0.114
+  ],
+  "unity_bbox_min": [
+   -0.95,
+   -0.9,
+   -0.0
+  ],
+  "unity_bbox_max": [
+   0.95,
+   0.034,
+   0.114
+  ],
+  "materials": [
+   "M_Wood",
+   "M_Wood_Dark",
+   "M_PaintedMetal_Black",
+   "M_Deco_Noren"
+  ],
+  "empties": {},
+  "notes": [
+   "M_Deco_Noren UV: planar 0-1 over the whole curtain (u right, v up, from the front); swap texture for other shop names."
+  ],
+  "textures": [
+   "prop_noren_albedo.png"
+  ]
+ },
+ "pedestrian_railing_2m_bars_green": {
+  "name": "pedestrian_railing_2m_bars_green",
+  "category": "urban",
+  "desc": "Tokyo sidewalk pedestrian railing, bars style, green, 2 m tile (post at X=0)",
+  "origin": "ground at the start post (Unity X=0); tile spans Unity X 0..2",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_2m_bars_green.fbx",
+  "tris": 570,
+  "verts": 433,
+  "size_m": [
+   2.042,
+   0.895,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   2.0,
+   0.895,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_Green"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile has its post at X=0 only; finish a run with pedestrian_railing_endpost_<colour> at X=2N."
+  ],
+  "textures": []
+ },
+ "pedestrian_railing_2m_bars_white": {
+  "name": "pedestrian_railing_2m_bars_white",
+  "category": "urban",
+  "desc": "Tokyo sidewalk pedestrian railing, bars style, white, 2 m tile (post at X=0)",
+  "origin": "ground at the start post (Unity X=0); tile spans Unity X 0..2",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_2m_bars_white.fbx",
+  "tris": 570,
+  "verts": 433,
+  "size_m": [
+   2.042,
+   0.895,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   2.0,
+   0.895,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile has its post at X=0 only; finish a run with pedestrian_railing_endpost_<colour> at X=2N."
+  ],
+  "textures": []
+ },
+ "pedestrian_railing_2m_pipe_green": {
+  "name": "pedestrian_railing_2m_pipe_green",
+  "category": "urban",
+  "desc": "Tokyo sidewalk pedestrian railing, pipe style, green, 2 m tile (post at X=0)",
+  "origin": "ground at the start post (Unity X=0); tile spans Unity X 0..2",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_2m_pipe_green.fbx",
+  "tris": 642,
+  "verts": 373,
+  "size_m": [
+   2.042,
+   0.835,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   2.0,
+   0.835,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_Green"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile has its post at X=0 only; finish a run with pedestrian_railing_endpost_<colour> at X=2N."
+  ],
+  "textures": []
+ },
+ "pedestrian_railing_2m_pipe_white": {
+  "name": "pedestrian_railing_2m_pipe_white",
+  "category": "urban",
+  "desc": "Tokyo sidewalk pedestrian railing, pipe style, white, 2 m tile (post at X=0)",
+  "origin": "ground at the start post (Unity X=0); tile spans Unity X 0..2",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_2m_pipe_white.fbx",
+  "tris": 642,
+  "verts": 373,
+  "size_m": [
+   2.042,
+   0.835,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   2.0,
+   0.835,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile has its post at X=0 only; finish a run with pedestrian_railing_endpost_<colour> at X=2N."
+  ],
+  "textures": []
+ },
+ "pedestrian_railing_endpost_green": {
+  "name": "pedestrian_railing_endpost_green",
+  "category": "urban",
+  "desc": "End post closing a pedestrian railing run (green)",
+  "origin": "ground, post centre",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_endpost_green.fbx",
+  "tris": 162,
+  "verts": 97,
+  "size_m": [
+   0.085,
+   0.895,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   0.042,
+   0.895,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_Green"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "pedestrian_railing_endpost_white": {
+  "name": "pedestrian_railing_endpost_white",
+  "category": "urban",
+  "desc": "End post closing a pedestrian railing run (white)",
+  "origin": "ground, post centre",
+  "front": "Unity +Z",
+  "file": "pedestrian_railing_endpost_white.fbx",
+  "tris": 162,
+  "verts": 97,
+  "size_m": [
+   0.085,
+   0.895,
+   0.085
+  ],
+  "unity_bbox_min": [
+   -0.042,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   0.042,
+   0.895,
+   0.042
+  ],
+  "materials": [
+   "M_PaintedMetal_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "post_box_round": {
+  "name": "post_box_round",
+  "category": "urban",
+  "desc": "Classic Japanese round red post box (丸型ポスト), 1.36 m",
+  "origin": "ground, centre",
+  "front": "Unity +Z",
+  "file": "post_box_round.fbx",
+  "tris": 1270,
+  "verts": 699,
+  "size_m": [
+   0.5,
+   1.367,
+   0.5
+  ],
+  "unity_bbox_min": [
+   -0.25,
+   0.0,
+   -0.25
+  ],
+  "unity_bbox_max": [
+   0.25,
+   1.367,
+   0.25
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_Red",
+   "M_PlasticBlack",
+   "M_Chrome",
+   "M_Deco_PostLabel"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_postbox_label_albedo.png"
+  ]
+ },
+ "post_box_square": {
+  "name": "post_box_square",
+  "category": "urban",
+  "desc": "Modern Japanese square red post box on a pedestal, two slots",
+  "origin": "ground, centre",
+  "front": "Unity +Z",
+  "file": "post_box_square.fbx",
+  "tris": 1178,
+  "verts": 624,
+  "size_m": [
+   0.66,
+   1.31,
+   0.48
+  ],
+  "unity_bbox_min": [
+   -0.33,
+   0.0,
+   -0.23
+  ],
+  "unity_bbox_max": [
+   0.33,
+   1.31,
+   0.25
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PaintedMetal_Red",
+   "M_PlasticBlack",
+   "M_Deco_PostLabel",
+   "M_Chrome"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_postbox_label_albedo.png"
+  ]
+ },
+ "post_cone": {
+  "name": "post_cone",
+  "category": "urban",
+  "desc": "Japanese flexible delineator post (ポストコーン), 80 mm x 0.8 m, orange/white",
+  "origin": "ground, post centre",
+  "front": "Unity +Z",
+  "file": "post_cone.fbx",
+  "tris": 556,
+  "verts": 370,
+  "size_m": [
+   0.3,
+   0.8,
+   0.3
+  ],
+  "unity_bbox_min": [
+   -0.15,
+   0.0,
+   -0.15
+  ],
+  "unity_bbox_max": [
+   0.15,
+   0.8,
+   0.15
+  ],
+  "materials": [
+   "M_PlasticBlack",
+   "M_Galvanized",
+   "M_PlasticOrange",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "road_sign_post_diamond": {
+  "name": "road_sign_post_diamond",
+  "category": "urban",
+  "desc": "Warning sign (diamond, 0.45 m side), blank M_SignFace",
+  "origin": "ground, post centre",
+  "front": "sign faces Unity +Z",
+  "file": "road_sign_post_diamond.fbx",
+  "tris": 830,
+  "verts": 461,
+  "size_m": [
+   0.614,
+   2.952,
+   0.166
+  ],
+  "unity_bbox_min": [
+   -0.307,
+   -0.02,
+   -0.075
+  ],
+  "unity_bbox_max": [
+   0.307,
+   2.932,
+   0.091
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Concrete",
+   "M_Aluminum",
+   "M_SignFace"
+  ],
+  "empties": {},
+  "notes": [
+   "M_SignFace UV 0-1 = bounding square 0.636 x 0.636."
+  ],
+  "textures": []
+ },
+ "road_sign_post_rect": {
+  "name": "road_sign_post_rect",
+  "category": "urban",
+  "desc": "Rectangular sign panel 0.9 x 0.6 m, blank M_SignFace",
+  "origin": "ground, post centre",
+  "front": "sign faces Unity +Z",
+  "file": "road_sign_post_rect.fbx",
+  "tris": 814,
+  "verts": 449,
+  "size_m": [
+   0.9,
+   3.002,
+   0.166
+  ],
+  "unity_bbox_min": [
+   -0.45,
+   -0.02,
+   -0.075
+  ],
+  "unity_bbox_max": [
+   0.45,
+   2.982,
+   0.091
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Concrete",
+   "M_Aluminum",
+   "M_SignFace"
+  ],
+  "empties": {},
+  "notes": [
+   "M_SignFace UV 0-1 over 0.90 x 0.60 (3:2)."
+  ],
+  "textures": []
+ },
+ "road_sign_post_round": {
+  "name": "road_sign_post_round",
+  "category": "urban",
+  "desc": "Round regulatory sign Φ0.6 m (blank, M_SignFace) + auxiliary plate 0.6 x 0.25 (M_SignFace_Aux) on a Φ60.5 galvanized post",
+  "origin": "ground, post centre",
+  "front": "sign faces Unity +Z",
+  "file": "road_sign_post_round.fbx",
+  "tris": 1230,
+  "verts": 697,
+  "size_m": [
+   0.6,
+   3.002,
+   0.166
+  ],
+  "unity_bbox_min": [
+   -0.3,
+   -0.02,
+   -0.075
+  ],
+  "unity_bbox_max": [
+   0.3,
+   2.982,
+   0.091
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Concrete",
+   "M_Aluminum",
+   "M_SignFace",
+   "M_SignFace_Aux"
+  ],
+  "empties": {},
+  "notes": [
+   "M_SignFace UV 0-1 = bounding square of the disc (1:1). M_SignFace_Aux UV 0-1 over the 0.60 x 0.25 plate (2.4:1)."
+  ],
+  "textures": []
+ },
+ "road_sign_post_triangle": {
+  "name": "road_sign_post_triangle",
+  "category": "urban",
+  "desc": "Inverted triangle sign (止まれ type), side 0.8 m, blank M_SignFace",
+  "origin": "ground, post centre",
+  "front": "sign faces Unity +Z",
+  "file": "road_sign_post_triangle.fbx",
+  "tris": 814,
+  "verts": 449,
+  "size_m": [
+   0.748,
+   3.032,
+   0.166
+  ],
+  "unity_bbox_min": [
+   -0.374,
+   -0.02,
+   -0.075
+  ],
+  "unity_bbox_max": [
+   0.374,
+   3.012,
+   0.091
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Concrete",
+   "M_Aluminum",
+   "M_SignFace"
+  ],
+  "empties": {},
+  "notes": [
+   "M_SignFace UV 0-1 = bounding box 0.80 x 0.69 (point down)."
+  ],
+  "textures": []
+ },
+ "rooftop_billboard_frame": {
+  "name": "rooftop_billboard_frame",
+  "category": "urban",
+  "desc": "Rooftop advertising tower (屋上広告塔): 10 x 5 m board on raking steel lattice, catwalk + floodlights",
+  "origin": "roof surface, centre of the board foot line",
+  "front": "board face = Unity +Z",
+  "file": "rooftop_billboard_frame.fbx",
+  "tris": 4038,
+  "verts": 2248,
+  "size_m": [
+   10.2,
+   8.02,
+   4.896
+  ],
+  "unity_bbox_min": [
+   -5.1,
+   0.0,
+   -3.445
+  ],
+  "unity_bbox_max": [
+   5.1,
+   8.02,
+   1.451
+  ],
+  "materials": [
+   "M_PaintedMetal_Gray",
+   "M_Concrete",
+   "M_BillboardFace",
+   "M_Galvanized",
+   "M_PaintedMetal_DarkGray",
+   "M_EmissiveLamp"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    4.0,
+    6.96,
+    1.24
+   ],
+   "LightAnchor_1": [
+    2.0,
+    6.96,
+    1.24
+   ],
+   "LightAnchor_2": [
+    -0.0,
+    6.96,
+    1.24
+   ],
+   "LightAnchor_3": [
+    -2.0,
+    6.96,
+    1.24
+   ],
+   "LightAnchor_4": [
+    -4.0,
+    6.96,
+    1.24
+   ]
+  },
+  "notes": [
+   "M_BillboardFace: one quad 10 x 5 m, UV 0-1 (2:1, u right, v up). LightAnchor_0..4 = floodlight emitters (aim spot lights toward Unity -Z and down at the face)."
+  ],
+  "textures": []
+ },
+ "rooftop_water_tank": {
+  "name": "rooftop_water_tank",
+  "category": "urban",
+  "desc": "FRP sectional panel water tank (受水槽) 3 x 2 x 2 m on steel base",
+  "origin": "roof surface, footprint centre",
+  "front": "Unity +Z",
+  "file": "rooftop_water_tank.fbx",
+  "tris": 3104,
+  "verts": 1738,
+  "size_m": [
+   3.72,
+   3.167,
+   2.702
+  ],
+  "unity_bbox_min": [
+   -2.01,
+   0.0,
+   -1.485
+  ],
+  "unity_bbox_max": [
+   1.71,
+   3.167,
+   1.217
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_FRP_Tank",
+   "M_Chrome",
+   "M_PlasticGray",
+   "M_PlasticWhite",
+   "M_PaintedMetal_Blue",
+   "M_Concrete"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "saisen_box": {
+  "name": "saisen_box",
+  "category": "urban",
+  "desc": "Wooden offering box (賽銭箱) 0.94 x 0.58 x 0.6 m, slatted top, brass corner fittings, 賽銭 front plate",
+  "origin": "ground, box centre",
+  "front": "front plate faces Unity +Z",
+  "file": "saisen_box.fbx",
+  "tris": 1354,
+  "verts": 750,
+  "size_m": [
+   0.94,
+   0.6,
+   0.58
+  ],
+  "unity_bbox_min": [
+   -0.47,
+   0.0,
+   -0.29
+  ],
+  "unity_bbox_max": [
+   0.47,
+   0.6,
+   0.29
+  ],
+  "materials": [
+   "M_Wood_Dark",
+   "M_PlasticBlack",
+   "M_Wood",
+   "M_Deco_Saisen",
+   "M_Brass"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_saisen_albedo.png"
+  ]
+ },
+ "shop_awning_dome": {
+  "name": "shop_awning_dome",
+  "category": "urban",
+  "desc": "Quarter-round (R-type) canvas shop awning 2.5 m wide, 0.9 m projection, green/white stripes",
+  "origin": "wall plane, top-centre attach line (mount ~2.8 m above pavement)",
+  "front": "projects to Unity +Z",
+  "file": "shop_awning_dome.fbx",
+  "tris": 1172,
+  "verts": 634,
+  "size_m": [
+   2.5,
+   1.1,
+   0.905
+  ],
+  "unity_bbox_min": [
+   -1.25,
+   -1.08,
+   -0.001
+  ],
+  "unity_bbox_max": [
+   1.25,
+   0.02,
+   0.904
+  ],
+  "materials": [
+   "M_Deco_AwningGreenWhite",
+   "M_PaintedMetal_DarkGray"
+  ],
+  "empties": {},
+  "notes": [
+   "Stripe texture repeats every 0.5 m across the width (UV.box s=0.5, tileable)."
+  ],
+  "textures": [
+   "prop_awning_greenwhite_albedo.png"
+  ]
+ },
+ "shop_awning_flat": {
+  "name": "shop_awning_flat",
+  "category": "urban",
+  "desc": "Fixed sloped canvas shop awning 3.0 x 1.2 m with valance + side wings, red/white stripes",
+  "origin": "wall plane, top-centre attach line (mount ~2.6 m above pavement)",
+  "front": "projects to Unity +Z",
+  "file": "shop_awning_flat.fbx",
+  "tris": 560,
+  "verts": 308,
+  "size_m": [
+   3.0,
+   0.82,
+   1.211
+  ],
+  "unity_bbox_min": [
+   -1.5,
+   -0.8,
+   -0.003
+  ],
+  "unity_bbox_max": [
+   1.5,
+   0.02,
+   1.208
+  ],
+  "materials": [
+   "M_Deco_AwningRedWhite",
+   "M_PaintedMetal_DarkGray"
+  ],
+  "empties": {},
+  "notes": [
+   "Stripe texture repeats every 0.5 m across the width (UV.box s=0.5, tileable)."
+  ],
+  "textures": [
+   "prop_awning_redwhite_albedo.png"
+  ]
+ },
+ "shotengai_lamp": {
+  "name": "shotengai_lamp",
+  "category": "urban",
+  "desc": "Shopping-street (商店街) lamp post ~5 m: globe lantern on top, two banner arms reaching over the kerb with a double-sided vertical banner (M_BannerFace, 0-1 UV each side, 0.45 x 1.2 m)",
+  "origin": "ground, pole centre",
+  "front": "banner arms reach toward the road (Unity +Z); banner faces Unity +-X",
+  "file": "shotengai_lamp.fbx",
+  "tris": 1312,
+  "verts": 696,
+  "size_m": [
+   0.42,
+   5.26,
+   0.863
+  ],
+  "unity_bbox_min": [
+   -0.21,
+   0.0,
+   -0.21
+  ],
+  "unity_bbox_max": [
+   0.21,
+   5.26,
+   0.653
+  ],
+  "materials": [
+   "M_PaintedMetal_DarkGray",
+   "M_EmissiveLamp",
+   "M_BannerFace"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    4.85,
+    -0.0
+   ]
+  },
+  "notes": [
+   "Banner: two back-to-back quads on M_BannerFace, each 0-1 UV seen from its own side (aspect 0.48:1.17)."
+  ],
+  "textures": []
+ },
+ "sidewalk_transformer_box": {
+  "name": "sidewalk_transformer_box",
+  "category": "urban",
+  "desc": "Ground-mounted power distribution box (地上機器) on Tokyo pavements, 1.4 x 0.5 x 1.4 m",
+  "origin": "ground, footprint centre",
+  "front": "Unity +Z",
+  "file": "sidewalk_transformer_box.fbx",
+  "tris": 2242,
+  "verts": 1252,
+  "size_m": [
+   1.52,
+   1.474,
+   0.62
+  ],
+  "unity_bbox_min": [
+   -0.76,
+   0.0,
+   -0.31
+  ],
+  "unity_bbox_max": [
+   0.76,
+   1.474,
+   0.31
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_GrayGreen",
+   "M_PaintedMetal_DarkGray",
+   "M_Chrome",
+   "M_Deco_HVWarning",
+   "M_Galvanized"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_hv_warning_albedo.png"
+  ]
+ },
+ "street_lamp_classic": {
+  "name": "street_lamp_classic",
+  "category": "urban",
+  "desc": "Classic Japanese bend-arm road light (ベンド形), galvanized tapered pole ~9 m, box luminaire with sodium bowl, base cover",
+  "origin": "ground, pole centre",
+  "front": "arm reaches toward the road, Unity +Z",
+  "file": "street_lamp_classic.fbx",
+  "tris": 948,
+  "verts": 484,
+  "size_m": [
+   0.34,
+   8.995,
+   2.87
+  ],
+  "unity_bbox_min": [
+   -0.17,
+   0.0,
+   -0.166
+  ],
+  "unity_bbox_max": [
+   0.17,
+   8.995,
+   2.705
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Aluminum",
+   "M_EmissiveLamp_Sodium"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    8.75,
+    2.307
+   ]
+  },
+  "notes": [
+   "LightAnchor_0 = centre of the lamp bowl; aim a spot light straight down (-Y Unity)."
+  ],
+  "textures": []
+ },
+ "street_lamp_led": {
+  "name": "street_lamp_led",
+  "category": "urban",
+  "desc": "Modern Japanese LED road light: slim tapered pole ~8 m, tight bend into a short rising arm, flat LED luminaire",
+  "origin": "ground, pole centre",
+  "front": "arm reaches toward the road, Unity +Z",
+  "file": "street_lamp_led.fbx",
+  "tris": 664,
+  "verts": 342,
+  "size_m": [
+   0.3,
+   8.24,
+   2.011
+  ],
+  "unity_bbox_min": [
+   -0.15,
+   0.0,
+   -0.127
+  ],
+  "unity_bbox_max": [
+   0.15,
+   8.24,
+   1.884
+  ],
+  "materials": [
+   "M_PaintedMetal_DarkGray",
+   "M_EmissiveLamp_LED"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    8.09,
+    1.579
+   ]
+  },
+  "notes": [
+   "LightAnchor_0 = LED panel centre; aim a spot light straight down."
+  ],
+  "textures": []
+ },
+ "torii_stone": {
+  "name": "torii_stone",
+  "category": "urban",
+  "desc": "Stone myōjin torii, 4.0 m to the kasagi top, inner span 2.6 m, plaque 山神社, shimenawa + shide",
+  "origin": "ground, centre between the pillars",
+  "front": "plaque faces Unity +Z (approach side)",
+  "file": "torii_stone.fbx",
+  "tris": 2510,
+  "verts": 1372,
+  "size_m": [
+   4.596,
+   4.164,
+   0.62
+  ],
+  "unity_bbox_min": [
+   -2.298,
+   0.0,
+   -0.31
+  ],
+  "unity_bbox_max": [
+   2.298,
+   4.164,
+   0.31
+  ],
+  "materials": [
+   "M_Stone",
+   "M_Stone_Dark",
+   "M_Deco_ShrinePlaque",
+   "M_Rope",
+   "M_Paper"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_shrine_plaque_albedo.png"
+  ]
+ },
+ "toro_stone_lantern": {
+  "name": "toro_stone_lantern",
+  "category": "urban",
+  "desc": "Kasuga-style stone lantern (春日灯籠) 2.0 m: hex base, round pole, chūdai, hibukuro, curled roof, hōju",
+  "origin": "ground, lantern axis",
+  "front": "fire-box openings face Unity ±Z",
+  "file": "toro_stone_lantern.fbx",
+  "tris": 3208,
+  "verts": 1694,
+  "size_m": [
+   1.057,
+   2.0,
+   0.92
+  ],
+  "unity_bbox_min": [
+   -0.529,
+   0.0,
+   -0.46
+  ],
+  "unity_bbox_max": [
+   0.529,
+   2.0,
+   0.46
+  ],
+  "materials": [
+   "M_Stone",
+   "M_Stone_Dark"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "traffic_cone": {
+  "name": "traffic_cone",
+  "category": "urban",
+  "desc": "Japanese 700 mm traffic cone, red with white reflective bands",
+  "origin": "ground contact",
+  "front": "Unity +Z",
+  "file": "traffic_cone.fbx",
+  "tris": 656,
+  "verts": 441,
+  "size_m": [
+   0.38,
+   0.706,
+   0.38
+  ],
+  "unity_bbox_min": [
+   -0.19,
+   0.0,
+   -0.19
+  ],
+  "unity_bbox_max": [
+   0.19,
+   0.706,
+   0.19
+  ],
+  "materials": [
+   "M_PlasticRed",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "traffic_signal_pedestrian": {
+  "name": "traffic_signal_pedestrian",
+  "category": "urban",
+  "desc": "Japanese pedestrian signal: 3.6 m post, two stacked lamp boxes (red standing figure over green walking figure) with hoods, yellow push-button box",
+  "origin": "ground, pole centre",
+  "front": "lamps face Unity +Z",
+  "file": "traffic_signal_pedestrian.fbx",
+  "tris": 2140,
+  "verts": 1133,
+  "size_m": [
+   0.366,
+   3.675,
+   0.646
+  ],
+  "unity_bbox_min": [
+   -0.183,
+   -0.02,
+   -0.156
+  ],
+  "unity_bbox_max": [
+   0.183,
+   3.655,
+   0.49
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Concrete",
+   "M_PaintedMetal_LightGray",
+   "M_PlasticBlack",
+   "M_EmissiveSignal_PedRed",
+   "M_EmissiveSignal_PedGreen",
+   "M_PaintedMetal_Yellow",
+   "M_Deco_PedButton",
+   "M_PlasticWhite"
+  ],
+  "empties": {
+   "Lamp_PedRed": [
+    -0.0,
+    3.03,
+    0.36
+   ],
+   "Lamp_PedGreen": [
+    -0.0,
+    2.63,
+    0.36
+   ]
+  },
+  "notes": [
+   "Lamp faces use M_EmissiveSignal_PedRed / M_EmissiveSignal_PedGreen, both sampling the atlas prop_ped_signal_albedo.png (left half red standing, right half green walking)."
+  ],
+  "textures": [
+   "prop_ped_button_albedo.png",
+   "prop_ped_signal_albedo.png"
+  ]
+ },
+ "traffic_signal_vehicle": {
+  "name": "traffic_signal_vehicle",
+  "category": "urban",
+  "desc": "Japanese overhead vehicle signal: tapered steel pole, 5 m cantilever arm, horizontal 3-lamp head (green-yellow-red left to right as seen by the driver) with visors, intersection name plate",
+  "origin": "ground, pole centre",
+  "front": "lamps face Unity +Z (toward approaching traffic); arm reaches Unity -X (Blender +X) over the road",
+  "file": "traffic_signal_vehicle.fbx",
+  "tris": 3314,
+  "verts": 1753,
+  "size_m": [
+   5.515,
+   7.1,
+   0.615
+  ],
+  "unity_bbox_min": [
+   -5.275,
+   -0.02,
+   -0.24
+  ],
+  "unity_bbox_max": [
+   0.24,
+   7.08,
+   0.375
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Concrete",
+   "M_PaintedMetal_LightGray",
+   "M_PlasticBlack",
+   "M_EmissiveSignal_Green",
+   "M_EmissiveSignal_Yellow",
+   "M_EmissiveSignal_Red",
+   "M_Deco_StreetName"
+  ],
+  "empties": {
+   "Lamp_Green": [
+    -4.145,
+    5.3,
+    0.165
+   ],
+   "Lamp_Yellow": [
+    -4.55,
+    5.3,
+    0.165
+   ],
+   "Lamp_Red": [
+    -4.955,
+    5.3,
+    0.165
+   ]
+  },
+  "notes": [
+   "Each lamp has its own emissive material slot (M_EmissiveSignal_Green/Yellow/Red) so the game can switch lamps by swapping materials; empties Lamp_Green/Yellow/Red sit just in front of each lens. Name plate uses M_Deco_StreetName (0-1 UV, 2:1)."
+  ],
+  "textures": [
+   "prop_street_name_albedo.png"
+  ]
+ },
+ "utility_pole_plain": {
+  "name": "utility_pole_plain",
+  "category": "urban",
+  "desc": "Japanese concrete distribution pole, 12 m above ground",
+  "origin": "ground, pole centre",
+  "front": "road side = Unity +Z; wires run along Unity X",
+  "file": "utility_pole_plain.fbx",
+  "tris": 3060,
+  "verts": 1702,
+  "size_m": [
+   0.9,
+   12.08,
+   1.8
+  ],
+  "unity_bbox_min": [
+   -0.45,
+   0.0,
+   -0.9
+  ],
+  "unity_bbox_max": [
+   0.45,
+   12.08,
+   0.9
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Concrete_Dark",
+   "M_Deco_HazardStripe",
+   "M_PlasticBlack",
+   "M_Deco_PoleAd",
+   "M_Galvanized",
+   "M_Porcelain",
+   "M_PlasticWhite"
+  ],
+  "empties": {
+   "WireAnchor_0": [
+    -0.161,
+    11.733,
+    0.72
+   ],
+   "WireAnchor_1": [
+    -0.161,
+    11.733,
+    0.26
+   ],
+   "WireAnchor_2": [
+    -0.161,
+    11.733,
+    -0.72
+   ],
+   "WireAnchor_3": [
+    -0.0,
+    8.45,
+    0.301
+   ],
+   "WireAnchor_4": [
+    -0.0,
+    8.15,
+    0.301
+   ],
+   "WireAnchor_5": [
+    -0.0,
+    7.85,
+    0.301
+   ],
+   "WireAnchor_6": [
+    -0.0,
+    6.2,
+    -0.374
+   ]
+  },
+  "notes": [
+   "WireAnchor_0..2 = 6.6 kV phases (pin insulators, ~11.73 m), 3..5 = low-voltage spools (8.45/8.15/7.85 m, road side), 6 = telecom messenger (6.2 m, back side). Same indices on both variants; string catenaries between equal indices of neighbouring poles along Unity X."
+  ],
+  "textures": [
+   "prop_hazard_stripe_albedo.png",
+   "prop_pole_ad_albedo.png"
+  ]
+ },
+ "utility_pole_transformer": {
+  "name": "utility_pole_transformer",
+  "category": "urban",
+  "desc": "Japanese concrete distribution pole, 12 m above ground, pole-top transformer",
+  "origin": "ground, pole centre",
+  "front": "road side = Unity +Z; wires run along Unity X",
+  "file": "utility_pole_transformer.fbx",
+  "tris": 4876,
+  "verts": 2664,
+  "size_m": [
+   0.9,
+   12.08,
+   1.8
+  ],
+  "unity_bbox_min": [
+   -0.45,
+   0.0,
+   -0.9
+  ],
+  "unity_bbox_max": [
+   0.45,
+   12.08,
+   0.9
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Concrete_Dark",
+   "M_Deco_HazardStripe",
+   "M_PlasticBlack",
+   "M_Deco_PoleAd",
+   "M_Galvanized",
+   "M_Porcelain",
+   "M_PaintedMetal_LightGray",
+   "M_Cable",
+   "M_PlasticWhite"
+  ],
+  "empties": {
+   "WireAnchor_0": [
+    -0.161,
+    11.733,
+    0.72
+   ],
+   "WireAnchor_1": [
+    -0.161,
+    11.733,
+    0.26
+   ],
+   "WireAnchor_2": [
+    -0.161,
+    11.733,
+    -0.72
+   ],
+   "WireAnchor_3": [
+    -0.0,
+    8.45,
+    0.301
+   ],
+   "WireAnchor_4": [
+    -0.0,
+    8.15,
+    0.301
+   ],
+   "WireAnchor_5": [
+    -0.0,
+    7.85,
+    0.301
+   ],
+   "WireAnchor_6": [
+    -0.0,
+    6.2,
+    -0.374
+   ]
+  },
+  "notes": [
+   "WireAnchor_0..2 = 6.6 kV phases (pin insulators, ~11.73 m), 3..5 = low-voltage spools (8.45/8.15/7.85 m, road side), 6 = telecom messenger (6.2 m, back side). Same indices on both variants; string catenaries between equal indices of neighbouring poles along Unity X."
+  ],
+  "textures": [
+   "prop_hazard_stripe_albedo.png",
+   "prop_pole_ad_albedo.png"
+  ]
+ },
+ "vending_machine_large": {
+  "name": "vending_machine_large",
+  "category": "urban",
+  "desc": "Japanese drink vending machine 1.2 x 0.73 x 1.83 m; front face on M_VendingFront (0-1 UV)",
+  "origin": "ground, footprint centre",
+  "front": "vending face = Unity +Z",
+  "file": "vending_machine_large.fbx",
+  "tris": 2662,
+  "verts": 1404,
+  "size_m": [
+   1.224,
+   1.83,
+   0.794
+  ],
+  "unity_bbox_min": [
+   -0.612,
+   0.0,
+   -0.365
+  ],
+  "unity_bbox_max": [
+   0.612,
+   1.83,
+   0.429
+  ],
+  "materials": [
+   "M_PlasticBlack",
+   "M_Rubber",
+   "M_VendingBody",
+   "M_PaintedMetal_DarkGray",
+   "M_VendingFront",
+   "M_PlasticWhite",
+   "M_PlasticGray",
+   "M_Aluminum",
+   "M_Glass"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    1.2,
+    0.715
+   ]
+  },
+  "notes": [
+   "M_VendingFront: single quad, UV 0-1 = whole recessed face (u right, v up seen from the front, 1.12 x 1.56 m, aspect 0.718). 3D modules sit over the face: retrieval bin u 0.12-0.88 v 0.02-0.17; coin-return cup u 0.82-0.95 v 0.21-0.28; money panel u 0.81-0.96 v 0.45-0.63. LightAnchor_0: optional light 0.35 m in front of the face."
+  ],
+  "textures": []
+ },
+ "vending_machine_slim": {
+  "name": "vending_machine_slim",
+  "category": "urban",
+  "desc": "Japanese drink vending machine 0.8 x 0.73 x 1.83 m; front face on M_VendingFront (0-1 UV)",
+  "origin": "ground, footprint centre",
+  "front": "vending face = Unity +Z",
+  "file": "vending_machine_slim.fbx",
+  "tris": 2662,
+  "verts": 1404,
+  "size_m": [
+   0.824,
+   1.83,
+   0.794
+  ],
+  "unity_bbox_min": [
+   -0.412,
+   0.0,
+   -0.365
+  ],
+  "unity_bbox_max": [
+   0.412,
+   1.83,
+   0.429
+  ],
+  "materials": [
+   "M_PlasticBlack",
+   "M_Rubber",
+   "M_VendingBody",
+   "M_PaintedMetal_DarkGray",
+   "M_VendingFront",
+   "M_PlasticWhite",
+   "M_PlasticGray",
+   "M_Aluminum",
+   "M_Glass"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    1.2,
+    0.715
+   ]
+  },
+  "notes": [
+   "M_VendingFront: single quad, UV 0-1 = whole recessed face (u right, v up seen from the front, 0.72 x 1.56 m, aspect 0.462). 3D modules sit over the face: retrieval bin u 0.11-0.89 v 0.02-0.17; coin-return cup u 0.72-0.92 v 0.21-0.28; money panel u 0.71-0.94 v 0.45-0.63. LightAnchor_0: optional light 0.35 m in front of the face."
+  ],
+  "textures": []
+ },
+ "vending_recycle_bin": {
+  "name": "vending_recycle_bin",
+  "category": "urban",
+  "desc": "Can/PET bottle recycle box placed beside vending machines",
+  "origin": "ground, footprint centre",
+  "front": "Unity +Z",
+  "file": "vending_recycle_bin.fbx",
+  "tris": 1078,
+  "verts": 556,
+  "size_m": [
+   0.504,
+   0.85,
+   0.411
+  ],
+  "unity_bbox_min": [
+   -0.252,
+   0.0,
+   -0.202
+  ],
+  "unity_bbox_max": [
+   0.252,
+   0.85,
+   0.209
+  ],
+  "materials": [
+   "M_PlasticGray",
+   "M_PlasticBlue",
+   "M_PlasticWhite",
+   "M_PlasticBlack",
+   "M_Deco_RecycleLabel"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_recycle_label_albedo.png"
+  ]
+ },
+ "crash_cushion": {
+  "name": "crash_cushion",
+  "category": "expressway",
+  "desc": "Gore-point crash cushion (impact attenuator), 4.6 m, overlapping steel fender bays, striped nose",
+  "origin": "ground under the rear backstop centre",
+  "front": "nose faces oncoming traffic, Unity +Z",
+  "file": "crash_cushion.fbx",
+  "tris": 3902,
+  "verts": 2135,
+  "size_m": [
+   1.1,
+   0.92,
+   4.962
+  ],
+  "unity_bbox_min": [
+   -0.55,
+   0.0,
+   -0.4
+  ],
+  "unity_bbox_max": [
+   0.55,
+   0.92,
+   4.562
+  ],
+  "materials": [
+   "M_Steel_Dark",
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_PlasticYellow",
+   "M_Deco_HazardStripe"
+  ],
+  "empties": {},
+  "notes": [
+   "Nose (yellow/black M_Deco_HazardStripe) at Unity Z ~ +4.5; backstop at origin. Place in gore areas with the nose toward approaching traffic."
+  ],
+  "textures": [
+   "prop_hazard_stripe_albedo.png"
+  ]
+ },
+ "emergency_phone_box": {
+  "name": "emergency_phone_box",
+  "category": "expressway",
+  "desc": "Expressway emergency telephone (非常電話) cabinet on a pedestal with a green sign plate",
+  "origin": "ground, pedestal centre",
+  "front": "door + sign face Unity +Z",
+  "file": "emergency_phone_box.fbx",
+  "tris": 454,
+  "verts": 252,
+  "size_m": [
+   0.6,
+   1.77,
+   0.37
+  ],
+  "unity_bbox_min": [
+   -0.3,
+   0.0,
+   -0.17
+  ],
+  "unity_bbox_max": [
+   0.3,
+   1.77,
+   0.2
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PaintedMetal_LightGray",
+   "M_PaintedMetal_Ivory",
+   "M_PaintedMetal_Orange",
+   "M_Chrome",
+   "M_Glass",
+   "M_PlasticWhite",
+   "M_Aluminum",
+   "M_Deco_EmergencyPhone"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_emergency_phone_albedo.png"
+  ]
+ },
+ "jersey_barrier_2m": {
+  "name": "jersey_barrier_2m",
+  "category": "expressway",
+  "desc": "Precast concrete New Jersey barrier, 2 m tile (810 tall, 610 base, 150 top)",
+  "origin": "ground, barrier centre line, tile start (Unity X=0); tile spans Unity X 0..2",
+  "front": "Unity +Z",
+  "file": "jersey_barrier_2m.fbx",
+  "tris": 920,
+  "verts": 480,
+  "size_m": [
+   2.143,
+   0.812,
+   0.612
+  ],
+  "unity_bbox_min": [
+   -0.071,
+   0.0,
+   -0.306
+  ],
+  "unity_bbox_max": [
+   2.071,
+   0.812,
+   0.306
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Steel_Dark",
+   "M_Galvanized"
+  ],
+  "empties": {},
+  "notes": [
+   "Symmetric profile (either side can face traffic). Steel connector loops protrude ~7 cm past both ends and interleave with the neighbouring tile."
+  ],
+  "textures": []
+ },
+ "overhead_sign_gantry": {
+  "name": "overhead_sign_gantry",
+  "category": "expressway",
+  "desc": "Expressway portal sign gantry, 15 m span (3 lanes + shoulders), box truss, 8 x 2.8 m guide sign",
+  "origin": "ground at span centre",
+  "front": "sign face Unity +Z (traffic approaches heading Unity -Z); span along Unity X",
+  "file": "overhead_sign_gantry.fbx",
+  "tris": 4964,
+  "verts": 2772,
+  "size_m": [
+   16.1,
+   8.0,
+   1.938
+  ],
+  "unity_bbox_min": [
+   -8.05,
+   0.0,
+   -1.15
+  ],
+  "unity_bbox_max": [
+   8.05,
+   8.0,
+   0.788
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_Gray",
+   "M_Galvanized",
+   "M_Aluminum",
+   "M_SignFace",
+   "M_SignFace_Aux",
+   "M_PaintedMetal_LightGray",
+   "M_EmissiveLamp_LED"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    5.6,
+    5.22,
+    0.62
+   ],
+   "LightAnchor_1": [
+    3.6,
+    5.22,
+    0.62
+   ],
+   "LightAnchor_2": [
+    1.6,
+    5.22,
+    0.62
+   ],
+   "LightAnchor_3": [
+    -0.4,
+    5.22,
+    0.62
+   ]
+  },
+  "notes": [
+   "M_SignFace: main panel 8.0 x 2.8 m (bottom 5.2 m), 0-1 UV, texture aspect 2.86:1. M_SignFace_Aux: 3.2 x 2.0 m panel (aspect 1.6:1). LightAnchor_0..3 = sign-lighting fixtures aimed up at the face."
+  ],
+  "textures": []
+ },
+ "shuto_light_pole": {
+  "name": "shuto_light_pole",
+  "category": "expressway",
+  "desc": "Twin-arm (Y-type) expressway road light, ~10 m, sodium luminaires reaching over both carriageways",
+  "origin": "bottom of the base plate (mount on median/parapet top)",
+  "front": "arms reach Unity +Z and -Z",
+  "file": "shuto_light_pole.fbx",
+  "tris": 2744,
+  "verts": 1432,
+  "size_m": [
+   0.42,
+   9.97,
+   5.22
+  ],
+  "unity_bbox_min": [
+   -0.21,
+   0.0,
+   -2.61
+  ],
+  "unity_bbox_max": [
+   0.21,
+   9.97,
+   2.61
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PaintedMetal_LightGray",
+   "M_EmissiveLamp_Sodium"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    -0.0,
+    9.78,
+    2.22
+   ],
+   "LightAnchor_1": [
+    -0.0,
+    9.78,
+    -2.22
+   ]
+  },
+  "notes": [
+   "LightAnchor_0/1 at the sodium emitter centres (~9.78 m); aim spot lights straight down (-Unity Y)."
+  ],
+  "textures": []
+ },
+ "shuto_parapet_4m": {
+  "name": "shuto_parapet_4m",
+  "category": "expressway",
+  "desc": "Shuto concrete wall parapet (壁高欄) 1.1 m + 4 m translucent sound barrier on H-posts every 2 m",
+  "origin": "deck level at the traffic-face toe, tile start (Unity X=0); tile spans Unity X 0..4; wall body extends to Unity -Z (away from traffic)",
+  "front": "Unity +Z",
+  "file": "shuto_parapet_4m.fbx",
+  "tris": 1312,
+  "verts": 720,
+  "size_m": [
+   4.13,
+   3.983,
+   0.594
+  ],
+  "unity_bbox_min": [
+   -0.13,
+   0.0,
+   -0.45
+  ],
+  "unity_bbox_max": [
+   4.0,
+   3.983,
+   0.144
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Sealant",
+   "M_Steel_Dark",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_White",
+   "M_PaintedMetal_Gray",
+   "M_Aluminum",
+   "M_Glass_SoundBarrier"
+  ],
+  "empties": {},
+  "notes": [
+   "Sound barrier: aluminium louvre band 1.13-1.63 m, translucent panels to 3.35 m, inclined top section (35 deg toward traffic) to ~3.95 m; H-posts at Unity X=0 and 2.",
+   "Concrete wall: 1.10 m tall, base 0.45, top 0.25, F-shape traffic face; 2.4 cm sealant joint at tile ends."
+  ],
+  "textures": []
+ },
+ "shuto_parapet_4m_nobarrier": {
+  "name": "shuto_parapet_4m_nobarrier",
+  "category": "expressway",
+  "desc": "Shuto concrete wall parapet (壁高欄) 1.1 m",
+  "origin": "deck level at the traffic-face toe, tile start (Unity X=0); tile spans Unity X 0..4; wall body extends to Unity -Z (away from traffic)",
+  "front": "Unity +Z",
+  "file": "shuto_parapet_4m_nobarrier.fbx",
+  "tris": 636,
+  "verts": 336,
+  "size_m": [
+   4.0,
+   1.325,
+   0.454
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   0.0,
+   -0.45
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.325,
+   0.004
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Sealant",
+   "M_Steel_Dark",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Concrete wall: 1.10 m tall, base 0.45, top 0.25, F-shape traffic face; 2.4 cm sealant joint at tile ends."
+  ],
+  "textures": []
+ },
+ "shuto_pier": {
+  "name": "shuto_pier",
+  "category": "expressway",
+  "desc": "Shuto Expressway T-shaped RC pier: 2.4 x 3.0 m chamfered column, 16 m cap beam, top at 12.0 m",
+  "origin": "ground, column centre",
+  "front": "cap beam spans Unity Z (across the deck); deck runs along Unity X",
+  "file": "shuto_pier.fbx",
+  "tris": 3584,
+  "verts": 1904,
+  "size_m": [
+   3.6,
+   12.55,
+   16.0
+  ],
+  "unity_bbox_min": [
+   -1.8,
+   0.0,
+   -8.0
+  ],
+  "unity_bbox_max": [
+   1.8,
+   12.55,
+   8.0
+  ],
+  "materials": [
+   "M_Concrete_Dark",
+   "M_Concrete",
+   "M_Concrete_Light",
+   "M_Rubber",
+   "M_Steel_Dark",
+   "M_PaintedMetal_Gray",
+   "M_Galvanized",
+   "M_PlasticWhite"
+  ],
+  "empties": {},
+  "notes": [
+   "Top of cap beam at 12.0 m; bearing sole plates top at 12.34 m (girder seat). Cap spans Unity Z -8..8."
+  ],
+  "textures": []
+ },
+ "tunnel_lamp_strip_4m_led": {
+  "name": "tunnel_lamp_strip_4m_led",
+  "category": "expressway",
+  "desc": "Tunnel wall lighting tile, 4 m: cable raceway + 2 LED fixtures",
+  "origin": "wall plane at the raceway centre, tile start (Unity X=0); fixtures project toward Unity +Z",
+  "front": "light faces Unity +Z, tilted 30 deg down",
+  "file": "tunnel_lamp_strip_4m_led.fbx",
+  "tris": 616,
+  "verts": 336,
+  "size_m": [
+   4.0,
+   0.404,
+   0.259
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   -0.344,
+   -0.0
+  ],
+  "unity_bbox_max": [
+   4.0,
+   0.06,
+   0.259
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Aluminum",
+   "M_EmissiveLamp_LED",
+   "M_PlasticBlack"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    1.0,
+    -0.271,
+    0.223
+   ],
+   "LightAnchor_1": [
+    3.0,
+    -0.271,
+    0.223
+   ]
+  },
+  "notes": [
+   "Mount on the tunnel wall at ~4.5-5 m; LightAnchor_0/1 at emitter centres (fixtures at Unity X=1 and 3)."
+  ],
+  "textures": []
+ },
+ "tunnel_lamp_strip_4m_sodium": {
+  "name": "tunnel_lamp_strip_4m_sodium",
+  "category": "expressway",
+  "desc": "Tunnel wall lighting tile, 4 m: cable raceway + 2 sodium fixtures",
+  "origin": "wall plane at the raceway centre, tile start (Unity X=0); fixtures project toward Unity +Z",
+  "front": "light faces Unity +Z, tilted 30 deg down",
+  "file": "tunnel_lamp_strip_4m_sodium.fbx",
+  "tris": 736,
+  "verts": 416,
+  "size_m": [
+   4.0,
+   0.552,
+   0.38
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   -0.492,
+   -0.0
+  ],
+  "unity_bbox_max": [
+   4.0,
+   0.06,
+   0.38
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_Aluminum",
+   "M_EmissiveLamp_Sodium",
+   "M_PlasticBlack"
+  ],
+  "empties": {
+   "LightAnchor_0": [
+    1.0,
+    -0.376,
+    0.318
+   ],
+   "LightAnchor_1": [
+    3.0,
+    -0.376,
+    0.318
+   ]
+  },
+  "notes": [
+   "Mount on the tunnel wall at ~4.5-5 m; LightAnchor_0/1 at emitter centres (fixtures at Unity X=1 and 3)."
+  ],
+  "textures": []
+ },
+ "bridge_end_post": {
+  "name": "bridge_end_post",
+  "category": "mountain",
+  "desc": "親柱 bridge end pillar, granite 0.45 x 0.45, 1.25 m, cast bronze name plates (kanji 峠沢橋 faces Unity +Z, hiragana とうげさわばし faces Unity -X)",
+  "origin": "ground, pillar centre",
+  "front": "Unity +Z",
+  "file": "bridge_end_post.fbx",
+  "tris": 1230,
+  "verts": 649,
+  "size_m": [
+   0.58,
+   1.27,
+   0.58
+  ],
+  "unity_bbox_min": [
+   -0.29,
+   0.0,
+   -0.29
+  ],
+  "unity_bbox_max": [
+   0.29,
+   1.27,
+   0.29
+  ],
+  "materials": [
+   "M_Stone",
+   "M_Brass",
+   "M_Deco_BridgePlate"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_bridge_plate_albedo.png"
+  ]
+ },
+ "chevron_board_wide": {
+  "name": "chevron_board_wide",
+  "category": "mountain",
+  "desc": "Wide chevron board (1.2 x 0.45 m, three chevrons) on two galvanized posts",
+  "origin": "ground, between the posts",
+  "front": "face Unity +Z",
+  "file": "chevron_board_wide.fbx",
+  "tris": 978,
+  "verts": 510,
+  "size_m": [
+   1.2,
+   1.39,
+   0.114
+  ],
+  "unity_bbox_min": [
+   -0.6,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   0.6,
+   1.39,
+   0.072
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Aluminum",
+   "M_Deco_ChevronWide"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_chevron_wide_albedo.png"
+  ]
+ },
+ "chevron_curve_sign": {
+  "name": "chevron_curve_sign",
+  "category": "mountain",
+  "desc": "Yellow/black chevron curve-alignment panel (矢印板) 0.45 x 0.6 m on a galvanized post",
+  "origin": "ground, post centre",
+  "front": "face Unity +Z (chevron points to Unity -X; rotate 180 about Y or use the other side of the road for the opposite curve)",
+  "file": "chevron_curve_sign.fbx",
+  "tris": 512,
+  "verts": 269,
+  "size_m": [
+   0.45,
+   1.69,
+   0.114
+  ],
+  "unity_bbox_min": [
+   -0.225,
+   0.0,
+   -0.042
+  ],
+  "unity_bbox_max": [
+   0.225,
+   1.69,
+   0.072
+  ],
+  "materials": [
+   "M_Galvanized",
+   "M_PlasticBlack",
+   "M_Aluminum",
+   "M_Deco_Chevron"
+  ],
+  "empties": {},
+  "notes": [
+   "M_Deco_Chevron face (texture prop_chevron_albedo.png) mapped 0-1; chevron points to the viewer's right."
+  ],
+  "textures": [
+   "prop_chevron_albedo.png"
+  ]
+ },
+ "delineator_post": {
+  "name": "delineator_post",
+  "category": "mountain",
+  "desc": "視線誘導標: white Φ60.5 post with Φ100 round reflector (amber faces Unity -X, white faces +X)",
+  "origin": "ground, post centre",
+  "front": "reflectors face along the road (Unity ±X)",
+  "file": "delineator_post.fbx",
+  "tris": 754,
+  "verts": 401,
+  "size_m": [
+   0.067,
+   1.194,
+   0.128
+  ],
+  "unity_bbox_min": [
+   -0.033,
+   0.0,
+   -0.064
+  ],
+  "unity_bbox_max": [
+   0.033,
+   1.194,
+   0.064
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "mountain_guardrail_cable": {
+  "name": "mountain_guardrail_cable",
+  "category": "mountain",
+  "desc": "Japanese guard cable (ガードケーブル) tile, 4 m, white Φ114 posts, 5 x Φ18 cables, spacer bar",
+  "origin": "ground at the post centre (Unity X=0); tile spans X 0..4",
+  "front": "cables on the road side (Unity +Z)",
+  "file": "mountain_guardrail_cable.fbx",
+  "tris": 1986,
+  "verts": 1037,
+  "size_m": [
+   4.06,
+   1.181,
+   0.159
+  ],
+  "unity_bbox_min": [
+   -0.06,
+   0.0,
+   -0.062
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.181,
+   0.097
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Post at Unity X=0 only; cap a run with mountain_guardrail_cable_end_finish at X=4N and mountain_guardrail_cable_end_start at X=0 (its heavier post encloses the tile post)."
+  ],
+  "textures": []
+ },
+ "mountain_guardrail_cable_brown": {
+  "name": "mountain_guardrail_cable_brown",
+  "category": "mountain",
+  "desc": "Japanese guard cable (ガードケーブル) tile, 4 m, brown (national-park) Φ114 posts, 5 x Φ18 cables, spacer bar",
+  "origin": "ground at the post centre (Unity X=0); tile spans X 0..4",
+  "front": "cables on the road side (Unity +Z)",
+  "file": "mountain_guardrail_cable_brown.fbx",
+  "tris": 1986,
+  "verts": 1037,
+  "size_m": [
+   4.06,
+   1.181,
+   0.159
+  ],
+  "unity_bbox_min": [
+   -0.06,
+   0.0,
+   -0.062
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.181,
+   0.097
+  ],
+  "materials": [
+   "M_PaintedMetal_Brown",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [
+   "Post at Unity X=0 only; cap a run with mountain_guardrail_cable_end_finish at X=4N and mountain_guardrail_cable_end_start at X=0 (its heavier post encloses the tile post)."
+  ],
+  "textures": []
+ },
+ "mountain_guardrail_cable_end_finish": {
+  "name": "mountain_guardrail_cable_end_finish",
+  "category": "mountain",
+  "desc": "Guard cable end/anchor post (端末支柱) Φ165 with brace, footing and cable turnbuckles",
+  "origin": "ground at the end post centre (attach at the run end, Unity X=4N for _finish, X=0 for _start)",
+  "front": "Unity +Z",
+  "file": "mountain_guardrail_cable_end_finish.fbx",
+  "tris": 1890,
+  "verts": 997,
+  "size_m": [
+   1.71,
+   1.231,
+   0.5
+  ],
+  "unity_bbox_min": [
+   -0.6,
+   0.0,
+   -0.25
+  ],
+  "unity_bbox_max": [
+   1.11,
+   1.231,
+   0.25
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Concrete",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "mountain_guardrail_cable_end_start": {
+  "name": "mountain_guardrail_cable_end_start",
+  "category": "mountain",
+  "desc": "Guard cable end/anchor post (端末支柱) Φ165 with brace, footing and cable turnbuckles",
+  "origin": "ground at the end post centre (attach at the run end, Unity X=4N for _finish, X=0 for _start)",
+  "front": "Unity +Z",
+  "file": "mountain_guardrail_cable_end_start.fbx",
+  "tris": 1890,
+  "verts": 997,
+  "size_m": [
+   1.71,
+   1.231,
+   0.5
+  ],
+  "unity_bbox_min": [
+   -1.11,
+   0.0,
+   -0.25
+  ],
+  "unity_bbox_max": [
+   0.6,
+   1.231,
+   0.25
+  ],
+  "materials": [
+   "M_PaintedMetal_White",
+   "M_Concrete",
+   "M_Galvanized",
+   "M_PlasticWhite",
+   "M_Reflector_Amber",
+   "M_Reflector_White"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": []
+ },
+ "slope_protection_grid_wall_grass": {
+  "name": "slope_protection_grid_wall_grass",
+  "category": "mountain",
+  "desc": "法面 吹付法枠: concrete lattice frame on a 1:0.5 cut slope, 8 m wide x 6 m high tile, cells on M_SlopeFill_Grass",
+  "origin": "ground at the front-bottom edge of the toe, tile start (Unity X=0); tile spans X 0..8",
+  "front": "slope faces Unity +Z (road), leans back toward -Z",
+  "file": "slope_protection_grid_wall_grass.fbx",
+  "tris": 1196,
+  "verts": 677,
+  "size_m": [
+   8.0,
+   6.134,
+   3.545
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   0.0,
+   -3.545
+  ],
+  "unity_bbox_max": [
+   8.0,
+   6.134,
+   -0.0
+  ],
+  "materials": [
+   "M_SlopeFill_Grass",
+   "M_Concrete"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile along Unity X every 8 m. Stack vertically with the next panel origin at Unity (0, +6.0, -3.5) (6 m up, 3.5 m back; its toe forms a 0.5 m berm)."
+  ],
+  "textures": []
+ },
+ "slope_protection_grid_wall_shotcrete": {
+  "name": "slope_protection_grid_wall_shotcrete",
+  "category": "mountain",
+  "desc": "法面 吹付法枠: concrete lattice frame on a 1:0.5 cut slope, 8 m wide x 6 m high tile, cells on M_SlopeFill_Shotcrete",
+  "origin": "ground at the front-bottom edge of the toe, tile start (Unity X=0); tile spans X 0..8",
+  "front": "slope faces Unity +Z (road), leans back toward -Z",
+  "file": "slope_protection_grid_wall_shotcrete.fbx",
+  "tris": 1196,
+  "verts": 677,
+  "size_m": [
+   8.0,
+   6.134,
+   3.545
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   0.0,
+   -3.545
+  ],
+  "unity_bbox_max": [
+   8.0,
+   6.134,
+   -0.0
+  ],
+  "materials": [
+   "M_SlopeFill_Shotcrete",
+   "M_Concrete"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile along Unity X every 8 m. Stack vertically with the next panel origin at Unity (0, +6.0, -3.5) (6 m up, 3.5 m back; its toe forms a 0.5 m berm)."
+  ],
+  "textures": []
+ },
+ "small_bridge_railing_4m": {
+  "name": "small_bridge_railing_4m",
+  "category": "mountain",
+  "desc": "Small mountain-bridge railing tile 4 m: concrete curb (地覆) + vermilion steel railing 1.1 m",
+  "origin": "road surface at the curb road-side face, tile start (Unity X=0); tile spans X 0..4",
+  "front": "road side = Unity +Z",
+  "file": "small_bridge_railing_4m.fbx",
+  "tris": 752,
+  "verts": 408,
+  "size_m": [
+   4.09,
+   1.1,
+   0.45
+  ],
+  "unity_bbox_min": [
+   -0.09,
+   0.0,
+   -0.45
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.1,
+   -0.0
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_Vermilion",
+   "M_Galvanized"
+  ],
+  "empties": {},
+  "notes": [
+   "Posts at Unity X=0 and 2; finish bridge ends with bridge_end_post."
+  ],
+  "textures": []
+ },
+ "small_bridge_railing_4m_brown": {
+  "name": "small_bridge_railing_4m_brown",
+  "category": "mountain",
+  "desc": "Small mountain-bridge railing tile 4 m: concrete curb (地覆) + dark brown steel railing 1.1 m",
+  "origin": "road surface at the curb road-side face, tile start (Unity X=0); tile spans X 0..4",
+  "front": "road side = Unity +Z",
+  "file": "small_bridge_railing_4m_brown.fbx",
+  "tris": 752,
+  "verts": 408,
+  "size_m": [
+   4.09,
+   1.1,
+   0.45
+  ],
+  "unity_bbox_min": [
+   -0.09,
+   0.0,
+   -0.45
+  ],
+  "unity_bbox_max": [
+   4.0,
+   1.1,
+   -0.0
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_PaintedMetal_Brown",
+   "M_Galvanized"
+  ],
+  "empties": {},
+  "notes": [
+   "Posts at Unity X=0 and 2; finish bridge ends with bridge_end_post."
+  ],
+  "textures": []
+ },
+ "snow_pole": {
+  "name": "snow_pole",
+  "category": "mountain",
+  "desc": "Red/white striped snow pole (スノーポール) 2.8 m with a downward arrow plate (矢羽根) on top",
+  "origin": "ground, pole centre",
+  "front": "arrow plate faces along the road (Unity ±X)",
+  "file": "snow_pole.fbx",
+  "tris": 786,
+  "verts": 501,
+  "size_m": [
+   0.28,
+   2.826,
+   0.32
+  ],
+  "unity_bbox_min": [
+   -0.14,
+   0.0,
+   -0.16
+  ],
+  "unity_bbox_max": [
+   0.14,
+   2.826,
+   0.16
+  ],
+  "materials": [
+   "M_Concrete",
+   "M_Galvanized",
+   "M_PlasticRed",
+   "M_Reflector_White",
+   "M_PlasticBlack",
+   "M_PlasticWhite",
+   "M_Deco_SnowArrow"
+  ],
+  "empties": {},
+  "notes": [],
+  "textures": [
+   "prop_snow_arrow_albedo.png"
+  ]
+ },
+ "stone_retaining_wall_4m": {
+  "name": "stone_retaining_wall_4m",
+  "category": "mountain",
+  "desc": "間知石 retaining wall, tani-zumi diagonal coursing, batter 1:0.3, 4 m tile x 3 m high, concrete foundation + coping, weep holes",
+  "origin": "ground at the foundation front edge, tile start (Unity X=0); tile spans X 0..4",
+  "front": "wall face toward Unity +Z, leans back toward -Z",
+  "file": "stone_retaining_wall_4m.fbx",
+  "tris": 1992,
+  "verts": 1372,
+  "size_m": [
+   4.0,
+   3.0,
+   1.485
+  ],
+  "unity_bbox_min": [
+   -0.0,
+   0.0,
+   -1.485
+  ],
+  "unity_bbox_max": [
+   4.0,
+   3.0,
+   -0.0
+  ],
+  "materials": [
+   "M_Stone",
+   "M_Concrete_Dark",
+   "M_Concrete",
+   "M_PlasticGray",
+   "M_PlasticBlack"
+  ],
+  "empties": {},
+  "notes": [
+   "Tile along Unity X every 4 m; diamond stone pattern is periodic (9 stones per tile per course)."
+  ],
+  "textures": []
+ }
+}

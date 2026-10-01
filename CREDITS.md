@@ -1,0 +1,299 @@
+# Credits
+
+
+INK DRIFT: TOKYO uses only CC0, CC-BY and SIL OFL third-party assets. Everything not listed here is original work made for this project (procedural/Blender/Python/C#).
+
+
+All car models are de-badged, modified look-alikes; no manufacturer names, logos or trademarks are used in the game.
+
+
+## Car credits — INK DRIFT: TOKYO
+
+### Procedural fallback cars (original work)
+
+The 5 playable cars (`hachi`, `kaiju`, `zenkai`, `raijin`, `tsubame`) and the 4 traffic vehicles
+(`traffic_kei`, `traffic_taxi`, `traffic_van`, `traffic_truck`) in `Game/Assets/InkDrift/Models/Cars/` are
+**original procedural models made for this project**. This applies to every model whose `<id>_dims.json`
+contains `"source": "original procedural model (Tools/cars/procedural), no third-party assets"`.
+Blender Python scripts in `Tools/cars/procedural/` generate them. Each body is a parametric signed-distance
+field built from hand-written profile curves. Surface nets turn it into a mesh, and the wheels are built
+from lathe and loft geometry. No third-party models, meshes, textures, photos, scans or blueprints are
+part of these assets.
+
+The cars are fictional look-alikes. They borrow the overall proportions and silhouettes of real 2010s/2020s
+Japanese cars, using public dimensions such as length, width, height and wheelbase. They carry **no
+manufacturer names, badges, logos or brand text**. The roof sign on the taxi says only the generic word "TAXI".
+
+| ID | Display name | Proportions inspired by |
+|----|--------------|-------------------------|
+| hachi | HACHI GR8 | 2020s 2+2 boxer coupe (GR86 / BRZ class) |
+| kaiju | KAIJU SPR-X | 2020s straight-six FR coupe (GR Supra A90 class) |
+| zenkai | ZENKAI Z | 2020s V6 fastback coupe (Z RZ34 class) |
+| raijin | RAIJIN BX-R | 2020s AWD sports sedan (WRX VB class) |
+| tsubame | TSUBAME RS | 2010s/20s roadster with soft top (MX-5 ND class) |
+| traffic_kei / taxi / van / truck | traffic | kei pickup, tall Tokyo taxi MPV, one-box delivery van, 2 t cab-over box truck |
+
+Number plates, livery decals and the windshield and taxi banners come from the repo's own generators and
+artwork (`Tools/cars/cartex.py`, `Game/Assets/InkDrift/Art/Decals/`). Their text uses the repo's OFL fonts
+(Noto Sans JP, Dela Gothic One; SIL Open Font License 1.1).
+
+### Generators
+
+| Script | Purpose |
+|--------|---------|
+| `Tools/cars/procedural/build.py` | entry point: `blender -b -P build.py -- <id>`. Body, wheels, kit, plates, decals, FBX, dims JSON, previews |
+| `Tools/cars/procedural/specs/<id>.py` | per-vehicle parameters: profiles, plan and sections, greenhouse, stamps (lights, grilles, seams, vents) |
+| `Tools/cars/procedural/body.py`, `sdf.py` | parametric SDF car body: hull, greenhouse, arches, stamps and solids, material regions |
+| `Tools/cars/procedural/mesher.py`, `sdfmesh.py`, `cutmesh.py` | narrow-band sampling, surface nets, projection, exact material-border cuts |
+| `Tools/cars/procedural/wheels.py` | tyres, multi-spoke rims (5 designs plus a steel wheel), brake discs, calipers |
+| `Tools/cars/procedural/build_all.sh` | rebuilds everything, the contact sheet and runs `Tools/cars/verify_cars.py` |
+
+Reference photos from Wikimedia Commons were only looked at locally to judge proportions while the
+parameters were tuned. They are not stored in the repo or used in any asset.
+
+## Texture & HDRI credits
+
+All assets below are **CC0 1.0 (public domain)**. Attribution is not required but given anyway.
+Fetched and converted by `Tools/textures/fetch_textures.py` (2K maps; mask = R metal, G AO,
+B height, A smoothness).
+
+- Poly Haven license: https://polyhaven.com/license
+- ambientCG license: https://docs.ambientcg.com/license/
+
+### Materials (`Game/Assets/InkDrift/Art/Textures/`)
+
+| Set | Used as | Source asset | Author(s) | Source URL | License |
+|-----|---------|--------------|-----------|------------|---------|
+| `road_asphalt_fresh` | fresh dark fine tarmac | Asphalt Track (Poly Haven) | Dimitrios Savva | https://polyhaven.com/a/asphalt_track | CC0 |
+| `road_asphalt_worn` | weathered grey asphalt with tar-sealed cracks | Asphalt 02 (Poly Haven) | Rob Tuytel | https://polyhaven.com/a/asphalt_02 | CC0 |
+| `road_asphalt_highway` | fine-grain grey highway asphalt (Shuto) | Clean Asphalt (Poly Haven) | Dimitrios Savva | https://polyhaven.com/a/clean_asphalt | CC0 |
+| `sidewalk_pavers_interlock` | grey interlocking concrete pavers | Patterned Concrete Pavers (Poly Haven) | Amal Kumar | https://polyhaven.com/a/patterned_concrete_pavers | CC0 |
+| `sidewalk_tiles_square` | square concrete sidewalk slabs | Concrete Pavement 02 (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/concrete_pavement_02 | CC0 |
+| `sidewalk_curb_granite` | rough grey salt-and-pepper granite (mikage-ishi) for curbs | Granite 002 B (ambientCG) | ambientCG | https://ambientcg.com/view?id=Granite002B | CC0 |
+| `concrete_smooth` | smooth light cast concrete (expressway piers/parapets) | Concrete 034 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Concrete034 | CC0 |
+| `concrete_weathered` | rough weathered concrete wall, formboard lines, patches | Concrete Wall 007 (Poly Haven) | Dario Barresi, Rico Cilliers, Charlotte Baglioni | https://polyhaven.com/a/concrete_wall_007 | CC0 |
+| `concrete_formwork` | fair-faced concrete with formwork seams and tie holes | Concrete Wall 009 (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/concrete_wall_009 | CC0 |
+| `metal_painted` | green-painted steel plate, light rust (Shuto girder green) | Green Metal Rust (Poly Haven) | Rob Tuytel | https://polyhaven.com/a/green_metal_rust | CC0 |
+| `metal_galvanized` | hot-dip galvanized steel with zinc spangle | Metal 040 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Metal040 | CC0 |
+| `metal_corrugated_rusty` | rusty corrugated iron sheet | Rusty Corrugated Iron (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/rusty_corrugated_iron | CC0 |
+| `metal_brushed_aluminum` | brushed silver metal (aluminum/steel trim) | Metal 009 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Metal009 | CC0 |
+| `building_plaster` | white stucco / plaster (tintable) | White Stucco (Poly Haven) | Amal Kumar | https://polyhaven.com/a/white_stucco | CC0 |
+| `building_tile_mosaic` | small square ceramic facade tiles (mansion facade) | Rounded Square Tiled Wall (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/rounded_square_tiled_wall | CC0 |
+| `building_brick_red` | clean red brick / brick tile | Bricks 101 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Bricks101 | CC0 |
+| `nature_bark_sakura` | cherry (sakura) bark | Sakura Bark (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/sakura_bark | CC0 |
+| `nature_bark_cedar` | Japanese cedar (sugi) bark | Japanese Cedar Bark (Poly Haven) | Charlotte Baglioni | https://polyhaven.com/a/japanese_cedar_bark | CC0 |
+| `nature_forest_floor_autumn` | forest floor with red/orange autumn leaves | Forest Floor (Poly Haven) | eye-candy.xyz | https://polyhaven.com/a/forest_floor | CC0 |
+| `nature_rock_mossy` | mossy / lichened rock | Mossy Rock (Poly Haven) | Rob Tuytel | https://polyhaven.com/a/mossy_rock | CC0 |
+| `nature_rock_cliff` | grey layered cliff rock | Rock 030 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Rock030 | CC0 |
+| `nature_grass` | short grass ground | Grass 004 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Grass004 | CC0 |
+| `nature_gravel` | grey crushed gravel (road shoulder / ballast) | Gravel 040 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Gravel040 | CC0 |
+| `nature_dirt_shoulder` | compacted stony dirt (road shoulder) | Rocky Trail (Poly Haven) | Amal Kumar | https://polyhaven.com/a/rocky_trail | CC0 |
+| `misc_rubber` | black rubber (generic; no tire tread available) | Rubber 004 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Rubber004 | CC0 |
+| `misc_carbon_fiber` | woven carbon fiber | Fabric 004 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Fabric004 | CC0 |
+| `misc_canvas` | light woven canvas (awnings, tintable) | Fabric 061 (ambientCG) | ambientCG | https://ambientcg.com/view?id=Fabric061 | CC0 |
+
+Modifications: maps resized/repacked only, except `misc_carbon_fiber` (source metalness map
+replaced by 0 - carbon fibre is a dielectric) and `nature_grass` (smoothness scaled x0.4; the
+source roughness read as wet/plastic).
+
+### HDRIs (`Game/Assets/InkDrift/Art/HDRI/`)
+
+| File | Source asset | Author(s) | Source URL | License | Lighting |
+|------|--------------|-----------|------------|---------|----------|
+| `shanghai_bund_4k.hdr` | Shanghai Bund (Poly Haven) | Greg Zaal | https://polyhaven.com/a/shanghai_bund | CC0 | night city: neon skyline across a river, artificial light (SHIBUYA NEON) |
+| `the_sky_is_on_fire_4k.hdr` | The Sky Is On Fire (Poly Haven) | Greg Zaal, Rico Cilliers | https://polyhaven.com/a/the_sky_is_on_fire | CC0 | vivid orange/magenta sunset over an urban seafront (SHUTO C1 LOOP) |
+| `autumn_forest_04_4k.hdr` | Autumn Forest 04 (Poly Haven) | Alexander Scholten | https://polyhaven.com/a/autumn_forest_04 | CC0 | low golden-hour sun through an autumn forest, leaf litter (OKUTAMA TOUGE) |
+| `overcast_soil_puresky_2k.hdr` | Overcast Soil (Pure Sky) (Poly Haven) | Jarod Guest, Sergej Majboroda | https://polyhaven.com/a/overcast_soil_puresky | CC0 | soft neutral overcast sky, no direct sun (model/car previews) |
+
+## Art credits — INK DRIFT: TOKYO
+
+All 2D art under `Game/Assets/InkDrift/Art/` (callouts, signs, billboards, vending fronts,
+facades, road and livery decals, UI) is generated procedurally by the scripts in `Tools/art/`
+(made for this project, no third-party images). Every brand, shop, chain, product and team
+name in the art is fictional.
+
+### Fonts
+
+All fonts come from the [google/fonts](https://github.com/google/fonts) repository and are
+licensed under the **SIL Open Font License 1.1**. Each family's license text ships next to the
+font files in `Game/Assets/InkDrift/Art/Fonts/` as `OFL_<Family>.txt`.
+`Tools/art/fetch_fonts.py` downloads them again if needed.
+
+| Family | Files | Copyright (from OFL.txt) | Source | License |
+|--------|-------|----------------------|--------|---------|
+| Dela Gothic One | `DelaGothicOne-Regular.ttf` | Copyright 2020 The Dela Gothic Project Authors (github.com/syakuzen/DelaGothic) | https://github.com/google/fonts/tree/main/ofl/delagothicone | SIL Open Font License 1.1 |
+| Rampart One | `RampartOne-Regular.ttf` | Copyright 2020 The Rampart Project Authors (github.com/fontworks-fonts/Rampart) | https://github.com/google/fonts/tree/main/ofl/rampartone | SIL Open Font License 1.1 |
+| Reggae One | `ReggaeOne-Regular.ttf` | Copyright 2020 The Reggae Project Authors (github.com/fontworks-fonts/Reggae) | https://github.com/google/fonts/tree/main/ofl/reggaeone | SIL Open Font License 1.1 |
+| Bangers | `Bangers-Regular.ttf` | Copyright 2010 The Bangers Project Authors (github.com/googlefonts/bangers) | https://github.com/google/fonts/tree/main/ofl/bangers | SIL Open Font License 1.1 |
+| Chakra Petch | `ChakraPetch-Bold.ttf`, `ChakraPetch-Regular.ttf` | Copyright 2018 The Chakra Petch Project Authors (github.com/m4rc1e/Chakra-Petch) | https://github.com/google/fonts/tree/main/ofl/chakrapetch | SIL Open Font License 1.1 |
+| Noto Sans JP | `NotoSansJP-VariableFont_wght.ttf`, plus `NotoSansJP-Black.ttf` / `NotoSansJP-Bold.ttf` (static instances at wght 900 / 700 made with fontTools `instancer`) | Copyright 2014-2021 Adobe (Reserved Font Name 'Source'); Noto Sans JP | https://github.com/google/fonts/tree/main/ofl/notosansjp | SIL Open Font License 1.1 |
+
+Raw download base used: `https://raw.githubusercontent.com/google/fonts/main/ofl/<family>/`.
+Under the OFL, the static Noto Sans JP instances are modified versions. They keep the original
+copyright notice and license, and they don't use any Reserved Font Name.
+
+### Tooling (not shipped)
+
+skia-python (BSD-3-Clause), Pillow (MIT-CMU), NumPy, SciPy and scikit-image (BSD-3-Clause),
+OpenCV (Apache-2.0) and fontTools (MIT) run the generators. None of them ship with the game.
+
+## Prop credits — INK DRIFT: TOKYO
+
+All street-furniture props in `Game/Assets/InkDrift/Models/Props/` (FBX) and their decal textures in
+`Game/Assets/InkDrift/Models/Props/Textures/` are **original procedural work made for this
+project**. Geometry is generated by the Blender Python scripts in `Tools/blender/props/`, and
+the decal textures by the Pillow/NumPy scripts next to them. No third-party models, meshes,
+textures, photos or scans were downloaded or used, so there are **no CC0 downloads** to list.
+
+Dimensions and details follow public knowledge of Japanese street furniture, such as the
+standard sizes of utility poles, Gr-type guardrails, signals, signs, kerbs and expressway
+parapets. Nothing was traced or copied from a third-party model or photo.
+
+### Generators
+
+| Script | Produces |
+|--------|----------|
+| `Tools/blender/props/propkit.py` | shared toolkit: primitives, bevels/normals, UVs, materials, FBX export, previews |
+| `Tools/blender/props/build_props.py` | entry point: `blender -b -P build_props.py -- <module> [builder ...]` |
+| `Tools/blender/props/props_urban_a.py` | poles, signals, lamps, guardrails, railings, bollards, cones, barriers, signs, manholes, kerb… |
+| `Tools/blender/props/props_urban_b.py` | vending machines, bicycle, post boxes, bench, AC units, rooftop tank/billboard, awnings, lanterns, noren… |
+| `Tools/blender/props/props_expressway.py` | Shuto pier, parapets, light pole, gantry, jersey barrier, tunnel lamps, crash cushion, mirrors, chevrons… |
+| `Tools/blender/props/props_mountain.py` | slope lattice walls, masonry wall, guard cable, delineators, bridge railing, shrine set… |
+| `Tools/blender/props/make_textures*.py` | procedural decal textures (`prop_*_albedo.png`, `prop_manhole_normal.png`) |
+| `Tools/blender/props/verify_fbx.py`, `contact_sheet.py` | FBX re-import checks, preview contact sheets, `props_manifest.json` |
+
+### Fonts used in decal textures
+
+Text on the decals (sign plates, lanterns, noren, plaques, labels) is rasterised from the
+repo's own OFL fonts in `Game/Assets/InkDrift/Art/Fonts/`. These are Noto Sans JP (Black/Bold)
+and Dela Gothic One, both under the **SIL Open Font License 1.1**; see
+[`art.md`](art.md) for the copyright lines and sources. The OFL allows text rendered with the
+fonts to be used in artwork. No font files are embedded in the props.
+
+### Names, marks and logos
+
+Every shop, clinic, operator, shrine, bridge and place name on the props is fictional or
+generic: さくら歯科, 峠沢橋, 山神社, the coin-parking operator, and street-name plates that use
+ordinary Tokyo place names. The props carry no real brand logos or trademarks. The only marks
+used are the generic Japanese postal mark 〒 and standard public-sign wording such as 消火栓,
+非常電話, 押ボタン式 and 賽銭.
+
+### Tooling (not shipped)
+
+Blender 5.2 (GPL; its output is not covered by the GPL), Pillow (MIT-CMU) and NumPy
+(BSD-3-Clause).
+
+## Foliage, rock and ground-cover credits — INK DRIFT: TOKYO
+
+All trees, shrubs, ground cover, rocks and cliffs in `Game/Assets/InkDrift/Models/Trees/` (FBX), and all
+their textures in `Game/Assets/InkDrift/Models/Trees/Textures/`, are **original procedural work made for this
+project**:
+
+- The geometry comes from the Blender 5.2 Python scripts in `Tools/blender/foliage/`.
+- The leaf, flower, needle, grass, fern, weed, litter and bark textures are drawn from scratch by
+  `Tools/blender/foliage/gen_textures.py`, using NumPy, SciPy, OpenCV and Pillow. It renders vector leaf
+  shapes at 2× supersampling and builds tileable FFT noise and Voronoi bark.
+- The rock and cliff textures are baked in Blender (Cycles) from procedural node materials and
+  high-to-low-poly sculpts generated by `rocks.py`.
+
+No third-party models, meshes, textures, photos, scans, brushes or HDRIs were downloaded or used, so there are
+**no CC0 or other third-party assets to list**. Species shapes follow general botanical knowledge of the Japanese
+plants named below. Nothing was traced or copied from a reference image or model.
+
+### Generators
+
+| Script | Produces |
+|--------|----------|
+| `Tools/blender/foliage/gen_textures.py` | leaf/blossom/needle atlases (RGBA cutout), grass/fern/weeds/litter atlases, tileable bark albedo + normal (run with `Tools/.venv/bin/python`) |
+| `Tools/blender/foliage/atlas_layout.py` | shared atlas cell layout (used by the texture generator and the Blender builders) |
+| `Tools/blender/foliage/foliage_lib.py` | mesh builder, branch growth, leaf-card clumps, canopy normal field (custom normals), vertex colours, materials, FBX export + path scrub, toon preview render, re-import verify |
+| `Tools/blender/foliage/trees.py` | Sakura (Somei-Yoshino), Keyaki (zelkova), Ginkgo (icho), Momiji (Japanese maple), Sugi (Japanese cedar, LOD0/LOD1), Kuromatsu (cloud-pruned black pine), Bamboo groves |
+| `Tools/blender/foliage/shrubs.py` | tsutsuji (azalea) and boxwood hedge modules, round bushes |
+| `Tools/blender/foliage/ground.py` | grass clumps, ferns, susuki (pampas), autumn weeds, fallen-leaf and sakura-petal litter patches |
+| `Tools/blender/foliage/rocks.py` | mossy boulders and gorge cliff chunks with baked albedo and normal maps |
+| `Tools/blender/foliage/build.py` | entry point: `blender -b -P Tools/blender/foliage/build.py -- <Model or group ...>` |
+| `Tools/blender/foliage/audit_fbx.py`, `fbx_inspect.py`, `contact_sheet.py`, `scene_test.py` | re-import audit, file-space FBX inspection (axes/units/transforms/textures), preview contact sheet, integration vignettes built from the exported FBX files |
+
+### Tools
+
+- Blender 5.2.2 LTS (GPL; its output is not covered by the GPL).
+- Python 3 with NumPy, SciPy, OpenCV and Pillow (BSD/MIT-style licences; used only as tools, nothing redistributed).
+
+The preview contact sheet in `Tools/blender/foliage/previews/` labels each tile using a macOS system font. It is
+a development image only and is not shipped in the game.
+
+## Audio credits — INK DRIFT: TOKYO
+
+**All sound effects and music are original and made for this project by procedural synthesis.**
+No samples, loops, sample packs, recordings, third-party audio or AI-generated audio were used.
+Every waveform is computed from scratch in Python/NumPy by the scripts in `Tools/audio/`:
+oscillators, noise, filters, envelopes, FM operators, a sequencer and a mixer.
+The scripts are deterministic and seeded, so re-running them on the same toolchain reproduces
+byte-identical files.
+
+```
+Tools/.venv/bin/python Tools/audio/gen_sfx.py      # all SFX (+ Resources copies)
+Tools/.venv/bin/python Tools/audio/gen_music.py    # all music (or: gen_music.py shibuya trailer ...)
+Tools/.venv/bin/python Tools/audio/analyze.py --loop --png <dir> <files>   # objective checks
+```
+
+| Script | Contents |
+|--------|----------|
+| `Tools/audio/inkdsp.py` | DSP core: PolyBLEP saw/pulse, 7-voice stereo supersaw, TPT state-variable filters (time-varying), RBJ EQ, ADSR, FM bell / DX-style e-piano, synthesized drums (kick with pitch envelope + click, gated snare, clap, 808-style metallic hats, crash, toms), risers, reverse swells, impacts, Schroeder-diffused 8-line FDN reverb, ping-pong delay, compressor, soft clipper, true-peak lookahead limiter, loop-safe (circular) processing |
+| `Tools/audio/music.py` | Sequencer: melody/chord notation, voice-led chord voicings, instrument voices, mono lead with glide, vibrato and bends, guitar-style waveshaped lead, drum patterns and rolls, sidechain ducking, stem auto-levelling, FX sends, mastering |
+| `Tools/audio/gen_sfx.py` | All SFX |
+| `Tools/audio/gen_music.py` | The compositions (arrangements, chord progressions, melodies) and the trailer cue sheet |
+| `Tools/audio/analyze.py`, `musicviz.py` | Measurement: LUFS, true peak, DC, NaN, click and loop-seam checks, spectrograms |
+
+### Sound effects — `Game/Assets/InkDrift/Audio/SFX/` (44.1 kHz, 16-bit PCM WAV)
+
+| File | Length | Ch | True peak | What it is |
+|------|--------|----|-----------|------------|
+| `ui_move.wav` | 0.060 s | 2 | −3.0 dBTP | bright E6 blip with downward chirp + tick |
+| `ui_confirm.wav` | 0.250 s | 2 | −2.0 dBTP | two-tone FM chime E6→B6 (+E7 sparkle) with a light upward whoosh |
+| `ui_start.wav` | 1.200 s | 2 | −1.2 dBTP | whoosh-in → kick/sub/crack impact + D-minor supersaw stab → bell/glitter shimmer |
+| `callout_pop.wav` | 0.350 s | 2 | −1.5 dBTP | comic "POP!": transient + upward pitched sweep + spray-can hiss |
+| `callout_bigpop.wav` | 0.900 s | 2 | −1.2 dBTP | big pop + sub drop + crash + rising pentatonic bell sparkle |
+| `callout_fail.wav` | 0.700 s | 2 | −1.5 dBTP | bit-crushed crunch, then a descending muted-brass "wah-wah" |
+| `impact.wav` | 0.600 s | 1 | −1.2 dBTP | car crunch: low thump, modal metal resonances, plastic cracks, debris rattle |
+| `tire_squeal_loop.wav` | 4.000 s (176 400 smp) | 1 | −1.5 dBTP | seamless loop: three jittering 0.9–1.5 kHz squeal tones with harmonics, phase noise, stick-slip chatter AM and hiss |
+| `wind_loop.wav` | 6.000 s (264 600 smp) | 1 | −1.5 dBTP | seamless loop: gusting band-passed pink noise, rumble, hiss and a faint whistle |
+| `countdown_beep.wav` | 0.360 s | 2 | −2.0 dBTP | A5 (880 Hz) countdown beep |
+| `countdown_go.wav` | 1.000 s | 2 | −1.5 dBTP | A6 + E7 + A5 "GO" tone with a punchy transient |
+
+The runtime copies are byte-identical to the files above:
+- `Resources/Audio/`: `tire_squeal_loop.wav`, `wind_loop.wav`, `impact.wav`
+- `Resources/Audio/UI/`: `ui_move.wav`, `ui_confirm.wav`, `ui_start.wav`
+
+The loops are built from FFT-periodic noise and integer-cycle oscillators, and their filters run in
+steady state around the loop, so end→start is sample-continuous.
+
+### Music — `Game/Assets/InkDrift/Audio/Music/`
+
+The four loop tracks are 44.1 kHz, 16-bit stereo WAVs (TPDF-dithered). Each loops end→start on the
+whole file (loop start sample 0, loop end = file length). Notes, reverb/delay tails and
+compressor/limiter state wrap around the seam, so the loop point is sample-continuous.
+Musically, each outro closes back down into the intro, and the intro reopens into the track.
+All tracks are mastered to −14 LUFS integrated with true peak ≤ −1.5 dBTP.
+
+| File | Title | Tempo / key | Length | Sections (bar → time) |
+|------|-------|-------------|--------|-----------------------|
+| `menu.wav` | Neon Garage | 120 BPM, D minor/F major city-pop | 44 bars, 88.000 s | intro 0 → 0.0 · verse 4 → 8.0 · pre 12 → 24.0 · chorus 16 → 32.0 · interlude 24 → 48.0 · breakdown 28 → 56.0 · chorus 2 32 → 64.0 · outro 40 → 80.0 |
+| `shibuya.wav` | Shibuya Neon Rush | 155 BPM, D minor eurobeat | 96 bars, 148.645 s | intro 0 → 0.0 · verse 8 → 12.39 · pre 24 → 37.16 · chorus 32 → 49.55 · hook 48 → 74.32 · breakdown 56 → 86.71 · chorus 2 64 → 99.10 · hook 2 80 → 123.87 · outro 88 → 136.26 |
+| `shuto.wav` | C1 Sunset Loop | 150 BPM, A minor eurobeat/trance | 96 bars, 153.600 s | intro 0 → 0.0 · verse 8 → 12.8 · pre 24 → 38.4 · chorus 32 → 51.2 · hook 48 → 76.8 · breakdown 56 → 89.6 · chorus 2 64 → 102.4 · hook 2 80 → 128.0 · outro 88 → 140.8 |
+| `okutama.wav` | Okutama Touge Fire | 160 BPM, E minor eurobeat, guitar-style lead | 100 bars, 150.000 s | intro 0 → 0.0 · verse 8 → 12.0 · pre 24 → 36.0 · chorus 32 → 48.0 · hook 48 → 72.0 · guitar solo 56 → 84.0 · breakdown 64 → 96.0 · chorus 2 72 → 108.0 · hook 2 88 → 132.0 · outro 96 → 144.0 |
+| `trailer.mp3` | Ink Drift Trailer Cue | 150 BPM, D minor | 75.000 s, not looped | intro 0–8 · build 8–24 · silence 24.0–24.5 · drop 24.5–56.5 · breakdown/rise 56.5–62.9 · breath 62.9–64.0 · final hit + ring-out 64–75 |
+
+`trailer.mp3` is 320 kbps CBR LAME. Impacts land at exactly 24.5 s and 64.0 s. The full cue sheet,
+with sections, bar and beat times, accents and MP3 priming notes, is in `trailer_cues.json` next to it.
+The drop quotes the Shibuya hook riff and chorus, so the trailer and the game share a theme.
+
+Lossless masters are written to `Tools/audio/out/` (gitignored), including `trailer.wav` (24-bit)
+and libvorbis q6 `.ogg` versions of the loops.
+
+### Tooling (not shipped)
+
+NumPy, SciPy (BSD-3-Clause); Numba (BSD-2-Clause); soundfile (BSD-3-Clause) with libsndfile
+(LGPL-2.1) and libvorbis (BSD-3-Clause); pyloudnorm (MIT); Matplotlib (PSF-style, analysis plots
+only); FFmpeg with libmp3lame/LAME (LGPL) for the trailer MP3. None of these contribute audio
+content.

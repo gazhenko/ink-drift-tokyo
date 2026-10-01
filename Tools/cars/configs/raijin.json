@@ -1,0 +1,14 @@
+{
+  "_source": "Subaru WRX (VB) by ilvskf - https://sketchfab.com/3d-models/subaru-wrx-vb-ee2b94827a904360acb61987e1765983 (CC-BY 4.0)",
+  "wheelbase": 2.670,
+  "tri_budget": 150000,
+  "plates": {"style": "private", "top": "多摩 300", "kana": "ら", "num": "22-08"},
+  "decals": [
+    {"img": "livery_name_raijin", "where": "side", "sides": "both", "z": 0.1, "y": 0.55, "w": 0.95},
+    {"img": "livery_sponsor_sumi_oil", "where": "side", "sides": "both", "z": 1.15, "y": 0.66, "w": 0.34},
+    {"img": "livery_ryu_brush", "where": "side", "sides": "both", "z": -1.15, "y": 0.70, "w": 0.40}
+  ],
+  "banner": "インクドリフト東京 ★ RAIJIN BX-R",
+  "banner_accent": "#FFE600",
+  "preview_color": [1.0, 0.03, 0.2]
+}
