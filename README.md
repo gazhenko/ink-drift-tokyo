@@ -5,6 +5,7 @@ Neon canyons, elevated expressways and autumn mountain passes — rendered like 
 
 <p align="center">
 <a href="../../releases/latest"><b>⬇ Download for macOS · Windows · Linux</b></a> ·
+<a href="#give-this-to-your-agent"><b>Install with your agent</b></a> ·
 <a href="https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4"><b>▶ Watch the trailer</b></a>
 </p>
 
@@ -62,11 +63,44 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
 spinning → counter-steer and *steer where you want the car to go* → modulate throttle to hold the angle.
 Clutch-kick (hold Shift with throttle, release) to snap the rear loose mid-corner.
 
-## Running the builds
+## Installation
+
+### Give this to your agent
+
+Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
+
+```text
+Install INK DRIFT: TOKYO v1.0.0 on this computer from its official GitHub release, then tell me how to start it.
+
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.0.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.0.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v1.0.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v1.0.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+  Checksums                      SHA256SUMS.txt
+
+1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
+2. Check there are at least 2 GB free. Download the matching archive (about 600 MB) and SHA256SUMS.txt into a temporary folder with curl -L (curl.exe on Windows).
+3. Compute the archive's SHA-256 and compare it with its line in SHA256SUMS.txt. If it does not match, delete the download and stop.
+4. Install it, replacing any earlier INK DRIFT TOKYO install at the same location:
+   - macOS: run ditto -x -k <archive> ~/Applications so the app ends up at "~/Applications/INK DRIFT TOKYO.app". The build is ad-hoc signed and not notarized; if the app carries a com.apple.quarantine attribute, remove it with xattr -dr com.apple.quarantine on the app.
+   - Windows: create %LOCALAPPDATA%\Programs\InkDriftTokyo and extract into it (the zip has no top-level folder). Keep InkDriftTokyo.exe, UnityPlayer.dll, InkDriftTokyo_Data, MonoBleedingEdge and D3D12 together. Add a Start menu shortcut named "INK DRIFT TOKYO" that points at InkDriftTokyo.exe.
+   - Linux: create ~/Games/InkDriftTokyo and extract into it (the archive has no top-level folder). Run chmod +x InkDriftTokyo.x86_64 and add ~/.local/share/applications/ink-drift-tokyo.desktop that launches it. The game needs Vulkan or OpenGL 4.5 drivers.
+5. Delete the downloaded archive and SHA256SUMS.txt.
+6. Do not change system-wide security settings (Gatekeeper, SmartScreen, antivirus), and do not run anything else from the archive. Do not launch the game unless I ask. Finish by telling me where it is installed and how to start it.
+```
+
+### Manual install
+
+Download the archive for your computer from the [latest release](../../releases/latest). Check it against `SHA256SUMS.txt` if you like (`shasum -a 256`, `sha256sum` or PowerShell `Get-FileHash`).
+
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
-- **Windows** (x64): unzip and run `InkDriftTokyo.exe`.
-- **Linux** (x64): unzip, `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
+- **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.0.0-Linux-x64.tar.gz`, then
+  `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
+
+The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.
 
 ## Building from source
 Requirements: Unity **6000.3.25f1** (6.3 LTS) with Windows/Linux build support, Blender 5.2 (only to regenerate models), Python 3.12+.
