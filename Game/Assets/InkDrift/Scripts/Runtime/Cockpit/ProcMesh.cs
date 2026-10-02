@@ -262,7 +262,10 @@ namespace InkDrift
                     Vector3 p = f(uu, vv);
                     Vector3 du = f(Mathf.Min(1f, uu + 0.01f), vv) - f(Mathf.Max(0f, uu - 0.01f), vv);
                     Vector3 dv = f(uu, Mathf.Min(1f, vv + 0.01f)) - f(uu, Mathf.Max(0f, vv - 0.01f));
-                    Vector3 nn = Vector3.Cross(du, dv).normalized;
+                    // normalise the (millimetre-scale) tangents first: Vector3.normalized returns zero below 1e-5,
+                    // and a zero normal renders as an infinitely bright face
+                    Vector3 nn = Vector3.Cross(du.normalized, dv.normalized).normalized;
+                    if (nn == Vector3.zero) nn = towards.normalized;
                     if (Vector3.Dot(nn, towards) < 0f) nn = -nn;
                     V(p, nn, new Vector2(uu, vv));
                 }

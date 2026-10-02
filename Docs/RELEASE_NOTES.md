@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.13.0: a living grip
+# INK DRIFT: TOKYO — v1.14.0: no more flare in the mirror view
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.13.0
+## What's new in 1.14.0
+- **Fixed: a white blob in the look-back view.** Looking back over your shoulder could show a huge white flare at the rear quarter window. A trim panel's surface normals collapsed to zero, so the panel rendered infinitely bright and the bloom spread it over half the screen. The panel's normals are now built correctly, and the cockpit shader guards against degenerate normals.
+- **Glints stay in proportion.** Mirror-smooth parts catching the sun (chrome bezels, bolts, the polished master cylinder) are capped at a bright but finite level, so a sun glint is a sparkle rather than a screen-wide bloom.
+
+## 1.13.0: a living grip
 - **The hands are no longer frozen.** Each finger drifts slightly and slowly on the rim. The grip tightens when you steer hard, and when the wheel is calm a hand now and then lets go a touch and takes hold again, as a real driver does.
 
 ## 1.12.0: what the hands hold

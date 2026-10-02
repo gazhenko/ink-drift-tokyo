@@ -158,7 +158,9 @@ Shader "InkDrift/Realistic"
             half4 frag(Varyings i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
-                half3 nWS0 = normalize(i.normalWS);
+                // a degenerate (zero) vertex normal must not turn into NaN/inf: face the viewer instead
+                float3 nIn = i.normalWS;
+                half3 nWS0 = dot(nIn, nIn) > 1e-12 ? normalize(nIn) : (half3)GetWorldSpaceNormalizeViewDir(i.positionWS);
                 half3 normalWS;
                 half4 tex, mask;
                 if (_Triplanar > 0.0)
@@ -263,6 +265,10 @@ Shader "InkDrift/Realistic"
                     color.rgb += _SheenColor.rgb * _Sheen * f * light * ao;
                 }
                 color.rgb = MixFog(color.rgb, input.fogCoord);
+                // a mirror-smooth part catching the sun in its GGX peak reaches thousands, which the bloom spreads over
+                // half the screen; real glints are bright but finite (and a NaN or inf from a degenerate normal must not bloom)
+                color.rgb = min(color.rgb, 16.0h);
+                color.rgb = all(isfinite(color.rgb)) ? color.rgb : half3(0, 0, 0);
                 return half4(color.rgb, 1.0h);
             }
             ENDHLSL
