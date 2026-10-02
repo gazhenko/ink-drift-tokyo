@@ -117,6 +117,7 @@ namespace InkDrift
             { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_flag" } },
             { "M_DrvPatchClass", new Look { color = Color.white, smooth = 0.3f, decal = "patch_class" } },
             // thread beads: glove contrast stitching (red) and suit stitching (light grey)
+            { "M_DrvGusset", new Look { color = new Color(0.015f, 0.015f, 0.017f), smooth = 0.05f } },   // vent holes
             { "M_DrvStitchSuit", new Look { color = new Color(0.78f, 0.78f, 0.8f), smooth = 0.3f, sheen = 0.1f, sheenColor = Color.white } },
             { "M_DrvStitch", new Look { color = new Color(0.62f, 0.05f, 0.06f), smooth = 0.32f, sheen = 0.1f, sheenColor = new Color(1f, 0.5f, 0.5f) } },
         };

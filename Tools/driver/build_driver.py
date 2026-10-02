@@ -274,6 +274,7 @@ def main():
                             for i in range(1, 6) for j in range(1, 4)]
     detail_glove(glove, fr, side_of, t_of)
     stitch_seams(glove, {(BACK, PALM), (BACK, KNUCKLE), (BACK, STRAP), (PALM, STRAP), (KNUCKLE, PALM)}, STITCH)
+    finger_details(glove, fr)
     stitch_seams(sleeve, {(SUIT, STRIPE), (SUIT, KNIT), (STRIPE, KNIT)}, STITCH_SUIT, spacing=0.0042, offset=0.0022, length=0.003)
     decals(glove, sleeve, fr, side_of, t_of)
     uvs(glove, sleeve, fr, side_of, t_of)
@@ -588,6 +589,83 @@ def stitch_seams(obj, pairs, mat, spacing=0.0034, offset=0.0016, length=0.0024, 
     log(obj.name, "stitches:", count, "along", len(lines), "seams")
 
 
+def finger_details(obj, fr):
+    """external seams down both sides of each finger + vent perforations on the back of the first segment"""
+    me = obj.data
+    P, N = vert_arrays(me)
+    sides = np.where(P[:, 0] < 0, "R", "L")
+    mats = np.zeros(len(P), int)
+    for poly in me.polygons:
+        for vi in poly.vertices:
+            mats[vi] = poly.material_index
+    bm = bmesh.new(); bm.from_mesh(me)
+    bm.verts.ensure_lookup_table()
+    dl = bm.verts.layers.deform.verify()
+    W0 = [dict(v[dl]) for v in bm.verts]          # original skin weights (new geometry invalidates the index table)
+
+    def snap(s, q, want=None):
+        """nearest surface vertex of side s (optionally of given materials)"""
+        m = sides == s
+        if want is not None:
+            m &= np.isin(mats, want)
+        idx = np.where(m)[0]
+        k = idx[np.argmin(((P[idx] - q) ** 2).sum(1))]
+        return k
+
+    def bead(k, c, t, n, length, width, height, mat, round_=False):
+        b = np.cross(n, t)
+        geo = (bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=10, radius1=0.5, radius2=0.5, depth=1.0)
+               if round_ else bmesh.ops.create_cube(bm, size=1.0))
+        Mx = np.stack([t * length, b * width, n * height], 1)
+        for v in geo["verts"]:
+            v.co = Vector(c + Mx @ np.array(v.co))
+            for gi, w in W0[k].items():
+                v[dl][gi] = w
+        for f in {f for v in geo["verts"] for f in v.link_faces}:
+            f.material_index = mat
+            f.smooth = True
+
+    seams = vents = 0
+    for s in ("R", "L"):
+        F = fr[s]
+        J = F["joints"]
+        for i in range(2, 6):
+            chain = [J[(i - 1) * 3 + j] for j in range(3)]
+            heads = [c for c, _, _ in chain]
+            tip = heads[2] + chain[2][1] * 0.022
+            pts = heads + [tip]
+            for side_sign in (-1, 1):
+                if (i == 2 and side_sign > 0) or (i == 5 and side_sign < 0):
+                    pass   # outer edges of the hand get a seam too
+                lat = F["side"] * side_sign
+                prev = None
+                for seg in range(3):
+                    a, b = pts[seg], pts[seg + 1]
+                    L = np.linalg.norm(b - a)
+                    for u in np.arange(0.12, 1.0, 0.0034 / max(L, 1e-4)):
+                        q = a + (b - a) * u + lat * 0.012 + F["back"] * 0.002
+                        k = snap(s, q, [BACK, PALM, KNUCKLE])
+                        c, n = P[k], nrm(N[k])
+                        t = nrm(b - a); t = nrm(t - n * np.dot(t, n))
+                        bead(k, c + n * 0.0003, t, n, 0.0022, 0.0006, 0.0005, STITCH)
+                        seams += 1
+            # vents: 2 x 3 holes on the back of the first segment
+            a, b = heads[0], heads[1]
+            for u in (0.35, 0.6, 0.85):
+                for off in (-0.0028, 0.0028):
+                    q = a + (b - a) * u + F["side"] * off + F["back"] * 0.012
+                    k = snap(s, q, [BACK])
+                    c, n = P[k], nrm(N[k])
+                    if np.linalg.norm(c - q) > 0.01:
+                        continue
+                    t = nrm(b - a); t = nrm(t - n * np.dot(t, n))
+                    bead(k, c + n * 0.00015, t, n, 0.0014, 0.0014, 0.0002, GUSSET, round_=True)
+                    vents += 1
+    bm.to_mesh(me); bm.free()
+    me.update()
+    log("finger seams:", seams, "stitches,", vents, "vents")
+
+
 def pre_smooth(obj, iters, k):
     me = obj.data
     P = np.empty(len(me.vertices) * 3); me.vertices.foreach_get("co", P)
@@ -728,6 +806,16 @@ def detail_glove(obj, fr, side_of, t_of):
         np.add.at(cnt, E[:, 0], 1); np.add.at(cnt, E[:, 1], 1)
         pad = np.where(inside, acc / np.maximum(cnt, 1), 0.0)
     off += pad * 0.0026 + strap * 0.0021
+    # segmented knuckle guard: a groove between each pair of finger knuckles splits the pad into four
+    for s in ("R", "L"):
+        m = (sides == s) & inside
+        if not m.any():
+            continue
+        kn = [fr[s]["joints"][(i - 1) * 3][0] for i in range(2, 6)]          # knuckles of index .. little finger
+        for a, b in zip(kn[:-1], kn[1:]):
+            mid, nrm_ = (a + b) * 0.5, nrm(b - a)
+            d = (P[m] - mid) @ nrm_
+            off[m] -= 0.0021 * np.exp(-(d / 0.0011) ** 2) * np.clip(pad[m] * 1.5, 0, 1)
     newP = P + N * off[:, None]
     seam = seam_verts(me)
     newP -= N * (seam * 0.0005)[:, None]

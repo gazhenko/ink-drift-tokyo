@@ -1,8 +1,13 @@
-# INK DRIFT: TOKYO — v1.7.0: a moulded cockpit
+# INK DRIFT: TOKYO — v1.8.0: glove construction
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.7.0
+## What's new in 1.8.0
+- **Segmented knuckle guard.** The red guard is now four separate padded segments with grooves between the knuckles, like real racing gloves, so it flexes and reads as padding rather than one block.
+- **External finger seams.** Twin rows of stitching run down both sides of every finger (about 300 more stitches), following the finger bones so they bend with the hand.
+- **Vent perforations.** Rows of vent holes on the backs of the fingers, as on lightweight racing gloves.
+
+## 1.7.0: a moulded cockpit
 - **A moulded dashboard.** The dash is now one smooth skin that runs from the windshield base over the crest, round the lip and down the face, with a twin-needle stitched leather seam across its full width.
 - **Rounded trim everywhere you look:** the A-pillar trims, header rail, centre stack, console and glovebox lid have softly rounded edges instead of hard boxes.
 - **More stitching:** stitched edges along the console top and the door cards.
@@ -85,9 +90,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.7.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.7.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.7.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.8.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.8.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.8.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 
