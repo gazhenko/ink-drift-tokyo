@@ -39,6 +39,9 @@ namespace InkDrift
             public readonly Vector3[] gripLocal = new Vector3[4];        // grip centre per Grip, wrist space
             public readonly float[,] curl = new float[5, 3];             // current (smoothed) curl, degrees
             public Vector3 pole;                                         // elbow pole offset from the shoulder, car space
+            public Vector3 foreFrame;                                    // elbow -> wrist at rest, in the hand frame
+            public float roll, slant;                                    // current settle of the fist on the rim, degrees
+            public float settleRoll, settleSlant; public bool settled;   // last solved settle (search warm start)
         }
 
         // degrees at the knuckle, middle and end joint: thumb, index, middle, ring, little
@@ -235,6 +238,7 @@ namespace InkDrift
             back = Vector3.ProjectOnPlane(back, fingers).normalized;
             a.backLocal = Quaternion.Inverse(a.wrist.rotation) * back;
             a.frameToWrist = Quaternion.Inverse(Quaternion.LookRotation(fingers, back)) * a.wrist.rotation;
+            a.foreFrame = Quaternion.Inverse(Quaternion.LookRotation(fingers, back)) * (wr - a.low1.position).normalized;
             Vector3 toLittle = (a.fing[4, 0].position - a.fing[1, 0].position).normalized;
 
             for (int f = 0; f < 5; f++)
@@ -264,6 +268,83 @@ namespace InkDrift
             SetCurl(a, Poses[(int)Grip.Open], 1f);
             for (int f = 0; f < 5; f++) for (int j = 0; j < 3; j++) a.curl[f, j] = Poses[(int)Grip.Open][f, j];
             a.pole = new Vector3(i == 0 ? 0.55f : -0.55f, -0.75f, -0.2f);
+        }
+
+        /// <summary>Two-bone IK elbow for a wrist target (pulled in to arm's reach if needed).</summary>
+        Vector3 Elbow(Arm a, Vector3 S, float la, float lb, ref Vector3 wt)
+        {
+            Vector3 d = wt - S;
+            float len = d.magnitude;
+            Vector3 dir = len > 1e-5f ? d / len : Vector3.forward;
+            float L = Mathf.Clamp(len, Mathf.Abs(la - lb) + 0.01f, la + lb - 0.002f);
+            if (len > L) wt = S + dir * L;
+            float x = (la * la - lb * lb + L * L) / (2f * L);
+            float h = Mathf.Sqrt(Mathf.Max(0f, la * la - x * x));
+            Vector3 pole = root.TransformPoint(root.InverseTransformPoint(S) + a.pole);
+            Vector3 bend = Vector3.ProjectOnPlane(pole - S, dir);
+            if (bend.sqrMagnitude < 1e-8f) bend = -root.up;
+            return S + dir * x + bend.normalized * h;
+        }
+
+        const float RollMax = 100f, SlantMax = 35f, ComfortBend = 40f;
+
+        /// <summary>
+        /// The fist's settle on the rim: a roll about the rim (the fist slides round its cross-section) and a slant about
+        /// the back of the hand (the rim crosses the palm diagonally, as in a real grip). Both keep the rim inside the
+        /// hand; this picks the pair closest to the designed grip that keeps the wrist within a comfortable bend.
+        /// </summary>
+        void WristSettle(Arm a, Vector3 S, float la, float lb, Vector3 gripPos, Quaternion gripRot, Vector3 gl, out float roll, out float slant)
+        {
+            Vector3 P = root.TransformPoint(gripPos);
+            // a wrist bends ~40 degrees comfortably (extension with some ulnar deviation); beyond that it costs a lot
+            float Cost(float r, float t)
+            {
+                float b = Bend(a, S, la, lb, P, gripRot, gl, r, t);
+                return Mathf.Max(0f, b - ComfortBend) * 4f + b * 0.05f + Mathf.Abs(r) * 0.2f + Mathf.Abs(t) * 0.3f;
+            }
+            float best;
+            if (!a.settled)
+            {
+                // first hold: coarse global search
+                best = float.MaxValue; roll = 0f; slant = 0f;
+                for (float r = -RollMax; r <= RollMax + 0.1f; r += 10f)
+                    for (float t = -SlantMax; t <= SlantMax + 0.1f; t += 5f)
+                    {
+                        float c = Cost(r, t);
+                        if (c < best) { best = c; roll = r; slant = t; }
+                    }
+                a.settled = true;
+            }
+            else { roll = a.settleRoll; slant = a.settleSlant; best = Cost(roll, slant); }
+            // then a pattern search from the last answer: the cost changes smoothly as the wheel turns
+            for (float step = 8f; step >= 0.99f; step *= 0.5f)
+                for (int it = 0; it < 4; it++)
+                {
+                    bool moved = false;
+                    for (int k = 0; k < 4; k++)
+                    {
+                        float r = Mathf.Clamp(roll + (k == 0 ? step : k == 1 ? -step : 0f), -RollMax, RollMax);
+                        float t = Mathf.Clamp(slant + (k == 2 ? step : k == 3 ? -step : 0f), -SlantMax, SlantMax);
+                        float c = Cost(r, t);
+                        if (c < best - 1e-4f) { best = c; roll = r; slant = t; moved = true; }
+                    }
+                    if (!moved) break;
+                }
+            a.settleRoll = roll; a.settleSlant = slant;
+            if (devWrist && Time.frameCount % 120 == 0)
+                Debug.Log($"[Driver] arm {(a == arms[0] ? 0 : 1)} roll {roll:0} slant {slant:0} wrist bend {Bend(a, S, la, lb, P, gripRot, gl, 0f, 0f):0}->{Bend(a, S, la, lb, P, gripRot, gl, roll, slant):0}");
+        }
+
+        static readonly bool devWrist = CommandLine.Has("-dbgWrist");
+
+        static Quaternion Settle(float roll, float slant) => Quaternion.AngleAxis(roll, Vector3.right) * Quaternion.AngleAxis(slant, Vector3.up);
+
+        /// <summary>Angle between the forearm and the hand (0 = straight wrist) for a settle of the fist on the rim.</summary>
+        float Bend(Arm a, Vector3 S, float la, float lb, Vector3 P, Quaternion gripRot, Vector3 gl, float roll, float slant)
+        {
+            Quaternion frame = root.rotation * gripRot * Settle(roll, slant);
+            Vector3 wt = P - frame * a.frameToWrist * gl;
+            return Vector3.Angle(wt - Elbow(a, S, la, lb, ref wt), frame * a.foreFrame);
         }
 
         static Vector3 Circumcentre(Vector3 a, Vector3 b, Vector3 c, out bool ok)
@@ -303,30 +384,29 @@ namespace InkDrift
                     if (a.fing[f, j]) a.fing[f, j].localRotation = a.fingRest[f, j] * Quaternion.AngleAxis(a.curl[f, j], a.curlAxis[f, j]);
                 }
 
-            // letting go: the hand comes off the object toward the back of the hand before it travels
-            gripPos += gripRot * Vector3.up * (0.045f * Mathf.SmoothStep(0f, 1f, open));
-            // where the wrist must be for the held object to sit at the grip centre
-            Quaternion rw = root.rotation * gripRot * a.frameToWrist;
             Vector3 gl = Vector3.Lerp(a.gripLocal[(int)grip], a.gripLocal[(int)Grip.Open], open);
-            Vector3 wt = root.TransformPoint(gripPos) - rw * gl;
-
             // two-bone IK from the rest pose
             a.up1.localRotation = a.up1Rest; if (a.up2) a.up2.localRotation = a.up2Rest;
             a.low1.localRotation = a.low1Rest; if (a.low2) a.low2.localRotation = a.low2Rest;
             a.wrist.localRotation = a.wristRest;
             Vector3 S = a.up1.position, e0 = a.low1.position, w0 = a.wrist.position;
             float la = (e0 - S).magnitude, lb = (w0 - e0).magnitude;
-            Vector3 d = wt - S;
-            float len = d.magnitude;
-            Vector3 dir = len > 1e-5f ? d / len : Vector3.forward;
-            float L = Mathf.Clamp(len, Mathf.Abs(la - lb) + 0.01f, la + lb - 0.002f);
-            if (len > L) wt = S + dir * L;
-            float x = (la * la - lb * lb + L * L) / (2f * L);
-            float h = Mathf.Sqrt(Mathf.Max(0f, la * la - x * x));
-            Vector3 pole = root.TransformPoint(root.InverseTransformPoint(S) + a.pole);
-            Vector3 bend = Vector3.ProjectOnPlane(pole - S, dir);
-            if (bend.sqrMagnitude < 1e-8f) bend = -root.up;
-            Vector3 E = S + dir * x + bend.normalized * h;
+
+            // a fist can roll round the rim and still hold it: settle at the roll that leaves the wrist straightest,
+            // as a real driver's does, instead of bending it to whatever angle the grip frame dictates
+            float rollWant = 0f, slantWant = 0f;
+            if (grip == Grip.Wheel) WristSettle(a, S, la, lb, gripPos, gripRot, gl, out rollWant, out slantWant);
+            float ks = 1f - Mathf.Exp(-8f * dt);
+            a.roll = Mathf.Lerp(a.roll, rollWant * (1f - open), ks);
+            a.slant = Mathf.Lerp(a.slant, slantWant * (1f - open), ks);
+            gripRot *= Settle(a.roll, a.slant);   // local x runs along the rim (index to little), y out of the back of the hand
+
+            // letting go: the hand comes off the object toward the back of the hand before it travels
+            gripPos += gripRot * Vector3.up * (0.045f * Mathf.SmoothStep(0f, 1f, open));
+            // where the wrist must be for the held object to sit at the grip centre
+            Quaternion rw = root.rotation * gripRot * a.frameToWrist;
+            Vector3 wt = root.TransformPoint(gripPos) - rw * gl;
+            Vector3 E = Elbow(a, S, la, lb, ref wt);
 
             // upper arm: carry the elbow hinge with it so the forearm folds the anatomical way
             Vector3 h0 = Vector3.Cross(e0 - S, w0 - e0), h1 = Vector3.Cross(E - S, wt - E);

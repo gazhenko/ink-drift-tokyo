@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.9.0: a clean cockpit
+# INK DRIFT: TOKYO — v1.10.0: a natural grip
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.9.0
+## What's new in 1.10.0
+- **A natural grip on the wheel.** At 9 and 3 o'clock the driver's wrists were bent about 100 degrees, further than a real wrist can go, so the gloves folded like a bent hose. Each fist now settles on the rim as a real hand does. It sits on the outside of the rim with the knuckles forward and the rim running diagonally across the palm, and the thumb lies over the spoke.
+- **The wrist stays within a comfortable bend** (about 40 degrees) in every position on the rim. The grip adjusts smoothly as the wheel turns and as the hands move hand over hand.
+
+## 1.9.0: a clean cockpit
 - **No more comic outlines inside the car.** The realistic cockpit and driver were meant to be kept free of the comic ink lines and paper grain, but the shipped builds since 1.5.0 were missing that render pass. Now the cockpit and driver are clean, and the comic look stays on the city outside the windows.
 - **The stitching shows its real colour.** Because the ink lines no longer cover it, the red contrast thread on the gloves, suit cuffs, dash and wheel now shows as red.
 - **Thumbs over the spokes.** At 9 and 3 o'clock each thumb now hooks over the wheel spoke, the classic racing hold. The thumb lets go when that hand moves round the rim.
