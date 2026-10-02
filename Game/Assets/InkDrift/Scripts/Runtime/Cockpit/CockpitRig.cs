@@ -99,6 +99,25 @@ namespace InkDrift
             if (fx != null) fx.InteriorView = on;
             if (on) { EnsureMirror(); Snap(); }
             else if (mirrorCam != null) mirrorCam.enabled = false;
+            SetCockpitAO(on);
+        }
+
+        /// <summary>Contact SSAO (ProjectSetup.EnsureCockpitAO) runs only while the interior is on screen.</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void CockpitAOOff()
+        {
+            SetCockpitAO(false);
+            // in the editor the toggle writes to the renderer asset: leave it active, or the next build strips SSAO
+            if (Application.isEditor) Application.quitting += () => SetCockpitAO(true);
+        }
+
+        static void SetCockpitAO(bool on)
+        {
+            if (!(GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset urp)) return;
+            foreach (var d in urp.rendererDataList)
+                if (d != null)
+                    foreach (var f in d.rendererFeatures)
+                        if (f is ScreenSpaceAmbientOcclusion) f.SetActive(on);
         }
 
         void OnDestroy()

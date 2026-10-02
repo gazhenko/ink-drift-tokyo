@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.14.0: no more flare in the mirror view
+# INK DRIFT: TOKYO — v1.15.0: contact shadows in the cockpit
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.14.0
+## What's new in 1.15.0
+- **Contact shadows inside the car.** The in-car view now has ambient occlusion where things touch or nearly touch: fingers wrapped round the rim, the glove against the wheel, gauges in their binnacle, the shifter in its boot. In a cabin lit mostly by soft light from outside, this is what keeps the hands from looking pasted onto the wheel.
+- It only runs while you're in the in-car view (on High and Medium quality), and the comic city outside the windows keeps its own look.
+
+## 1.14.0: no more flare in the mirror view
 - **Fixed: a white blob in the look-back view.** Looking back over your shoulder could show a huge white flare at the rear quarter window. A trim panel's surface normals collapsed to zero, so the panel rendered infinitely bright and the bloom spread it over half the screen. The panel's normals are now built correctly, and the cockpit shader guards against degenerate normals.
 - **Glints stay in proportion.** Mirror-smooth parts catching the sun (chrome bezels, bolts, the polished master cylinder) are capped at a bright but finite level, so a sun glint is a sparkle rather than a screen-wide bloom.
 

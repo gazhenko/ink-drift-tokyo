@@ -44,7 +44,7 @@ namespace InkDrift.EditorTools
             PlayerSettings.companyName = "Gazhenko";
             PlayerSettings.productName = "INK DRIFT TOKYO";
             PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone, "com.gazhenko.inkdrift");
-            PlayerSettings.bundleVersion = "1.14.0";
+            PlayerSettings.bundleVersion = "1.15.0";
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.defaultScreenWidth = 1920;
             PlayerSettings.defaultScreenHeight = 1080;
@@ -113,6 +113,7 @@ namespace InkDrift.EditorTools
             }
             EnsureFullscreenFeature(renderer, post);
             EnsureFeature<InkMaskFeature>(renderer, "InkMask");
+            if (tier != "Low") EnsureCockpitAO(renderer);
 
             var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(assetPath);
             if (asset == null)
@@ -161,11 +162,39 @@ namespace InkDrift.EditorTools
             foreach (var tier in new[] { "High", "Medium", "Low" })
             {
                 var r = AssetDatabase.LoadAssetAtPath<UniversalRendererData>($"{SettingsDir}/URP_{tier}_Renderer.asset");
-                if (r != null) EnsureFeature<InkMaskFeature>(r, "InkMask");
+                if (r == null) continue;
+                EnsureFeature<InkMaskFeature>(r, "InkMask");
+                if (tier != "Low") EnsureCockpitAO(r);
             }
             AssetDatabase.SaveAssets();
             Debug.Log("[InkDrift] render features ensured");
             if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        /// <summary>
+        /// Contact-scale SSAO for the in-car view: fingers on the rim, gloves on the wheel, parts on the dash. Only the
+        /// realistic cockpit shader samples it (the comic world doesn't), and CockpitRig switches it off at start and on
+        /// only while the interior is shown.
+        /// </summary>
+        static void EnsureCockpitAO(UniversalRendererData data)
+        {
+            EnsureFeature<ScreenSpaceAmbientOcclusion>(data, "CockpitAO");
+            foreach (var f in data.rendererFeatures)
+            {
+                if (!(f is ScreenSpaceAmbientOcclusion ao)) continue;
+                var so = new SerializedObject(ao);
+                void F(string n, float v) { var p = so.FindProperty("m_Settings." + n); if (p != null) p.floatValue = v; else Debug.LogWarning("SSAO prop missing " + n); }
+                void B(string n, bool v) { var p = so.FindProperty("m_Settings." + n); if (p != null) p.boolValue = v; else Debug.LogWarning("SSAO prop missing " + n); }
+                F("Radius", 0.04f);
+                F("Intensity", 2.0f);
+                F("DirectLightingStrength", 0.3f);
+                F("Falloff", 8f);
+                B("Downsample", false);
+                B("AfterOpaque", false);
+                so.ApplyModifiedPropertiesWithoutUndo();
+                ao.SetActive(true);   // active in the asset, or the build strips its shaders; CockpitRig turns it off at start
+                EditorUtility.SetDirty(ao);
+            }
         }
 
         static void EnsureFeature<T>(UniversalRendererData data, string name) where T : ScriptableRendererFeature

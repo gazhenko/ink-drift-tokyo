@@ -96,6 +96,7 @@ Shader "InkDrift/Realistic"
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+            #pragma multi_compile_fragment _ _SCREEN_SPACE_OCCLUSION
             #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
@@ -234,6 +235,12 @@ Shader "InkDrift/Realistic"
                 s.alpha = 1.0h;
 
                 half4 color = UniversalFragmentPBR(input, s);
+                // contact occlusion between parts (fingers on the rim, glove on the wheel) from the cockpit SSAO
+                half ssao = 1.0h;
+            #if defined(_SCREEN_SPACE_OCCLUSION)
+                ssao = GetScreenSpaceAmbientOcclusion(input.normalizedScreenSpaceUV).indirectAmbientOcclusion;
+            #endif
+                ao *= ssao;
                 // ambient fill
                 color.rgb += input.bakedGI * s.albedo * (1.0h - _Metallic) * 0.96h * ao;
                 // environment reflection. Interior: the cabin blocks most of the outside world (_EnvSpecular). Fresnel
