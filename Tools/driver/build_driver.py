@@ -775,6 +775,25 @@ def detail_sleeve(obj, fr, side_of, t_of):
         # long drape folds down the upper arm and twist folds on the forearm
         fold[m] += noise3(Q, 28, 5) * 0.0016 * loose
         fold[m] += np.sin((Q @ nrm(F["fore"] + F["outer"] * 0.6)) / 0.05 * 2 * np.pi + noise3(Q, 20, 7)) * 0.0009 * (t > -0.3)
+        # where the gauntlet closes over the sleeve the fabric piles up: a soft bulge with uneven ring folds just
+        # above the glove's opening, fading up the forearm
+        d = Q - F["wr"]
+        ang = np.arctan2(d @ F["outer"], d @ F["back"])
+        x = -t - (GAUNT + 0.002)                                   # distance above the gauntlet edge
+        env = np.clip(x / 0.006, 0, 1) * np.clip(1 - (x - 0.015) / 0.045, 0, 1)
+        ph = x / 0.014 * 2 * np.pi + 0.7 * np.sin(2 * ang + 0.4) + 0.35 * np.sin(5 * ang + 1.3) + noise3(Q, 50, 9) * 0.8
+        # ...except under the sewn-on INK DRIFT patch (see decals), which stiffens the cloth it covers
+        pn = nrm(F["outer"] + np.array([0, 0, 0.7]))
+        pc = F["el"] + (F["wr"] - F["el"]) * 0.45 + pn * 0.05
+        dd = Q - pc
+        along_p = dd @ F["fore"]
+        across = dd - np.outer(along_p, F["fore"])
+        across = np.linalg.norm(across - np.outer(across @ pn, pn), axis=1)
+        under = np.clip(1 - np.maximum(np.abs(along_p) - 0.04, 0) / 0.012, 0, 1) * \
+            np.clip(1 - np.maximum(across - 0.022, 0) / 0.01, 0, 1) * np.clip((N[m] @ pn - 0.1) / 0.3, 0, 1)
+        env = env * (1 - under)
+        off[m] += 0.002 * env
+        fold[m] += np.maximum(np.sin(ph), 0) ** 1.3 * 0.0048 * env
     newP = P + N * (off + fold)[:, None]
     seam = seam_verts(me)
     newP -= N * (seam * 0.0007)[:, None]                 # stitched seams pull in

@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.16.0: stitched thumbs and fingertips
+# INK DRIFT: TOKYO — v1.17.0: a sleeve that bunches
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.16.0
+## What's new in 1.17.0
+- **The suit sleeve gathers at the glove.** Where the glove's gauntlet closes over the sleeve, the race suit now piles up into a soft bulge of uneven folds, like real fabric pushed up the forearm, instead of running into the glove as a smooth tube.
+- The sewn-on INK DRIFT patch stays flat over the folds, because a patch stiffens the cloth it covers.
+
+## 1.16.0: stitched thumbs and fingertips
 - **Seams over every fingertip.** The twin side seams on each finger now continue over the tip in one unbroken seam, as on a real glove.
 - **A stitched thumb.** The thumb, the part you see most as it lies over the spoke at 9 and 3, gets seams along both sides and over its tip, following the way the thumb is turned.
 
