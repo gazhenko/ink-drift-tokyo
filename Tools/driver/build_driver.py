@@ -260,12 +260,18 @@ def main():
     # smoothing after the cuts would drag the seam lines out of true
     pre_smooth(sleeve, 8, 0.5)
     pre_smooth(glove, 2, 0.35)
+    fingertip_smooth(glove)
     cut_panels(glove, sleeve, fr, side_of, t_of)
 
     detail_sleeve(sleeve, fr, side_of, t_of)
+    for sd in SIDES:   # finger joints (knuckle, middle, end) for the glove creases
+        fr[sd]["joints"] = [(bones[f"finger{i}-{j}.{sd}"][0], nrm(bones[f"finger{i}-{j}.{sd}"][1] - bones[f"finger{i}-{j}.{sd}"][0]), i)
+                            for i in range(1, 6) for j in range(1, 4)]
     detail_glove(glove, fr, side_of, t_of)
     decals(glove, sleeve, fr, side_of, t_of)
     uvs(glove, sleeve, fr, side_of, t_of)
+    if "--no-bake" not in sys.argv:
+        bake(glove, sleeve)
 
     # ---- armature
     arm_data = bpy.data.armatures.new("DriverRig")
@@ -417,6 +423,104 @@ def stripe_ref(F, a):
     return nrm(ref - a * np.dot(ref, a))
 
 
+def fingertip_smooth(obj, iters=12):
+    """Taubin smoothing (no shrinkage) on the end finger segments: the glove skims over nails and pad creases"""
+    me = obj.data
+    names = [f"finger{i}-{j}.{s}" for i in range(1, 6) for j in (2, 3) for s in ("R", "L")]
+    gw = {obj.vertex_groups[n].index: (1.0 if n.split("-")[1][0] == "3" else 0.45) for n in names if n in obj.vertex_groups}
+    w = np.zeros(len(me.vertices))
+    for v in me.vertices:
+        for g in v.groups:
+            if g.group in gw:
+                w[v.index] += g.weight * gw[g.group]
+    w = np.clip(w * 1.6, 0, 1)[:, None]
+    P = np.empty(len(me.vertices) * 3); me.vertices.foreach_get("co", P); P = P.reshape(-1, 3)
+    E = neighbours(me)
+    cnt = np.zeros(len(P)); np.add.at(cnt, E[:, 0], 1); np.add.at(cnt, E[:, 1], 1)
+    def lap(Q):
+        acc = np.zeros_like(Q); np.add.at(acc, E[:, 0], Q[E[:, 1]]); np.add.at(acc, E[:, 1], Q[E[:, 0]])
+        return acc / np.maximum(cnt, 1)[:, None] - Q
+    for _ in range(iters):
+        P = P + lap(P) * 0.55 * w
+        P = P + lap(P) * -0.58 * w
+    me.vertices.foreach_set("co", P.ravel())
+    me.update()
+    log("fingertips smoothed:", int((w[:, 0] > 0.2).sum()), "verts")
+
+
+def bake(glove, sleeve, size=2048):
+    """unique UV1 + Cycles bakes -> <obj>_bake_mask.png: R ambient occlusion, G convexity, B cavity"""
+    scene = bpy.context.scene
+    scene.render.engine = "CYCLES"
+    scene.cycles.samples = 96
+    try:
+        prefs = bpy.context.preferences.addons["cycles"].preferences
+        prefs.compute_device_type = "METAL"; prefs.get_devices()
+        for d in prefs.devices: d.use = True
+        scene.cycles.device = "GPU"
+    except Exception:
+        pass
+    if scene.world is None:
+        scene.world = bpy.data.worlds.new("BakeWorld")
+    scene.world.light_settings.distance = 0.045
+    mats = [bpy.data.materials[m] for m in MATS]
+
+    for obj in (glove, sleeve):
+        me = obj.data
+        tiling = me.uv_layers[0]
+        bake_uv = me.uv_layers.new(name="Bake")
+        me.uv_layers.active = bake_uv
+        activate(obj)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004, area_weight=0.0, scale_to_bounds=True)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        out = {}
+        for kind in ("AO", "POINT"):
+            img = bpy.data.images.new(f"{obj.name}_{kind}", size, size, alpha=False, float_buffer=True)
+            img.colorspace_settings.name = "Non-Color"
+            saved = []
+            for m in mats:
+                nt = m.node_tree
+                node = nt.nodes.new("ShaderNodeTexImage"); node.image = img
+                nt.nodes.active = node
+                if kind == "POINT":                       # temporarily emit mesh curvature
+                    outn = nt.nodes.get("Material Output")
+                    old = [l.from_socket for l in outn.inputs["Surface"].links]
+                    geo = nt.nodes.new("ShaderNodeNewGeometry"); em = nt.nodes.new("ShaderNodeEmission")
+                    nt.links.new(geo.outputs["Pointiness"], em.inputs["Color"])
+                    nt.links.new(em.outputs["Emission"], outn.inputs["Surface"])
+                    saved.append((m, node, old, geo, em))
+                else:
+                    saved.append((m, node, None, None, None))
+            activate(obj)
+            bpy.ops.object.bake(type="AO" if kind == "AO" else "EMIT", margin=6, use_clear=True)
+            px = np.empty(size * size * 4, np.float32); img.pixels.foreach_get(px)
+            out[kind] = px.reshape(size, size, 4)[..., 0].copy()
+            for m, node, old, geo, em in saved:
+                nt = m.node_tree
+                if old is not None:
+                    outn = nt.nodes.get("Material Output")
+                    for l in list(outn.inputs["Surface"].links): nt.links.remove(l)
+                    for src in old: nt.links.new(src, outn.inputs["Surface"])
+                    nt.nodes.remove(geo); nt.nodes.remove(em)
+                nt.nodes.remove(node)
+            bpy.data.images.remove(img)
+            log(obj.name, kind, "baked")
+        pt = out["POINT"]
+        conv = np.clip((pt - 0.5) * 5.0 + 0.5, 0, 1)
+        cav = np.clip((0.5 - pt) * 6.0, 0, 1)
+        rgba = np.stack([np.clip(out["AO"], 0, 1), conv, cav, np.ones_like(conv)], -1).astype(np.float32)
+        res = bpy.data.images.new(f"{obj.name}_bake", size, size, alpha=False, float_buffer=False)
+        res.colorspace_settings.name = "Non-Color"
+        res.pixels.foreach_set(rgba.ravel())
+        res.filepath_raw = os.path.join(OUT, f"{obj.name.lower()}_bake_mask.png")
+        res.file_format = "PNG"
+        res.save()
+        me.uv_layers.active = tiling                      # UV0 stays the tiling layout, Bake exports as UV1
+        log("wrote", res.filepath_raw)
+
+
 def pre_smooth(obj, iters, k):
     me = obj.data
     P = np.empty(len(me.vertices) * 3); me.vertices.foreach_get("co", P)
@@ -505,6 +609,36 @@ def detail_sleeve(obj, fr, side_of, t_of):
     me.update()
 
 
+def creases(P, N, sides, fr):
+    """inward offset: flexion creases across the palm side of every finger joint, fine wrinkles over the knuckles"""
+    out = np.zeros(len(P))
+    for s in ("R", "L"):
+        m = np.where(sides == s)[0]
+        if len(m) == 0:
+            continue
+        Q, Nm = P[m], N[m]
+        back = fr[s]["back"]
+        best = np.full(len(m), 1e9); along_b = np.zeros(len(m)); thumb = np.zeros(len(m), bool)
+        for c, a, fi in fr[s]["joints"]:
+            d = Q - c
+            along = d @ a
+            radial = np.linalg.norm(d - np.outer(along, a), axis=1)
+            ok = (radial < 0.017) & (np.abs(along) < np.abs(best))
+            best = np.where(ok, along, best); along_b = np.where(ok, along, along_b); thumb = np.where(ok, fi == 1, thumb)
+        near = np.abs(best) < 0.008
+        facing = Nm @ back
+        palm = near & (facing < -0.15)
+        top = near & (facing > 0.25)
+        x = along_b
+        # palm side: two close creases per joint (like a real hand / a worn glove)
+        palm_c = (np.exp(-((x - 0.0012) / 0.0008) ** 2) + 0.7 * np.exp(-((x + 0.0016) / 0.0007) ** 2)) * 0.00055
+        # back of the finger: fine wrinkles that fade away from the joint
+        top_c = np.maximum(np.sin(x / 0.0016 * np.pi), 0) ** 2 * np.exp(-(x / 0.0045) ** 2) * 0.00028
+        o = np.where(palm, palm_c, 0) + np.where(top, top_c * np.where(thumb, 0.6, 1.0), 0)
+        out[m] = o * np.clip((np.abs(facing) - 0.1) * 3, 0, 1)
+    return out
+
+
 def detail_glove(obj, fr, side_of, t_of):
     me = obj.data
     P, N = vert_arrays(me)
@@ -530,6 +664,7 @@ def detail_glove(obj, fr, side_of, t_of):
     newP = P + N * off[:, None]
     seam = seam_verts(me)
     newP -= N * (seam * 0.0005)[:, None]
+    newP -= N * creases(P, N, sides, fr)[:, None]
     me.vertices.foreach_set("co", newP.ravel())
     me.update()
 

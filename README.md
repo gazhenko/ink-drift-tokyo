@@ -43,9 +43,10 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
 - **In-car view** — a right-hand-drive cockpit for every car, sized to that car's own windshield and roof: deep-dish
   wheel, live tach / boost / water gauges, shift lights, H-pattern shifter, hydraulic handbrake, bucket seats, roll cage
   and a working rear-view mirror. The driver is a fully rigged human model: anatomically correct arms and hands
-  (MakeHuman CC0 base) in a quilted race suit and leather gloves. They steer hand over hand with fingers wrapped
-  round the rim, and the left hand works the H-pattern shifter and hydraulic handbrake. The camera leans with
-  g-forces and looks into the slide.
+  (MakeHuman CC0 base) in a quilted race suit and leather gloves, shaded with its own physically based shader,
+  real shadows and baked ambient occlusion, with the comic ink filter masked off it. The hands hold a real
+  9-and-3 grip and steer hand over hand, and the left hand works the H-pattern shifter and hydraulic handbrake.
+  The camera leans with g-forces and looks into the slide.
 - **Procedural engine audio** per car (boxer rumble, inline-six scream, V6 growl), turbo whistle, blow-off flutter, pops & bangs;
   original synthesized eurobeat/city-pop soundtrack. The announcer is Japanese TTS (regenerate with ElevenLabs via
   `Tools/audio/elevenlabs_voices.py`).
@@ -96,13 +97,13 @@ Clutch-kick (hold the clutch with throttle, release) to snap the rear loose mid-
 Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
 
 ```text
-Install INK DRIFT: TOKYO v1.3.0 on this computer from its official GitHub release, then tell me how to start it.
+Install INK DRIFT: TOKYO v1.4.0 on this computer from its official GitHub release, then tell me how to start it.
 
-Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.3.0
-Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.3.0/<file>
-  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.3.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
-  Windows 10/11, x64             InkDriftTokyo-v1.3.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
-  Linux, x64                     InkDriftTokyo-v1.3.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.4.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.4.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.4.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v1.4.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v1.4.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
   Checksums                      SHA256SUMS.txt
 
 1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
@@ -123,7 +124,7 @@ Download the archive for your computer from the [latest release](../../releases/
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
 - **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
-- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.3.0-Linux-x64.tar.gz`, then
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.4.0-Linux-x64.tar.gz`, then
   `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
 
 The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.

@@ -44,7 +44,7 @@ namespace InkDrift.EditorTools
             PlayerSettings.companyName = "Gazhenko";
             PlayerSettings.productName = "INK DRIFT TOKYO";
             PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone, "com.gazhenko.inkdrift");
-            PlayerSettings.bundleVersion = "1.3.0";
+            PlayerSettings.bundleVersion = "1.4.0";
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.defaultScreenWidth = 1920;
             PlayerSettings.defaultScreenHeight = 1080;
@@ -112,6 +112,7 @@ namespace InkDrift.EditorTools
                 EditorUtility.SetDirty(r);
             }
             EnsureFullscreenFeature(renderer, post);
+            EnsureFeature<InkMaskFeature>(renderer, "InkMask");
 
             var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(assetPath);
             if (asset == null)
@@ -152,6 +153,37 @@ namespace InkDrift.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(asset);
             return asset;
+        }
+
+        /// <summary>Renderer features only (no other project changes): -executeMethod InkDrift.EditorTools.ProjectSetup.EnsureRenderFeatures</summary>
+        public static void EnsureRenderFeatures()
+        {
+            foreach (var tier in new[] { "High", "Medium", "Low" })
+            {
+                var r = AssetDatabase.LoadAssetAtPath<UniversalRendererData>($"{SettingsDir}/URP_{tier}_Renderer.asset");
+                if (r != null) EnsureFeature<InkMaskFeature>(r, "InkMask");
+            }
+            AssetDatabase.SaveAssets();
+            Debug.Log("[InkDrift] render features ensured");
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        static void EnsureFeature<T>(UniversalRendererData data, string name) where T : ScriptableRendererFeature
+        {
+            foreach (var f in data.rendererFeatures) if (f is T) return;
+            var feature = ScriptableObject.CreateInstance<T>();
+            feature.name = name;
+            AssetDatabase.AddObjectToAsset(feature, data);
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(feature, out _, out long localId);
+            var so = new SerializedObject(data);
+            var feats = so.FindProperty("m_RendererFeatures");
+            var map = so.FindProperty("m_RendererFeatureMap");
+            feats.arraySize++;
+            feats.GetArrayElementAtIndex(feats.arraySize - 1).objectReferenceValue = feature;
+            map.arraySize++;
+            map.GetArrayElementAtIndex(map.arraySize - 1).longValue = localId;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(data);
         }
 
         static void EnsureFullscreenFeature(UniversalRendererData data, Material post)

@@ -378,6 +378,17 @@ namespace InkDrift
             lamp.shadows = LightShadows.None;
             lamp.renderMode = LightRenderMode.ForcePixel;
 
+            // instrument backlight spill: lights the gloves and rim from below at night like a real dash
+            var glow = new GameObject("GaugeGlow").AddComponent<Light>();
+            glow.transform.SetParent(root.transform, false);
+            glow.transform.localPosition = gaugeC + gaugeN * 0.03f;
+            glow.type = LightType.Point;
+            glow.range = 0.75f;
+            glow.intensity = 0.22f;
+            glow.color = new Color(1f, 0.55f, 0.4f);
+            glow.shadows = LightShadows.None;
+            glow.renderMode = LightRenderMode.ForcePixel;
+
             // ---------------------------------------------------------------- driver's arms
             rig.arms = (IDriverArms)DriverModel.Create(root.transform, e) ?? DriverArms.Create(root.transform, e, mats.suit, mats.suitStripe, mats.glove, mats.cuff);
             rig.Init();

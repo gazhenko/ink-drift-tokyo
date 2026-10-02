@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -79,14 +80,72 @@ namespace InkDrift
             foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>())
             {
                 r.updateWhenOffscreen = true;            // bones move far from the bind pose
-                r.shadowCastingMode = ShadowCastingMode.Off;
+                ApplyLook(r);
+                r.shadowCastingMode = ShadowCastingMode.On;   // hands shade the wheel, dash and each other
                 r.lightProbeUsage = LightProbeUsage.Off;
                 r.reflectionProbeUsage = ReflectionProbeUsage.Off;
                 r.skinnedMotionVectors = false;
             }
-            for (int i = 0; i < 2; i++) m.Calibrate(m.arms[i], i);
+            var logo = LogoCentres(go);
+            for (int i = 0; i < 2; i++) m.Calibrate(m.arms[i], i, logo);
             return m;
         }
+
+        // ---------------------------------------------------------------- materials (sRGB colours)
+        struct Look
+        {
+            public Color color; public string normal; public float bump, smooth, sheen, wear; public Color sheenColor, wearColor; public string decal;
+        }
+
+        static readonly Dictionary<string, Look> Looks = new Dictionary<string, Look>
+        {
+            // quilted Nomex: deep racing blue with a soft cloth sheen
+            { "M_DrvSuit", new Look { color = new Color(0.12f, 0.21f, 0.5f), normal = "suit_n", bump = 0.8f, smooth = 0.2f, sheen = 0.35f, sheenColor = new Color(0.55f, 0.7f, 1f) } },
+            { "M_DrvStripe", new Look { color = new Color(0.86f, 0.86f, 0.88f), normal = "twill_n", bump = 0.7f, smooth = 0.26f, sheen = 0.35f, sheenColor = Color.white } },
+            { "M_DrvStretch", new Look { color = new Color(0.11f, 0.13f, 0.22f), normal = "twill_n", bump = 0.9f, smooth = 0.2f, sheen = 0.4f, sheenColor = new Color(0.5f, 0.6f, 0.9f) } },
+            { "M_DrvKnit", new Look { color = new Color(0.085f, 0.085f, 0.095f), normal = "knit_n", bump = 1.0f, smooth = 0.14f, sheen = 0.3f, sheenColor = new Color(0.5f, 0.5f, 0.55f) } },
+            // full-grain leather: dark, glossy, scuffed lighter on the knuckles and edges
+            { "M_DrvGloveBack", new Look { color = new Color(0.085f, 0.085f, 0.09f), normal = "leather_n", bump = 0.28f, smooth = 0.33f, wear = 0.5f, wearColor = new Color(0.24f, 0.24f, 0.26f) } },
+            { "M_DrvKnuckle", new Look { color = new Color(0.55f, 0.06f, 0.09f), normal = "leather_n", bump = 0.28f, smooth = 0.3f, wear = 0.4f, wearColor = new Color(0.7f, 0.3f, 0.32f) } },
+            // suede palm with silicone grip print
+            { "M_DrvGlovePalm", new Look { color = new Color(0.13f, 0.13f, 0.14f), normal = "suede_n", bump = 0.6f, smooth = 0.15f, sheen = 0.3f, sheenColor = new Color(0.6f, 0.6f, 0.65f) } },
+            { "M_DrvStrap", new Look { color = new Color(0.1f, 0.1f, 0.11f), normal = "velcro_n", bump = 0.9f, smooth = 0.1f, sheen = 0.2f, sheenColor = new Color(0.5f, 0.5f, 0.5f) } },
+            { "M_DrvLogo", new Look { color = Color.white, smooth = 0.4f, decal = "glove_logo" } },
+            { "M_DrvPatchInk", new Look { color = Color.white, smooth = 0.3f, sheen = 0.2f, sheenColor = Color.white, decal = "patch_ink" } },
+            { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.2f, sheenColor = Color.white, decal = "patch_flag" } },
+            { "M_DrvPatchClass", new Look { color = Color.white, smooth = 0.3f, decal = "patch_class" } },
+        };
+
+        static void ApplyLook(Renderer r)
+        {
+            var bake = Resources.Load<Texture2D>("Driver/" + r.name.ToLowerInvariant() + "_bake_mask");
+            var mats = r.materials;   // instances
+            foreach (var m in mats)
+            {
+                if (m == null || m.shader == null || m.shader.name != "InkDrift/Realistic") continue;
+                string key = null;
+                foreach (var k in Looks.Keys) if (m.name.StartsWith(k) && (key == null || k.Length > key.Length)) key = k;
+                if (key == null) continue;
+                var l = Looks[key];
+                m.SetColor("_BaseColor", l.color);
+                if (l.decal != null) m.SetTexture("_BaseMap", Resources.Load<Texture2D>("Driver/" + l.decal));
+                if (l.normal != null) m.SetTexture("_BumpMap", Resources.Load<Texture2D>("Driver/" + l.normal));
+                m.SetFloat("_BumpScale", l.bump);
+                if (bake != null) m.SetTexture("_BakeMap", bake);
+                m.SetFloat("_Smoothness", l.smooth);
+                m.SetFloat("_Sheen", l.sheen);
+                m.SetColor("_SheenColor", l.sheenColor);
+                m.SetFloat("_Wear", l.wear);
+                m.SetColor("_WearColor", l.wearColor);
+                m.SetFloat("_AOStrength", 1f);
+                m.SetFloat("_CavityStrength", 0.6f);
+                m.SetFloat("_AmbientBoost", AmbientBoost);
+            }
+            r.materials = mats;
+        }
+
+        /// <summary>Cockpit ambient: the toon interior is lit "anime bright"; the driver needs a little more fill to sit in it.</summary>
+        public static float AmbientBoost = 1.3f;
 
         static Transform Find(Transform t, string name)
         {
@@ -96,7 +155,27 @@ namespace InkDrift
         }
 
         /// <summary>Rest-pose measurements: hand frame, finger curl axes and the grip centre of every hold.</summary>
-        void Calibrate(Arm a, int i)
+        /// <summary>Rest-pose world positions of the glove logo vertices (the logo sits on the back of each hand).</summary>
+        static List<Vector3> LogoCentres(GameObject go)
+        {
+            var pts = new List<Vector3>();
+            foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                var mats = r.sharedMaterials;
+                for (int sm = 0; sm < mats.Length && sm < r.sharedMesh.subMeshCount; sm++)
+                {
+                    if (mats[sm] == null || !mats[sm].name.StartsWith("M_DrvLogo")) continue;
+                    var baked = new Mesh();
+                    r.BakeMesh(baked, false);   // unscaled: TransformPoint applies the scale
+                    var v = baked.vertices;
+                    foreach (int idx in r.sharedMesh.GetTriangles(sm)) pts.Add(r.transform.TransformPoint(v[idx]));
+                    Object.Destroy(baked);
+                }
+            }
+            return pts;
+        }
+
+        void Calibrate(Arm a, int i, List<Vector3> logo)
         {
             a.up1Rest = a.up1.localRotation; a.up2Rest = a.up2 ? a.up2.localRotation : Quaternion.identity;
             a.low1Rest = a.low1.localRotation; a.low2Rest = a.low2 ? a.low2.localRotation : Quaternion.identity;
@@ -107,7 +186,16 @@ namespace InkDrift
             Vector3 fingers = (a.fing[2, 0].position - wr).normalized;
             Vector3 across = (a.fing[1, 0].position - a.fing[4, 0].position).normalized;   // index -> little reversed
             Vector3 n = Vector3.Cross(fingers, across).normalized;
-            Vector3 palm = Vector3.Dot(a.fing[0, 2].position - wr, n) > 0f ? n : -n;     // the thumb sits on the palm side
+            // the back of the hand is where its logo is (nearest logo vertices to this wrist); fall back to the thumb side test
+            Vector3 lc = Vector3.zero; int ln = 0;
+            foreach (var p in logo) if ((p - wr).sqrMagnitude < 0.12f * 0.12f) { lc += p; ln++; }
+            Vector3 palm;
+            if (ln > 0) palm = Vector3.Dot(lc / ln - wr, n) > 0f ? -n : n;
+            else
+            {
+                Vector3 tip = a.fing[0, 2].position + (a.fing[0, 2].position - a.fing[0, 1].position) * 0.9f;
+                palm = Vector3.Dot(tip - wr, n) > 0f ? n : -n;
+            }
             Vector3 back = -palm;
             back = Vector3.ProjectOnPlane(back, fingers).normalized;
             a.backLocal = Quaternion.Inverse(a.wrist.rotation) * back;
@@ -177,6 +265,8 @@ namespace InkDrift
                     if (a.fing[f, j]) a.fing[f, j].localRotation = a.fingRest[f, j] * Quaternion.AngleAxis(a.curl[f, j], a.curlAxis[f, j]);
                 }
 
+            // letting go: the hand comes off the object toward the back of the hand before it travels
+            gripPos += gripRot * Vector3.up * (0.045f * Mathf.SmoothStep(0f, 1f, open));
             // where the wrist must be for the held object to sit at the grip centre
             Quaternion rw = root.rotation * gripRot * a.frameToWrist;
             Vector3 gl = Vector3.Lerp(a.gripLocal[(int)grip], a.gripLocal[(int)Grip.Open], open);

@@ -174,6 +174,17 @@ namespace InkDrift.EditorTools
         /// <summary>Realistic shading for the driver's suit and gloves: soft terminator, real highlights, fine normal detail.</summary>
         static void DriverMaterial(Material m, string name)
         {
+            // realistic path (physically based, excluded from the comic ink pass); DriverModel sets the look at runtime
+            var real = Shader.Find("InkDrift/Realistic");
+            if (real != null)
+            {
+                m.shader = real;
+                bool decal = name.Contains("Logo") || name.Contains("Patch");
+                m.SetFloat("_AlphaClip", decal ? 1f : 0f);
+                if (decal) m.EnableKeyword("_ALPHATEST_ON"); else m.DisableKeyword("_ALPHATEST_ON");
+                m.SetFloat("_Cutoff", 0.5f);
+                return;
+            }
             void P(float smooth, float spec, float specSize, float specSoft, float bump)
             {
                 m.SetFloat("_Smoothness", smooth); m.SetFloat("_SpecIntensity", spec); m.SetFloat("_SpecSize", specSize);

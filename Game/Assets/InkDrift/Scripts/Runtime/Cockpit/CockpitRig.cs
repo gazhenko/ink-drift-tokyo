@@ -202,12 +202,23 @@ namespace InkDrift
 
         Vector3 ColumnDir() => wheelBase * Vector3.forward;
 
-        void RimPose(float carAngle, out Vector3 pos, out Quaternion rot)
+        /// <summary>
+        /// Hand frame on the rim (forward = wrist-to-knuckles, up = back of the hand): the back of the glove faces the
+        /// driver and a little outward, the index finger leads along the rim toward 12 o'clock, the knuckles point
+        /// outward and forward round the rim -- the real 9-and-3 grip.
+        /// </summary>
+        void RimPose(int hand, float carAngle, out Vector3 pos, out Quaternion rot)
         {
             float a = carAngle * Mathf.Deg2Rad;
             Vector3 radial = wheelBase * new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f);
+            Vector3 ccw = wheelBase * new Vector3(-Mathf.Sin(a), Mathf.Cos(a), 0f);
+            Vector3 col = ColumnDir();
             pos = wheel.localPosition + radial * wheelRadius;
-            rot = Quaternion.LookRotation(ColumnDir(), radial);
+            Vector3 index = hand == 0 ? ccw : -ccw;                       // index finger side of the fist
+            Vector3 back = Vector3.ProjectOnPlane(-col * 0.8f + radial * 0.45f, index).normalized;
+            Vector3 fingers = Vector3.Cross(back, index).normalized;
+            if (Vector3.Dot(fingers, radial) < 0f) fingers = -fingers;
+            rot = Quaternion.LookRotation(fingers, back);
         }
 
         void WheelHand(int i, float w, float dt, bool oneHanded, out Vector3 pos, out Quaternion rot)
@@ -230,7 +241,7 @@ namespace InkDrift
                     if (oneHanded) { lo -= 35f; hi += 35f; }
                     if (rel < lo || rel > hi)
                     {
-                        RimPose(carAng, out h.fromPos, out h.fromRot);
+                        RimPose(i, carAng, out h.fromPos, out h.fromRot);
                         h.regrab = true;
                         h.regrabT = 0f;
                         // re-grab at the home position, or past it in the turning direction for big inputs
@@ -242,7 +253,7 @@ namespace InkDrift
             if (h.regrab)
             {
                 h.regrabT = Mathf.Min(1f, h.regrabT + dt / 0.14f);
-                RimPose(h.gripW - w, out Vector3 tp, out Quaternion tr);
+                RimPose(i, h.gripW - w, out Vector3 tp, out Quaternion tr);
                 float s = Smooth(h.regrabT);
                 Vector3 lift = -ColumnDir() * 0.07f * Mathf.Sin(Mathf.PI * s);
                 pos = Vector3.Lerp(h.fromPos, tp, s) + lift;
@@ -250,7 +261,7 @@ namespace InkDrift
                 if (h.regrabT >= 1f) h.regrab = false;
                 return;
             }
-            RimPose(h.gripW - w, out pos, out rot);
+            RimPose(i, h.gripW - w, out pos, out rot);
         }
 
         void TaskPose(Task t, out Vector3 pos, out Quaternion rot)

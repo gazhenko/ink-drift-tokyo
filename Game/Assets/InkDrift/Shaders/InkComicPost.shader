@@ -22,6 +22,7 @@ Shader "InkDrift/ComicPost"
             float4 _InkFade;     // x start m, y end m
             float4 _ComicParams; // x halftone, y scale, z grain, w vignette
             float _ComicPulse;
+            TEXTURE2D(_InkMaskTex);   // 1 where realistic objects (the driver) are visible: no ink, no grain
 
             float Hash(float2 p) { return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453); }
 
@@ -59,6 +60,12 @@ Shader "InkDrift/ComicPost"
                 float normalEdge = smoothstep(0.55, 0.95, nd * _InkParams.z);
 
                 float edge = saturate(max(depthEdge, normalEdge));
+                // keep realistic surfaces clean, including the outline that would hug their silhouette
+                float m0 = SAMPLE_TEXTURE2D(_InkMaskTex, sampler_PointClamp, uv).r;
+                float2 mp = px * 1.5;
+                float mn = max(max(SAMPLE_TEXTURE2D(_InkMaskTex, sampler_PointClamp, uv + mp).r, SAMPLE_TEXTURE2D(_InkMaskTex, sampler_PointClamp, uv - mp).r),
+                               max(SAMPLE_TEXTURE2D(_InkMaskTex, sampler_PointClamp, uv + float2(mp.x, -mp.y)).r, SAMPLE_TEXTURE2D(_InkMaskTex, sampler_PointClamp, uv + float2(-mp.x, mp.y)).r));
+                edge *= 1.0 - max(m0, mn);
                 // fade with distance so far geometry doesn't turn to mush; skybox has no outline interior
                 float fade = 1.0 - smoothstep(_InkFade.x, _InkFade.y, d0);
                 fade = max(fade, depthEdge * 0.5 * (1.0 - smoothstep(_InkFade.y, _InkFade.y * 2.5, d0)));
@@ -68,7 +75,7 @@ Shader "InkDrift/ComicPost"
 
                 // paper grain + ink vignette
                 float g = Hash(floor(uv * _ScreenParams.xy * 0.5) + floor(_Time.y * 12.0)) - 0.5;
-                c += g * _ComicParams.z * 0.25;
+                c += g * _ComicParams.z * 0.25 * (1.0 - m0);
                 float2 v = uv - 0.5;
                 float vig = smoothstep(0.35, 0.85, length(v * float2(_ScreenParams.x / _ScreenParams.y, 1.0)) * 0.9);
                 c = lerp(c, c * _InkColor.rgb * 2.0, vig * _ComicParams.w);

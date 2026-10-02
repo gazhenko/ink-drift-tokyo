@@ -1,8 +1,24 @@
-# INK DRIFT: TOKYO — v1.3.0: the driver
+# INK DRIFT: TOKYO — v1.4.0: a realistic driver
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.3.0
+## What's new in 1.4.0
+- **Realistic driver shading.** The driver now has its own physically based shader:
+  - Realistic lighting with soft shadows, cabin and street lights, and reflections.
+  - Cloth sheen on the suit and satin leather on the gloves.
+  - The game's comic ink outlines and grain are masked off the driver, so the gloves and sleeves sit in the comic cockpit like a photographed object.
+- **Real shadows:** the hands cast shadows onto the wheel, dash and each other, and pick up the car's roof and pillar shadows.
+- **Baked detail:**
+  - Ambient occlusion, convexity and cavity are baked from the high-detail mesh, so the gaps between fingers, the seams, the cuff edges and the strap all darken naturally.
+  - The leather is lightly scuffed on its high points.
+- **A truer glove:** smoothed fingertips with no fingernail bumps, double flexion creases across the palm side of every finger joint, and fine wrinkles over the knuckles.
+- **A real 9-and-3 grip:**
+  - From the driver's seat you see the backs of the gloves, with the logo and red knuckle guards facing you.
+  - The index finger is on top, the fingers wrap round the rim and the thumbs hook over it.
+  - When a hand lets go to re-grab, it lifts off the rim instead of passing through it.
+- **Instrument glow:** the gauges spill a faint warm light onto the gloves and rim at night.
+
+## 1.3.0: the driver
 - **A real driver in the in-car view.** The capsule arms are replaced by a fully rigged human model with anatomically correct arms and hands. It is built from the MakeHuman CC0 base mesh with that project's own skeleton and hand-painted skin weights, scaled to a 1.75 m adult.
 - **Race suit and gloves, detailed to the stitch:**
   - The suit sleeves are quilted multi-layer Nomex with a contrasting stripe down the top of the arm, fabric folds at the elbow, and embroidered patches.
@@ -36,9 +52,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.3.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.3.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.3.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.4.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.4.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.4.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 

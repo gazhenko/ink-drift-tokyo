@@ -42,6 +42,7 @@ namespace InkDrift
         static readonly int ToonRimId = Shader.PropertyToID("_ToonRimColor");
         static readonly int ToonParamsId = Shader.PropertyToID("_ToonParams");
         static readonly int PulseId = Shader.PropertyToID("_ComicPulse");
+        static readonly int InkMaskId = Shader.PropertyToID("_InkMaskTex");
 
         public static void Pulse(float amount) { pulse = Mathf.Max(pulse, Mathf.Clamp01(amount)); }
 
@@ -64,6 +65,7 @@ namespace InkDrift
             Shader.SetGlobalColor(ToonRimId, rimColor * rimStrength);
             Shader.SetGlobalVector(ToonParamsId, new Vector4(bandSoftness, 0f, 0f, 0f));
             Shader.SetGlobalFloat(PulseId, pulse);
+            Shader.SetGlobalTexture(InkMaskId, Texture2D.blackTexture);   // InkMaskFeature replaces this during rendering
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = fogColor;
