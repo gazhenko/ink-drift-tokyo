@@ -67,6 +67,8 @@ namespace InkDrift
         public float Boost { get; private set; }
         public bool OnLimiter => limiterCut;
         public bool IsShifting => shiftTimer > 0f;
+        /// <summary>The gear being shifted into (the current gear when not shifting).</summary>
+        public int PendingGear => shiftTimer > 0f ? pendingGear : gear;
         public int GroundedWheels { get; private set; }
         public float SteerAngle => steerAngle;
         public float EngineLoad { get; private set; }

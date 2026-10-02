@@ -7,6 +7,8 @@ namespace InkDrift
     public class CarEffects : MonoBehaviour
     {
         public Color underglow = new Color(1f, 0.18f, 0.48f);
+        /// <summary>Set while the camera sits inside this car (CockpitRig).</summary>
+        public bool InteriorView { get; set; }
         public bool headlightsOn;
         public Transform[] exhaustPoints = new Transform[0];
         readonly System.Collections.Generic.List<(Renderer r, int idx)> tailLights = new System.Collections.Generic.List<(Renderer, int)>();
@@ -248,6 +250,9 @@ namespace InkDrift
             // underglow pulses with the bass of the engine
             underLight.color = underglow;
             underLight.intensity = 1.1f + Mathf.Sin(Time.time * 3f) * 0.12f;
+            // unshadowed point lights under/behind the car would flood the cockpit from inside
+            bool inside = InteriorView;
+            if (underLight.enabled == inside) { underLight.enabled = !inside; flameLight.enabled = !inside; }
 
             flameTimer -= dt;
             flameLight.intensity = flameTimer > 0f ? 3f : Mathf.MoveTowards(flameLight.intensity, 0f, dt * 80f);

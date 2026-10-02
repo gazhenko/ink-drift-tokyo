@@ -61,6 +61,9 @@ namespace InkDrift
             if (mainCamera == null) mainCamera = Camera.main;
             var chase = mainCamera.gameObject.GetOrAdd<ChaseCamera>();
             chase.target = Player;
+            chase.mode = (ChaseCamera.Mode)Mathf.Clamp(GameSession.CameraMode, 0, 4);
+            string camArg = CommandLine.Get("-camMode");   // dev: -camMode cockpit|chase|near|hood|bumper
+            if (camArg != null && System.Enum.TryParse(camArg == "near" ? "ChaseNear" : camArg, true, out ChaseCamera.Mode cm)) chase.mode = cm;
             chase.Snap();
             if (mainCamera.GetComponent<AudioListener>() == null) mainCamera.gameObject.AddComponent<AudioListener>();
 

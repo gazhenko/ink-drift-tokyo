@@ -1,8 +1,18 @@
-# INK DRIFT: TOKYO — v1.1.0: controllers and remapping
+# INK DRIFT: TOKYO — v1.2.0: in-car view
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.1.0
+## What's new in 1.2.0
+- **In-car camera from the driver's seat.** Press **C / Y / △** to cycle cameras: chase, near chase, **in-car**, roof, bumper. The game remembers your choice.
+- **Right-hand drive, like the real Japanese cars.** Each car gets its own cockpit, sized from its windshield, roof and beltline. It includes a deep-dish wheel, an instrument pod with live tach, boost and water gauges, a digital gear and speed readout, a shift-light strip that flashes at the limiter, an H-pattern shifter, a hydraulic handbrake, bucket seats with harnesses, a roll cage in the car's colour, sun visors, door cards, and a rear-view mirror that shows the cars behind you.
+- **The driver's arms are rendered and animated.**
+  - The hands grip the rim and steer hand over hand.
+  - When the wheel snaps back on its own in a drift, it spins through the palms.
+  - The left hand moves the gear lever through the H-pattern on every shift and pulls the hydraulic handbrake.
+- **The camera feels the car.** Your head moves with braking, acceleration and cornering forces, and turns to look where the car is sliding. Hold look-back to turn round over the seats.
+- In the car the HUD drops its speedo and drift meter (the dash shows them) and moves the minimap out of the way.
+
+## 1.1.0: controllers and remapping
 - **Controllers work everywhere.** Xbox (360 / One / Series / any XInput pad), DualShock 4, DualSense and Switch Pro are recognised directly. Generic USB/Bluetooth pads that only show up as a joystick are turned into a standard gamepad automatically: DirectInput-mode pads, Xbox-style clones on macOS, and unrecognised pads on Linux.
 - **Controller Setup** (Settings ▸ Controls) records any controller's layout one button at a time and remembers it per controller. Use it when a pad's buttons come out wrong, or to map a racing wheel and pedals.
 - **Full remapping.** Every driving control has two keyboard keys and one controller input. You set one by pressing it. If that input was already used somewhere else, it's removed there. You can clear or reset a single slot, or reset everything. Bindings are saved between sessions.
@@ -15,9 +25,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.1.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.1.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.1.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.2.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.2.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.2.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 

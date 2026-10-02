@@ -14,6 +14,7 @@ namespace InkDrift
         Canvas canvas;
         TextMeshProUGUI speed, speedUnit, gear, chain, mult, total, lapText, timeText, bestText, posText, angleText, closeText, modeText;
         TachArc tach, angleArc;
+        RectTransform speedoRt, mapRt;
         Image chainBar, speedLines;
         SlantPanel chainPanel, gearPanel;
         CanvasGroup chainGroup;
@@ -38,7 +39,7 @@ namespace InkDrift
             }
 
             // ---------------- speedo (bottom-right)
-            var speedo = UIKit.Rect("Speedo", root, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-40, 30), new Vector2(460, 420));
+            var speedo = speedoRt = UIKit.Rect("Speedo", root, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-40, 30), new Vector2(460, 420));
             tach = speedo.gameObject.AddComponent<TachArc>();
             tach.innerRadius = 158; tach.outerRadius = 196; tach.raycastTarget = false;
             speed = UIKit.Text("Speed", speedo, "0", fs ? fs.hud : null, 150, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0.5f), new Vector2(-6, 18), new Vector2(380, 170));
@@ -90,7 +91,7 @@ namespace InkDrift
             modeText = UIKit.Text("Mode", rp, "", fs ? fs.comic : null, 26, Palette.Paper.WithA(0.7f), TextAlignmentOptions.Left, new Vector2(0, 0), new Vector2(200, -18), new Vector2(360, 30));
 
             // ---------------- minimap (bottom-left)
-            var mm = UIKit.Rect("MiniMap", root, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(40, 40), new Vector2(300, 300));
+            var mm = mapRt = UIKit.Rect("MiniMap", root, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(40, 40), new Vector2(300, 300));
             var mmBg = mm.gameObject.AddComponent<SlantPanel>(); mmBg.color = Palette.Indigo.WithA(0.75f); mmBg.slant = 0; mmBg.border = 5; mmBg.raycastTarget = false;
             var mmc = UIKit.Rect("Map", mm, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(-14, -14));
             mmc.gameObject.AddComponent<RectMask2D>();
@@ -121,6 +122,14 @@ namespace InkDrift
         {
             if (car == null || canvas == null) return;
             float dt = Time.unscaledDeltaTime;
+            bool cockpit = ChaseCamera.Main != null && ChaseCamera.Main.mode == ChaseCamera.Mode.Cockpit;
+            if (speedoRt != null && speedoRt.gameObject.activeSelf == cockpit) speedoRt.gameObject.SetActive(!cockpit);
+            if (angleArc != null && angleArc.enabled == cockpit) { angleArc.enabled = !cockpit; angleText.enabled = !cockpit; }
+            if (mapRt != null)   // in the car the minimap moves to the right so the shifter and handbrake stay in view
+            {
+                var mapAnchor = cockpit ? new Vector2(1, 0) : Vector2.zero;
+                if (mapRt.anchorMin != mapAnchor) { mapRt.anchorMin = mapRt.anchorMax = mapRt.pivot = mapAnchor; mapRt.anchoredPosition = cockpit ? new Vector2(-40, 40) : new Vector2(40, 40); }
+            }
             float kmh = Mathf.Abs(car.ForwardSpeed) * 3.6f;
             speed.text = Mathf.RoundToInt(kmh).ToString();
             float rpm01 = Mathf.Clamp01(car.EngineRpm / car.spec.revLimitRpm);

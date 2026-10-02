@@ -72,6 +72,13 @@ namespace InkDrift
             set { PlayerPrefs.SetInt("quality", value); QualitySettings.SetQualityLevel(value, true); }
         }
 
+        /// <summary>Last camera the player chose (ChaseCamera.Mode).</summary>
+        public static int CameraMode
+        {
+            get => PlayerPrefs.GetInt("cam_mode", 0);
+            set => PlayerPrefs.SetInt("cam_mode", value);
+        }
+
         // controller settings are read every frame, so they're cached
         static int? padLabels;
         static bool? vibration;

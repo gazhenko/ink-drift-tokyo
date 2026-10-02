@@ -9,7 +9,7 @@ namespace InkDrift
     [RequireComponent(typeof(Camera))]
     public class ChaseCamera : MonoBehaviour
     {
-        public enum Mode { Chase, ChaseNear, Bumper, Hood }
+        public enum Mode { Chase, ChaseNear, Cockpit, Hood, Bumper }
 
         public CarController target;
         public Mode mode = Mode.Chase;
@@ -31,10 +31,17 @@ namespace InkDrift
         float fovKick;
         float yawOffset;
         Vector3 shakeSeed;
+        float baseNear;
+        CockpitRig rig;
+        Vector3 lastVel, smoothAcc;
+        float lookYaw;
+        readonly System.Collections.Generic.List<(UnityEngine.Rendering.Universal.MotionBlur mb, float intensity)> blurs = new System.Collections.Generic.List<(UnityEngine.Rendering.Universal.MotionBlur, float)>();
+        bool blurOff;
 
         void Awake()
         {
             cam = GetComponent<Camera>();
+            baseNear = cam.nearClipPlane;
             Main = this;
             shakeSeed = new Vector3(Random.value * 100f, Random.value * 100f, Random.value * 100f);
             PlayerDriver.CameraCyclePressed += Cycle;
@@ -42,7 +49,11 @@ namespace InkDrift
 
         void OnDestroy() { PlayerDriver.CameraCyclePressed -= Cycle; }
 
-        void Cycle() { mode = (Mode)(((int)mode + 1) % 4); }
+        void Cycle()
+        {
+            mode = (Mode)(((int)mode + 1) % 5);
+            GameSession.CameraMode = (int)mode;
+        }
 
         public void AddShake(float amount) { shake = Mathf.Min(1.5f, shake + amount); }
         public void KickFov(float amount) { fovKick = Mathf.Max(fovKick, amount); }
@@ -50,6 +61,9 @@ namespace InkDrift
         public void Snap()
         {
             if (target == null) return;
+            lastVel = target.Body.linearVelocity;
+            smoothAcc = Vector3.zero;
+            lookYaw = 0f;
             smoothedDir = target.transform.forward;
             transform.position = DesiredPosition(smoothedDir);
             transform.rotation = Quaternion.LookRotation(LookPoint() - transform.position);
@@ -76,6 +90,12 @@ namespace InkDrift
             float dt = Mathf.Max(Time.deltaTime, 1e-4f);
             Transform t = target.transform;
             float speed = target.SpeedMs;
+
+            // the interior only exists while we're sitting in it
+            if (rig != null && (mode != Mode.Cockpit || rig.car != target)) { rig.SetActive(false); rig = null; }
+            SetMotionBlur(mode != Mode.Cockpit);
+            if (mode == Mode.Cockpit && CockpitView(t, speed, dt)) return;
+            cam.nearClipPlane = baseNear;
 
             if (mode == Mode.Bumper || mode == Mode.Hood)
             {
@@ -119,6 +139,66 @@ namespace InkDrift
 
             ApplyFov(speed, dt);
             ApplyShake(speed, dt, 1f);
+        }
+
+        void SetMotionBlur(bool on)
+        {
+            if (on != blurOff) return;
+            blurOff = !on;
+            if (!on)
+            {
+                blurs.Clear();
+                foreach (var v in FindObjectsByType<UnityEngine.Rendering.Volume>(FindObjectsSortMode.None))
+                    if (v.sharedProfile != null && v.sharedProfile.TryGet(out UnityEngine.Rendering.Universal.MotionBlur mb))
+                    { blurs.Add((mb, mb.intensity.value)); mb.intensity.value = 0f; }
+            }
+            else
+            {
+                foreach (var (mb, i) in blurs) if (mb != null) mb.intensity.value = i;
+                blurs.Clear();
+            }
+        }
+
+        void OnDisable() { SetMotionBlur(true); }
+
+        /// <summary>Driver's-eye view from the right-hand seat; head moves with g-forces and looks into the slide.</summary>
+        bool CockpitView(Transform t, float speed, float dt)
+        {
+            var r = CockpitRig.For(target);
+            if (r == null) { mode = Mode.Hood; return false; }
+            rig = r;
+            rig.SetActive(true);
+
+            Vector3 v = target.Body.linearVelocity;
+            Vector3 acc = t.InverseTransformDirection((v - lastVel) / dt);
+            lastVel = v;
+            smoothAcc = Vector3.Lerp(smoothAcc, Vector3.ClampMagnitude(acc, 40f), 1f - Mathf.Exp(-6f * dt));
+            Vector3 head = new Vector3(Mathf.Clamp(-smoothAcc.x * 0.0028f, -0.045f, 0.045f),
+                                       Mathf.Clamp(-smoothAcc.y * 0.0015f, -0.02f, 0.02f),
+                                       Mathf.Clamp(-smoothAcc.z * 0.0035f, -0.04f, 0.04f));
+            // look where the car is going: into the slide when drifting, a little into the turn otherwise
+            float yawWant = speed < 3f ? 0f : Mathf.Clamp(target.DriftAngle * 0.55f + target.input.steer * 4f, -38f, 38f);
+            lookYaw = Mathf.Lerp(lookYaw, yawWant, 1f - Mathf.Exp(-3.2f * dt));
+            float pitch = 6.5f + Mathf.Clamp(-smoothAcc.z * 0.15f, -2.5f, 2.5f);
+            float roll = Mathf.Clamp(smoothAcc.x * 0.10f, -2.5f, 2.5f);
+            Vector3 eye = rig.EyeLocal + head;
+            Quaternion look = Quaternion.Euler(pitch, lookYaw, roll);
+            if (PlayerDriver.LookBackHeld || (CommandLine.Has("-dbgLookBack") && Mathf.Repeat(Time.time, 10f) > 8f))
+            {
+                // over-the-shoulder view out of the rear window, from up under the headliner
+                float lz = Mathf.Min(rig.EyeLocal.z - 0.5f, rig.dims.backTopZ + 0.10f);   // behind the front seats
+                eye = new Vector3(0.05f, rig.dims.Roof(lz) - 0.15f, lz);
+                look = Quaternion.Euler(7f, 180f, 0f);
+            }
+            transform.position = t.TransformPoint(eye);
+            transform.rotation = t.rotation * look;
+            cam.nearClipPlane = 0.03f;
+
+            float f = Mathf.Lerp(70f, 76f, Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(10f, 75f, speed)));
+            fovKick = Mathf.MoveTowards(fovKick, 0f, dt * 18f);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, f + fovKick * 0.4f + target.Boost * 1.5f, 1f - Mathf.Exp(-5f * dt));
+            ApplyShake(speed, dt, 0.25f);
+            return true;
         }
 
         void ApplyFov(float speed, float dt)
