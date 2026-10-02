@@ -1,8 +1,13 @@
-# INK DRIFT: TOKYO — v1.11.0: cleaner materials
+# INK DRIFT: TOKYO — v1.12.0: what the hands hold
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.11.0
+## What's new in 1.12.0
+- **A modelled shifter.** A 46 mm round black knob with the gear pattern (R 1 3 5 / 2 4 6) in white on top, a chrome lever and jam nut. Around it sits a leather boot gathered into soft, uneven folds with twin-stitched corner seams, and a satin trim bezel with four screws.
+- **A modelled hydraulic handbrake.** An anodised lever in the car's accent colour with a ribbed rubber grip and end cap, on a cover plate with bracket cheeks, a polished master cylinder with its reservoir, and braided lines running into the console.
+- **Gloves that crease.** The leather now bunches into folds on the palm side of each finger joint, wrinkles over the knuckles, and gathers in soft folds round the wrist, where it used to be perfectly smooth.
+
+## 1.11.0: cleaner materials
 - **No more sparkling edges.** Gloves, suit and the leather and suede in the cockpit glittered with bright specks along their edges. Each grain of the material near the silhouette reflected the sky at full strength. Reflections now take their Fresnel from the smooth surface and drop any reflection that would point back into the material, so edges stay clean.
 - **Finer glove leather.** The glove backs and knuckle guards now have the fine grain of thin driving-glove nappa instead of coarse upholstery hide.
 - **A real silicone grip print.** The palm's grip dots are smaller and stand only slightly proud, as a printed pattern does, instead of reading as bumpy skin.

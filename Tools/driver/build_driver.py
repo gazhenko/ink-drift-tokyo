@@ -770,15 +770,17 @@ def creases(P, N, sides, fr):
             radial = np.linalg.norm(d - np.outer(along, a), axis=1)
             ok = (radial < 0.017) & (np.abs(along) < np.abs(best))
             best = np.where(ok, along, best); along_b = np.where(ok, along, along_b); thumb = np.where(ok, fi == 1, thumb)
-        near = np.abs(best) < 0.008
+        near = np.abs(best) < 0.011
         facing = Nm @ back
         palm = near & (facing < -0.15)
         top = near & (facing > 0.25)
         x = along_b
-        # palm side: two close creases per joint (like a real hand / a worn glove)
-        palm_c = (np.exp(-((x - 0.0012) / 0.0008) ** 2) + 0.7 * np.exp(-((x + 0.0016) / 0.0007) ** 2)) * 0.00055
-        # back of the finger: fine wrinkles that fade away from the joint
-        top_c = np.maximum(np.sin(x / 0.0016 * np.pi), 0) ** 2 * np.exp(-(x / 0.0045) ** 2) * 0.00028
+        # palm side: the leather bunches into two folds per joint, with a puff between them (a worn glove). The
+        # folds are ~1.3 mm wide so the ~1 mm mesh actually carries them
+        palm_c = (np.exp(-((x - 0.0016) / 0.0013) ** 2) + 0.75 * np.exp(-((x + 0.0019) / 0.0012) ** 2)) * 0.0009 \
+            - np.exp(-(x / 0.0010) ** 2) * 0.00025
+        # back of the finger: stretch wrinkles over the knuckle that fade away from the joint
+        top_c = np.maximum(np.sin(x / 0.0022 * np.pi), 0) ** 2 * np.exp(-(x / 0.006) ** 2) * 0.0004
         o = np.where(palm, palm_c, 0) + np.where(top, top_c * np.where(thumb, 0.6, 1.0), 0)
         out[m] = o * np.clip((np.abs(facing) - 0.1) * 3, 0, 1)
     return out
@@ -816,6 +818,20 @@ def detail_glove(obj, fr, side_of, t_of):
             mid, nrm_ = (a + b) * 0.5, nrm(b - a)
             d = (P[m] - mid) @ nrm_
             off[m] -= 0.0021 * np.exp(-(d / 0.0011) ** 2) * np.clip(pad[m] * 1.5, 0, 1)
+    # the wrist: soft circumferential folds where the glove bunches between the hand and the gauntlet. Their phase
+    # wanders round the wrist so they read as fabric folds rather than machined rings
+    for s in ("R", "L"):
+        m = np.where(sides == s)[0]
+        if len(m) == 0:
+            continue
+        F = fr[s]
+        d = P[m] - F["wr"]
+        t = d @ F["fore"]
+        ang = np.arctan2(d @ F["outer"], d @ F["back"])
+        phase = t / 0.0075 + 0.35 * np.sin(3 * ang + 0.7) + 0.2 * np.sin(5 * ang)
+        window = np.clip((t + 0.012) / 0.008, 0, 1) * np.clip((0.024 - t) / 0.008, 0, 1)
+        fold = np.maximum(np.sin(phase * 2 * np.pi), 0) ** 1.5 * window * ~inside[m] * (1 - strap[m])
+        off[m] -= fold * 0.0007
     newP = P + N * off[:, None]
     seam = seam_verts(me)
     newP -= N * (seam * 0.0005)[:, None]

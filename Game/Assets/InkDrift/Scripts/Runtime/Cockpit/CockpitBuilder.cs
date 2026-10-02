@@ -56,7 +56,7 @@ namespace InkDrift
 
         class Mats
         {
-            public Material door, carpet, stitch, spoke, collar;
+            public Material door, carpet, stitch, spoke, collar, knob, paint, rubber, anodized;
             public Material dark, dash, soft, trim, metal, accent, cage, seat, insert, harness, marker, suit, suitStripe, glove, cuff, needle, ledOff, screen, chrome;
             public Material[] ledOn;
             public Material gaugeFace(Texture t) { var m = new Material(Shader.Find("UI/Default")); m.mainTexture = t; m.color = Color.white; m.renderQueue = 3000; return m; }   // after the opaque binnacle (the UI shader doesn't write depth)
@@ -191,15 +191,21 @@ namespace InkDrift
             var shifter = new GameObject("Shifter").transform;
             shifter.SetParent(root.transform, false);
             Vector3 shiftBase = new Vector3(0f, consoleTop + 0.005f, ez + 0.43f);
-            soft.Tube(shiftBase, shiftBase + Vector3.up * 0.055f, 0.065f, 0.018f, 16, false, false);   // boot
-            trim.Box(shiftBase, new Vector3(0.16f, 0.012f, 0.16f));
             shifter.localPosition = shiftBase + Vector3.up * 0.045f;   // short-shift extension: the pivot sits up in the boot
-            var lever = new ProcMesh();
-            lever.Tube(new Vector3(0f, -0.045f, 0f), new Vector3(0f, 0.135f, -0.01f), 0.0085f, 0.0075f, 10);
-            Part(shifter, "Lever", lever, mats.metal);
-            var knob = new ProcMesh();
-            knob.Ellipsoid(new Vector3(0f, 0.155f, -0.012f), new Vector3(0.024f, 0.028f, 0.024f), Quaternion.identity, 16);
-            Part(shifter, "Knob", knob, mats.accent);
+            // modelled lever, knob, leather boot and bezel (Tools/driver/build_controls.py); the lever part moves
+            var shiftModel = ModelledPart("Driver/shifter", root.transform, shifter.localPosition, mats);
+            if (shiftModel != null) MoveChild(shiftModel, "ShiftLever", shifter);
+            else
+            {
+                soft.Tube(shiftBase, shiftBase + Vector3.up * 0.055f, 0.065f, 0.018f, 16, false, false);   // boot
+                trim.Box(shiftBase, new Vector3(0.16f, 0.012f, 0.16f));
+                var lever = new ProcMesh();
+                lever.Tube(new Vector3(0f, -0.045f, 0f), new Vector3(0f, 0.135f, -0.01f), 0.0085f, 0.0075f, 10);
+                Part(shifter, "Lever", lever, mats.metal);
+                var knob = new ProcMesh();
+                knob.Ellipsoid(new Vector3(0f, 0.155f, -0.012f), new Vector3(0.024f, 0.028f, 0.024f), Quaternion.identity, 16);
+                Part(shifter, "Knob", knob, mats.accent);
+            }
             rig.shifter = shifter;
             rig.knobLocal = new Vector3(0f, 0.158f, -0.012f);
 
@@ -207,15 +213,21 @@ namespace InkDrift
             var hb = new GameObject("Handbrake").transform;
             hb.SetParent(root.transform, false);
             hb.localPosition = new Vector3(0.105f, consoleTop - 0.02f, ez + 0.47f);
-            metal.Box(hb.localPosition + new Vector3(0f, 0.02f, 0f), new Vector3(0.03f, 0.06f, 0.07f));
-            var hbm = new ProcMesh();
             Vector3 hbTop = Quaternion.Euler(-18f, 0f, 0f) * new Vector3(0f, 0.30f, 0f);
-            hbm.Tube(Vector3.zero, hbTop * 0.62f, 0.011f, 0.010f, 10);
-            var hbGrip = new ProcMesh();
-            hbGrip.Tube(hbTop * 0.6f, hbTop, 0.017f, 0.016f, 12);
-            hbGrip.Sphere(hbTop, 0.016f, 12);
-            Part(hb, "Lever", hbm, mats.metal);
-            Part(hb, "Grip", hbGrip, mats.accent);
+            // modelled lever, ribbed grip, master cylinder and lines (build_controls.py); the lever part moves
+            var hbModel = ModelledPart("Driver/handbrake", root.transform, hb.localPosition, mats);
+            if (hbModel != null) MoveChild(hbModel, "HbLever", hb);
+            else
+            {
+                metal.Box(hb.localPosition + new Vector3(0f, 0.02f, 0f), new Vector3(0.03f, 0.06f, 0.07f));
+                var hbm = new ProcMesh();
+                hbm.Tube(Vector3.zero, hbTop * 0.62f, 0.011f, 0.010f, 10);
+                var hbGrip = new ProcMesh();
+                hbGrip.Tube(hbTop * 0.6f, hbTop, 0.017f, 0.016f, 12);
+                hbGrip.Sphere(hbTop, 0.016f, 12);
+                Part(hb, "Lever", hbm, mats.metal);
+                Part(hb, "Grip", hbGrip, mats.accent);
+            }
             rig.handbrake = hb;
             rig.handbrakeGripLocal = hbTop * 0.82f;
 
@@ -462,24 +474,37 @@ namespace InkDrift
         /// The modelled deep-dish wheel (Tools/driver/build_wheel.py) under the wheel pivot with cockpit materials:
         /// Alcantara rim, red thread, satin-black anodised spokes, steel bolts, accent quick-release. False if missing.
         /// </summary>
-        static bool ModelledWheel(Transform pivot, Mats mats)
+        static bool ModelledWheel(Transform pivot, Mats mats) => ModelledPart("Driver/steering_wheel", pivot, Vector3.zero, mats) != null;
+
+        /// <summary>
+        /// Instantiates a Blender-modelled cockpit part (Resources path) at a local position under parent, with its
+        /// M_Whl* / M_Ctl* materials swapped for the cockpit's own. Null if the model isn't in the build.
+        /// </summary>
+        static Transform ModelledPart(string path, Transform parent, Vector3 localPos, Mats mats)
         {
-            var prefab = Resources.Load<GameObject>("Driver/steering_wheel");
-            if (prefab == null) return false;
-            var go = UnityEngine.Object.Instantiate(prefab, pivot, false);
-            go.name = "ModelledWheel";
-            go.transform.localPosition = Vector3.zero;
+            var prefab = Resources.Load<GameObject>(path);
+            if (prefab == null) return null;
+            var go = UnityEngine.Object.Instantiate(prefab, parent, false);
+            go.name = "Modelled_" + prefab.name;
+            go.transform.localPosition = localPos;
             go.transform.localRotation = Quaternion.identity;
             go.transform.localScale = Vector3.one;
             Material Pick(string n)
             {
                 if (n.StartsWith("M_WhlRim")) return mats.soft;
                 if (n.StartsWith("M_WhlMarker")) return mats.marker;
-                if (n.StartsWith("M_WhlStitch")) return mats.stitch;
+                if (n.StartsWith("M_WhlStitch") || n.StartsWith("M_CtlStitch")) return mats.stitch;
                 if (n.StartsWith("M_WhlSpoke")) return mats.spoke;
-                if (n.StartsWith("M_WhlBolt")) return mats.chrome;
+                if (n.StartsWith("M_WhlBolt") || n.StartsWith("M_CtlChrome")) return mats.chrome;
                 if (n.StartsWith("M_WhlHorn")) return mats.dark;
                 if (n.StartsWith("M_WhlCollar")) return mats.collar;
+                if (n.StartsWith("M_CtlKnob")) return mats.knob;
+                if (n.StartsWith("M_CtlPaint")) return mats.paint;
+                if (n.StartsWith("M_CtlBoot")) return mats.door;
+                if (n.StartsWith("M_CtlTrim")) return mats.trim;
+                if (n.StartsWith("M_CtlAnodized")) return mats.anodized;
+                if (n.StartsWith("M_CtlRubber")) return mats.rubber;
+                if (n.StartsWith("M_CtlSteel")) return mats.metal;
                 return null;
             }
             foreach (var r in go.GetComponentsInChildren<MeshRenderer>())
@@ -491,7 +516,14 @@ namespace InkDrift
                 r.lightProbeUsage = LightProbeUsage.Off;
                 r.reflectionProbeUsage = ReflectionProbeUsage.Off;
             }
-            return true;
+            return go.transform;
+        }
+
+        /// <summary>Re-parents a named child of a modelled part onto a moving pivot that shares the part's frame.</summary>
+        static void MoveChild(Transform model, string child, Transform pivot)
+        {
+            var t = model.Find(child);
+            if (t != null) t.SetParent(pivot, false);
         }
 
         /// <summary>Gauge dial: textured face (unlit), bezel ring and a needle pivot (returned).</summary>
@@ -601,6 +633,10 @@ namespace InkDrift
                 stitch = R("WheelStitch", null, new Color(0.55f, 0.04f, 0.05f), 0f, 0.3f, 0f),
                 spoke = R("Spoke", null, new Color(0.05f, 0.05f, 0.055f), 0f, 0.55f, 0f, 1f),          // satin black anodised aluminium
                 collar = R("QuickRelease", null, Color.Lerp(accent, Color.black, 0.15f), 0f, 0.6f, 0f, 1f),
+                knob = R("ShiftKnob", null, new Color(0.03f, 0.03f, 0.033f), 0f, 0.66f, 0f),             // polished black Delrin
+                paint = R("KnobPaint", null, new Color(0.86f, 0.86f, 0.86f), 0f, 0.4f, 0f),
+                rubber = R("Rubber", null, new Color(0.035f, 0.035f, 0.037f), 0f, 0.24f, 0f),
+                anodized = R("Anodised", null, Color.Lerp(accent, Color.black, 0.25f), 0f, 0.42f, 0f, 1f),
                 needle = R("Needle", null, new Color(1f, 0.35f, 0.1f), 0f, 0.4f, 0f, 0f, 0f, new Color(0.9f, 0.25f, 0.05f)),
                 ledOff = R("LedOff", null, new Color(0.05f, 0.05f, 0.06f), 0f, 0.85f, 0f),
                 screen = R("Screen", null, new Color(0.02f, 0.02f, 0.04f), 0f, 0.92f, 0f, 0f, 0f, new Color(0.25f, 0.05f, 0.35f)),
@@ -661,6 +697,10 @@ namespace InkDrift
             m.stitch = m.accent;
             m.spoke = m.metal;
             m.collar = m.accent;
+            m.knob = m.dark;
+            m.paint = m.suitStripe;
+            m.rubber = m.dark;
+            m.anodized = m.accent;
             m.ledOn = new[]
             {
                 Clone(baseMat, "LedGreen", new Color(0.2f, 1f, 0.3f), 0.8f, 0f, 0.5f, new Color(0.4f, 3f, 0.6f)),
