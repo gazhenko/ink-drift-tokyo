@@ -14,6 +14,9 @@ namespace InkDrift
         /// <param name="gripRot">forward = where the fingers point past the grip, up = back of the hand</param>
         /// <param name="open">0 = holding, 1 = hand relaxed open (travelling between holds)</param>
         void Pose(int i, Vector3 gripPos, Quaternion gripRot, Grip grip, float open);
+
+        /// <summary>Car-local point the thumb should rest on (a wheel spoke), or null for the normal grip.</summary>
+        void SetThumbTarget(int i, Vector3? carLocal);
     }
 
     /// <summary>
@@ -50,6 +53,12 @@ namespace InkDrift
 
         readonly Arm[] arms = new Arm[2];
         Transform root;
+        readonly Vector3?[] thumbTarget = new Vector3?[2];
+        readonly float[] thumbHook = new float[2];
+        // a hooked thumb lies almost straight along the spoke
+        static readonly float[] HookCurl = { 4f, 6f, 10f };
+
+        public void SetThumbTarget(int i, Vector3? carLocal) { thumbTarget[i] = carLocal; }
 
         public static DriverModel Create(Transform cockpitRoot, Vector3 eye)
         {
@@ -178,7 +187,6 @@ namespace InkDrift
             return null;
         }
 
-        /// <summary>Rest-pose measurements: hand frame, finger curl axes and the grip centre of every hold.</summary>
         /// <summary>Rest-pose world positions of the glove logo vertices (the logo sits on the back of each hand).</summary>
         static List<Vector3> LogoCentres(GameObject go)
         {
@@ -192,13 +200,16 @@ namespace InkDrift
                     var baked = new Mesh();
                     r.BakeMesh(baked, false);   // unscaled: TransformPoint applies the scale
                     var v = baked.vertices;
-                    foreach (int idx in r.sharedMesh.GetTriangles(sm)) pts.Add(r.transform.TransformPoint(v[idx]));
+                    // the baked copy is CPU-readable; the imported mesh isn't in player builds
+                    if (sm < baked.subMeshCount)
+                        foreach (int idx in baked.GetTriangles(sm)) pts.Add(r.transform.TransformPoint(v[idx]));
                     Object.Destroy(baked);
                 }
             }
             return pts;
         }
 
+        /// <summary>Rest-pose measurements: hand frame, finger curl axes and the grip centre of every hold.</summary>
         void Calibrate(Arm a, int i, List<Vector3> logo)
         {
             a.up1Rest = a.up1.localRotation; a.up2Rest = a.up2 ? a.up2.localRotation : Quaternion.identity;
@@ -281,10 +292,13 @@ namespace InkDrift
             var hold = Poses[(int)grip];
             var rel = Poses[(int)Grip.Open];
             float k = 1f - Mathf.Exp(-18f * dt);
+            bool hookWanted = thumbTarget[i].HasValue && grip == Grip.Wheel && open < 0.2f;
+            thumbHook[i] = Mathf.MoveTowards(thumbHook[i], hookWanted ? 1f : 0f, dt / 0.12f);
             for (int f = 0; f < 5; f++)
                 for (int j = 0; j < 3; j++)
                 {
                     float want = Mathf.Lerp(hold[f, j], rel[f, j], open);
+                    if (f == 0) want = Mathf.Lerp(want, HookCurl[j], thumbHook[i]);
                     a.curl[f, j] = Mathf.Lerp(a.curl[f, j], want, k);
                     if (a.fing[f, j]) a.fing[f, j].localRotation = a.fingRest[f, j] * Quaternion.AngleAxis(a.curl[f, j], a.curlAxis[f, j]);
                 }
@@ -333,6 +347,19 @@ namespace InkDrift
                 a.low2.rotation = Quaternion.AngleAxis(tw * 0.55f, axis) * a.low2.rotation;
             }
             a.wrist.rotation = rw;
+
+            // thumb over the spoke: swing the thumb from its base so its tip rests on the target
+            if (thumbHook[i] > 0.001f && thumbTarget[i].HasValue && a.fing[0, 0] && a.fing[0, 2])
+            {
+                Vector3 b0 = a.fing[0, 0].position;
+                Vector3 tip = a.fing[0, 2].position + (a.fing[0, 2].position - a.fing[0, 1].position) * 0.9f;
+                Vector3 tgt = root.TransformPoint(thumbTarget[i].Value);
+                Quaternion q = Quaternion.FromToRotation(tip - b0, tgt - b0);
+                q.ToAngleAxis(out float ang, out Vector3 ax);
+                if (ang > 180f) ang -= 360f;
+                ang = Mathf.Clamp(ang, -65f, 65f) * thumbHook[i];
+                if (ax.sqrMagnitude > 1e-6f) a.fing[0, 0].rotation = Quaternion.AngleAxis(ang, ax) * a.fing[0, 0].rotation;
+            }
         }
     }
 }

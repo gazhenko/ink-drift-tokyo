@@ -191,6 +191,7 @@ namespace InkDrift
                     if (b > 0.5f) grip = task == Task.Handbrake ? Grip.Lever : Grip.Knob;
                     open = Mathf.Max(open, Mathf.Sin(Mathf.PI * b));
                 }
+                arms.SetThumbTarget(i, grip == Grip.Wheel && !hand.regrab ? SpokeThumbPoint(i, w) : (Vector3?)null);
                 arms.Pose(i, pos, rot, grip, open);
             }
 
@@ -262,6 +263,21 @@ namespace InkDrift
                 return;
             }
             RimPose(i, h.gripW - w, out pos, out rot);
+        }
+
+        /// <summary>
+        /// Where a thumb rests when the hand holds the rim next to a spoke (9-and-3): on the driver's face of the
+        /// 3 o'clock (right hand) or 9 o'clock (left hand) spoke, just inside the rim. Null when the hand is elsewhere.
+        /// </summary>
+        Vector3? SpokeThumbPoint(int i, float w)
+        {
+            float spoke = i == 0 ? 0f : 180f;                 // wheel-local angle of the spoke next to this hand
+            if (Mathf.Abs(Mathf.DeltaAngle(hands[i].gripW, spoke)) > 32f) return null;
+            float a = (spoke - w) * Mathf.Deg2Rad;            // where that spoke is now, in car space
+            Vector3 radial = wheelBase * new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f);
+            float r = wheelRadius - 0.032f;
+            // the spokes dish about 12 mm toward the dash this far out; the thumb lies on their driver-side face, 6 mm nearer
+            return wheel.localPosition + radial * r + ColumnDir() * 0.006f;
         }
 
         void TaskPose(Task t, out Vector3 pos, out Quaternion rot)

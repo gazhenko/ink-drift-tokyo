@@ -1,8 +1,14 @@
-# INK DRIFT: TOKYO — v1.8.0: glove construction
+# INK DRIFT: TOKYO — v1.9.0: a clean cockpit
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.8.0
+## What's new in 1.9.0
+- **No more comic outlines inside the car.** The realistic cockpit and driver were meant to be kept free of the comic ink lines and paper grain, but the shipped builds since 1.5.0 were missing that render pass. Now the cockpit and driver are clean, and the comic look stays on the city outside the windows.
+- **The stitching shows its real colour.** Because the ink lines no longer cover it, the red contrast thread on the gloves, suit cuffs, dash and wheel now shows as red.
+- **Thumbs over the spokes.** At 9 and 3 o'clock each thumb now hooks over the wheel spoke, the classic racing hold. The thumb lets go when that hand moves round the rim.
+- **Fix:** the game no longer logs a mesh-read error when the driver loads.
+
+## 1.8.0: glove construction
 - **Segmented knuckle guard.** The red guard is now four separate padded segments with grooves between the knuckles, like real racing gloves, so it flexes and reads as padding rather than one block.
 - **External finger seams.** Twin rows of stitching run down both sides of every finger (about 300 more stitches), following the finger bones so they bend with the hand.
 - **Vent perforations.** Rows of vent holes on the backs of the fingers, as on lightweight racing gloves.
