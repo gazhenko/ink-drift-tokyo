@@ -192,6 +192,7 @@ namespace InkDrift
                     open = Mathf.Max(open, Mathf.Sin(Mathf.PI * b));
                 }
                 arms.SetThumbTarget(i, grip == Grip.Wheel && !hand.regrab ? SpokeThumbPoint(i, w) : (Vector3?)null);
+                arms.SetEffort(i, Mathf.Abs(wheelVel) / 300f);
                 arms.Pose(i, pos, rot, grip, open);
             }
 

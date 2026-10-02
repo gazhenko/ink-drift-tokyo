@@ -44,7 +44,7 @@ namespace InkDrift.EditorTools
             PlayerSettings.companyName = "Gazhenko";
             PlayerSettings.productName = "INK DRIFT TOKYO";
             PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone, "com.gazhenko.inkdrift");
-            PlayerSettings.bundleVersion = "1.12.0";
+            PlayerSettings.bundleVersion = "1.13.0";
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.defaultScreenWidth = 1920;
             PlayerSettings.defaultScreenHeight = 1080;

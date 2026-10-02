@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.12.0: what the hands hold
+# INK DRIFT: TOKYO — v1.13.0: a living grip
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.12.0
+## What's new in 1.13.0
+- **The hands are no longer frozen.** Each finger drifts slightly and slowly on the rim. The grip tightens when you steer hard, and when the wheel is calm a hand now and then lets go a touch and takes hold again, as a real driver does.
+
+## 1.12.0: what the hands hold
 - **A modelled shifter.** A 46 mm round black knob with the gear pattern (R 1 3 5 / 2 4 6) in white on top, a chrome lever and jam nut. Around it sits a leather boot gathered into soft, uneven folds with twin-stitched corner seams, and a satin trim bezel with four screws.
 - **A modelled hydraulic handbrake.** An anodised lever in the car's accent colour with a ribbed rubber grip and end cap, on a cover plate with bracket cheeks, a polished master cylinder with its reservoir, and braided lines running into the console.
 - **Gloves that crease.** The leather now bunches into folds on the palm side of each finger joint, wrinkles over the knuckles, and gathers in soft folds round the wrist, where it used to be perfectly smooth.

@@ -17,6 +17,9 @@ namespace InkDrift
 
         /// <summary>Car-local point the thumb should rest on (a wheel spoke), or null for the normal grip.</summary>
         void SetThumbTarget(int i, Vector3? carLocal);
+
+        /// <summary>How hard this hand is working the wheel (0 = cruising, 1 = fast steering).</summary>
+        void SetEffort(int i, float effort);
     }
 
     /// <summary>
@@ -62,6 +65,12 @@ namespace InkDrift
         static readonly float[] HookCurl = { 4f, 6f, 10f };
 
         public void SetThumbTarget(int i, Vector3? carLocal) { thumbTarget[i] = carLocal; }
+
+        // a living grip: fingers drift a little, tighten under effort, and now and then let go a touch and re-grip
+        readonly float[] effort = new float[2];
+        readonly float[] squeezeAt = { 4f, 7.5f };          // when each hand next readjusts its grip (s)
+        readonly float[] squeezeT = { -1f, -1f };
+        public void SetEffort(int i, float e) { effort[i] = Mathf.Clamp01(e); }
 
         public static DriverModel Create(Transform cockpitRoot, Vector3 eye)
         {
@@ -376,11 +385,30 @@ namespace InkDrift
             float k = 1f - Mathf.Exp(-18f * dt);
             bool hookWanted = thumbTarget[i].HasValue && grip == Grip.Wheel && open < 0.2f;
             thumbHook[i] = Mathf.MoveTowards(thumbHook[i], hookWanted ? 1f : 0f, dt / 0.12f);
+            float life = grip == Grip.Wheel ? 1f - open : 0f, squeeze = 0f;
+            if (grip == Grip.Wheel && open < 0.05f)
+            {
+                float now = Time.time;
+                if (squeezeT[i] < 0f && now > squeezeAt[i] && effort[i] < 0.2f) squeezeT[i] = 0f;
+                if (squeezeT[i] >= 0f)
+                {
+                    squeezeT[i] += dt / 0.5f;
+                    squeeze = Mathf.Sin(Mathf.PI * Mathf.Clamp01(squeezeT[i]));
+                    if (squeezeT[i] >= 1f) { squeezeT[i] = -1f; squeezeAt[i] = now + UnityEngine.Random.Range(6f, 14f); }
+                }
+            }
+            else if (squeezeT[i] >= 0f) squeezeT[i] = -1f;
             for (int f = 0; f < 5; f++)
                 for (int j = 0; j < 3; j++)
                 {
                     float want = Mathf.Lerp(hold[f, j], rel[f, j], open);
                     if (f == 0) want = Mathf.Lerp(want, HookCurl[j], thumbHook[i]);
+                    else
+                    {
+                        // slow drift (+-2.5 deg), +3 deg under effort, and the readjust lifts the fingers off the rim
+                        float drift = (Mathf.PerlinNoise(Time.time * 0.3f + f * 3.7f, i * 11.3f + j * 1.9f) - 0.5f) * 5f;
+                        want += life * (drift + effort[i] * 3f) - squeeze * (f == 1 ? 12f : 8f) * (j == 0 ? 0.5f : 1f);
+                    }
                     a.curl[f, j] = Mathf.Lerp(a.curl[f, j], want, k);
                     if (a.fing[f, j]) a.fing[f, j].localRotation = a.fingRest[f, j] * Quaternion.AngleAxis(a.curl[f, j], a.curlAxis[f, j]);
                 }
