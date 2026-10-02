@@ -56,7 +56,7 @@ namespace InkDrift
 
         class Mats
         {
-            public Material door, carpet;
+            public Material door, carpet, stitch, spoke, collar;
             public Material dark, dash, soft, trim, metal, accent, cage, seat, insert, harness, marker, suit, suitStripe, glove, cuff, needle, ledOff, screen, chrome;
             public Material[] ledOn;
             public Material gaugeFace(Texture t) { var m = new Material(Shader.Find("UI/Default")); m.mainTexture = t; m.color = Color.white; m.renderQueue = 3000; return m; }   // after the opaque binnacle (the UI shader doesn't write depth)
@@ -196,28 +196,34 @@ namespace InkDrift
             wheel.localPosition = wheelC;
             wheel.localRotation = Quaternion.LookRotation(col, Vector3.up);
             const float R = 0.172f;
-            var rim = new ProcMesh();
-            rim.Torus(Vector3.zero, Vector3.forward, Vector3.right, R, 0.0175f, 98f, 442f, 64, 12);   // leaves 82..98° for the marker
-            Part(wheel, "Rim", rim, mats.soft);
-            var mark = new ProcMesh();
-            mark.Torus(Vector3.zero, Vector3.forward, Vector3.right, R, 0.0182f, 82f, 98f, 8, 12);
-            Part(wheel, "Marker", mark, mats.marker);
-            var spokes = new ProcMesh();
             float dish = 0.065f;   // deep dish: hub sits toward the dash
-            foreach (float a in new[] { 0f, 180f, 270f })
+            if (!ModelledWheel(wheel, mats))
             {
-                Vector3 dir = new Vector3(Mathf.Cos(a * Mathf.Deg2Rad), Mathf.Sin(a * Mathf.Deg2Rad), 0f);
-                spokes.Beam(new Vector3(0f, 0f, dish) + dir * 0.03f, dir * (R - 0.012f), 0.042f, 0.007f, Vector3.forward);
+                // simple fallback if the modelled wheel is missing
+                var rim = new ProcMesh();
+                rim.Torus(Vector3.zero, Vector3.forward, Vector3.right, R, 0.0175f, 98f, 442f, 64, 12);   // leaves 82..98° for the marker
+                Part(wheel, "Rim", rim, mats.soft);
+                var mark = new ProcMesh();
+                mark.Torus(Vector3.zero, Vector3.forward, Vector3.right, R, 0.0182f, 82f, 98f, 8, 12);
+                Part(wheel, "Marker", mark, mats.marker);
+                var spokes = new ProcMesh();
+                foreach (float a in new[] { 0f, 180f, 270f })
+                {
+                    Vector3 dir = new Vector3(Mathf.Cos(a * Mathf.Deg2Rad), Mathf.Sin(a * Mathf.Deg2Rad), 0f);
+                    spokes.Beam(new Vector3(0f, 0f, dish) + dir * 0.03f, dir * (R - 0.012f), 0.042f, 0.007f, Vector3.forward);
+                }
+                spokes.Tube(new Vector3(0f, 0f, dish + 0.02f), new Vector3(0f, 0f, dish - 0.012f), 0.045f, 0.042f, 24);
+                Part(wheel, "Spokes", spokes, mats.metal);
+                var hub = new ProcMesh();
+                hub.Disc(new Vector3(0f, 0f, dish - 0.014f), Vector3.back, 0.03f, 24);
+                Part(wheel, "Hub", hub, mats.dark);
+                var horn = new ProcMesh();
+                horn.Torus(new Vector3(0f, 0f, dish - 0.015f), Vector3.forward, Vector3.right, 0.022f, 0.004f, 0f, 360f, 24, 6);
+                Part(wheel, "HornRing", horn, mats.accent);
             }
-            spokes.Tube(new Vector3(0f, 0f, dish + 0.02f), new Vector3(0f, 0f, dish - 0.012f), 0.045f, 0.042f, 24);
-            Part(wheel, "Spokes", spokes, mats.metal);
-            var hub = new ProcMesh();
-            hub.Disc(new Vector3(0f, 0f, dish - 0.014f), Vector3.back, 0.03f, 24);
-            hub.Tube(new Vector3(0f, 0f, dish + 0.02f), new Vector3(0f, 0f, 0.30f), 0.03f, 0.035f, 16, false, false);   // column + quick release
-            Part(wheel, "Hub", hub, mats.dark);
-            var horn = new ProcMesh();
-            horn.Torus(new Vector3(0f, 0f, dish - 0.015f), Vector3.forward, Vector3.right, 0.022f, 0.004f, 0f, 360f, 24, 6);
-            Part(wheel, "HornRing", horn, mats.accent);
+            var column = new ProcMesh();   // steering column behind the quick-release
+            column.Tube(new Vector3(0f, 0f, dish + 0.035f), new Vector3(0f, 0f, 0.30f), 0.03f, 0.035f, 16, false, false);
+            Part(wheel, "Column", column, mats.dark);
             rig.wheel = wheel;
             rig.wheelRadius = R;
             // column shroud (does not turn)
@@ -400,6 +406,42 @@ namespace InkDrift
             return rig;
         }
 
+        /// <summary>
+        /// The modelled deep-dish wheel (Tools/driver/build_wheel.py) under the wheel pivot with cockpit materials:
+        /// Alcantara rim, red thread, satin-black anodised spokes, steel bolts, accent quick-release. False if missing.
+        /// </summary>
+        static bool ModelledWheel(Transform pivot, Mats mats)
+        {
+            var prefab = Resources.Load<GameObject>("Driver/steering_wheel");
+            if (prefab == null) return false;
+            var go = UnityEngine.Object.Instantiate(prefab, pivot, false);
+            go.name = "ModelledWheel";
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localRotation = Quaternion.identity;
+            go.transform.localScale = Vector3.one;
+            Material Pick(string n)
+            {
+                if (n.StartsWith("M_WhlRim")) return mats.soft;
+                if (n.StartsWith("M_WhlMarker")) return mats.marker;
+                if (n.StartsWith("M_WhlStitch")) return mats.stitch;
+                if (n.StartsWith("M_WhlSpoke")) return mats.spoke;
+                if (n.StartsWith("M_WhlBolt")) return mats.chrome;
+                if (n.StartsWith("M_WhlHorn")) return mats.dark;
+                if (n.StartsWith("M_WhlCollar")) return mats.collar;
+                return null;
+            }
+            foreach (var r in go.GetComponentsInChildren<MeshRenderer>())
+            {
+                var ms = r.sharedMaterials;
+                for (int i = 0; i < ms.Length; i++) { var m = ms[i] != null ? Pick(ms[i].name) : null; if (m != null) ms[i] = m; }
+                r.sharedMaterials = ms;
+                r.shadowCastingMode = ShadowCastingMode.On;
+                r.lightProbeUsage = LightProbeUsage.Off;
+                r.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            }
+            return true;
+        }
+
         /// <summary>Gauge dial: textured face (unlit), bezel ring and a needle pivot (returned).</summary>
         static Transform Gauge(Transform parent, string name, Texture2D face, Vector3 c, Vector3 n, float r, Mats mats, ProcMesh bezel, float needleLen)
         {
@@ -504,6 +546,9 @@ namespace InkDrift
                 marker = R("Marker", "suede", new Color(0.95f, 0.78f, 0.1f), 1f, 0.15f, 1f),
                 door = R("DoorCard", "door_leather", new Color(0.06f, 0.06f, 0.065f), 1f, 0.4f, 0.8f),
                 carpet = R("Carpet", "carpet", new Color(0.05f, 0.05f, 0.055f), 1f, 0.1f, 1f),
+                stitch = R("WheelStitch", null, new Color(0.55f, 0.04f, 0.05f), 0f, 0.3f, 0f),
+                spoke = R("Spoke", null, new Color(0.05f, 0.05f, 0.055f), 0f, 0.55f, 0f, 1f),          // satin black anodised aluminium
+                collar = R("QuickRelease", null, Color.Lerp(accent, Color.black, 0.15f), 0f, 0.6f, 0f, 1f),
                 needle = R("Needle", null, new Color(1f, 0.35f, 0.1f), 0f, 0.4f, 0f, 0f, 0f, new Color(0.9f, 0.25f, 0.05f)),
                 ledOff = R("LedOff", null, new Color(0.05f, 0.05f, 0.06f), 0f, 0.85f, 0f),
                 screen = R("Screen", null, new Color(0.02f, 0.02f, 0.04f), 0f, 0.92f, 0f, 0f, 0f, new Color(0.25f, 0.05f, 0.35f)),
@@ -561,6 +606,9 @@ namespace InkDrift
             };
             m.door = m.dash;
             m.carpet = m.dark;
+            m.stitch = m.accent;
+            m.spoke = m.metal;
+            m.collar = m.accent;
             m.ledOn = new[]
             {
                 Clone(baseMat, "LedGreen", new Color(0.2f, 1f, 0.3f), 0.8f, 0f, 0.5f, new Color(0.4f, 3f, 0.6f)),

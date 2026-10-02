@@ -40,8 +40,10 @@ CHAIN = ["clavicle", "shoulder01"] + ARM
 
 # material slots (names are read by Unity's AssetPipeline: /Models/Driver/ -> DriverMaterial)
 MATS = ["M_DrvSuit", "M_DrvStripe", "M_DrvStretch", "M_DrvKnit", "M_DrvGloveBack", "M_DrvGlovePalm", "M_DrvKnuckle",
-        "M_DrvStrap", "M_DrvLogo", "M_DrvPatchInk", "M_DrvPatchFlag", "M_DrvPatchClass"]
-SUIT, STRIPE, STRETCH, KNIT, BACK, PALM, KNUCKLE, STRAP, LOGO, PINK, PFLAG, PCLASS = range(len(MATS))
+        "M_DrvStrap", "M_DrvLogo", "M_DrvPatchInk", "M_DrvPatchFlag", "M_DrvPatchClass",
+        "M_DrvGusset", "M_DrvStitch", "M_DrvStitchSuit"]
+SUIT, STRIPE, STRETCH, KNIT, BACK, PALM, KNUCKLE, STRAP, LOGO, PINK, PFLAG, PCLASS, GUSSET, STITCH, STITCH_SUIT = range(len(MATS))
+NO_TILE_UV = (LOGO, PINK, PFLAG, PCLASS, STITCH, STITCH_SUIT)
 LOOK = {   # linear base colour, roughness, normal tile, decal image
     "M_DrvSuit": ((0.045, 0.11, 0.38), 0.8, "suit_n.png", None),
     "M_DrvStripe": ((0.78, 0.78, 0.8), 0.75, "twill_n.png", None),
@@ -55,6 +57,9 @@ LOOK = {   # linear base colour, roughness, normal tile, decal image
     "M_DrvPatchInk": ((1, 1, 1), 0.7, None, "patch_ink.png"),
     "M_DrvPatchFlag": ((1, 1, 1), 0.7, None, "patch_flag.png"),
     "M_DrvPatchClass": ((1, 1, 1), 0.7, None, "patch_class.png"),
+    "M_DrvGusset": ((0.03, 0.03, 0.033), 0.7, "perf_n.png", None),
+    "M_DrvStitch": ((0.45, 0.03, 0.04), 0.6, None, None),
+    "M_DrvStitchSuit": ((0.7, 0.7, 0.72), 0.6, None, None),
 }
 
 
@@ -268,6 +273,8 @@ def main():
         fr[sd]["joints"] = [(bones[f"finger{i}-{j}.{sd}"][0], nrm(bones[f"finger{i}-{j}.{sd}"][1] - bones[f"finger{i}-{j}.{sd}"][0]), i)
                             for i in range(1, 6) for j in range(1, 4)]
     detail_glove(glove, fr, side_of, t_of)
+    stitch_seams(glove, {(BACK, PALM), (BACK, KNUCKLE), (BACK, STRAP), (PALM, STRAP), (KNUCKLE, PALM)}, STITCH)
+    stitch_seams(sleeve, {(SUIT, STRIPE), (SUIT, KNIT), (STRIPE, KNIT)}, STITCH_SUIT, spacing=0.0042, offset=0.0022, length=0.003)
     decals(glove, sleeve, fr, side_of, t_of)
     uvs(glove, sleeve, fr, side_of, t_of)
     if "--no-bake" not in sys.argv:
@@ -334,7 +341,8 @@ def glove_off(t):
     over = np.maximum(0.0042, sleeve_off(t, False) + 0.0018)
     flare = 0.0025 * np.clip((-t - 0.045) / (GAUNT - 0.045), 0, 1) ** 2
     wrist = s0 + 0.0018 + (0.0016 - s0 - 0.0018) * np.clip(t / 0.02, 0, 1)
-    return np.where(t >= 0.02, 0.0016, np.where(t >= 0.0, wrist, over + flare))
+    hand = 0.0016 - 0.0006 * np.clip((t - 0.075) / 0.03, 0, 1)        # leather hugs the fingers tighter than the palm
+    return np.where(t >= 0.02, hand, np.where(t >= 0.0, wrist, over + flare))
 
 
 def on_upper(p, F):
@@ -384,6 +392,7 @@ def cut_panels(glove, sleeve, fr, side_of, t_of):
             u = np.dot(c - k0, seg) / np.dot(seg, seg)
             if mat == BACK and dk - 0.017 < d < dk + 0.008 and -0.12 < u < 1.12 and np.dot(np.array(f.normal), F["back"]) > 0.2:
                 mat = KNUCKLE
+
         f.material_index = mat
     bm.to_mesh(glove.data); bm.free()
 
@@ -519,6 +528,64 @@ def bake(glove, sleeve, size=2048):
         res.save()
         me.uv_layers.active = tiling                      # UV0 stays the tiling layout, Bake exports as UV1
         log("wrote", res.filepath_raw)
+
+
+def stitch_seams(obj, pairs, mat, spacing=0.0034, offset=0.0016, length=0.0024, width=0.00055, lift=0.0004):
+    """twin-needle stitching: a row of thread beads either side of every seam between the given panel pairs"""
+    me = obj.data
+    bm = bmesh.new(); bm.from_mesh(me); bm.normal_update()
+    dl = bm.verts.layers.deform.verify()
+    ok = set(pairs) | {(b, a) for a, b in pairs}
+    seam = [e for e in bm.edges if len(e.link_faces) == 2 and (e.link_faces[0].material_index, e.link_faces[1].material_index) in ok]
+    adj = {}
+    for e in seam:
+        for v in e.verts:
+            adj.setdefault(v, []).append(e)
+    used, lines = set(), []
+    starts = [v for v, es in adj.items() if len(es) != 2] + list(adj.keys())   # open ends first, then loops
+    for v0 in starts:
+        for e0 in adj[v0]:
+            if e0 in used:
+                continue
+            line, v, e = [v0], v0, e0
+            while e is not None and e not in used:
+                used.add(e)
+                v = e.other_vert(v)
+                line.append(v)
+                nxt = [x for x in adj.get(v, []) if x not in used]
+                e = nxt[0] if len(adj.get(v, [])) == 2 and nxt else None
+            if len(line) > 2:
+                lines.append(line)
+    count = 0
+    for line in lines:
+        P = np.array([v.co for v in line]); Nn = np.array([v.normal for v in line])
+        seg = np.linalg.norm(np.diff(P, axis=0), axis=1)
+        cum = np.concatenate([[0], np.cumsum(seg)])
+        for d in np.arange(spacing * 0.5, cum[-1], spacing):
+            i = min(np.searchsorted(cum, d) - 1, len(seg) - 1)
+            i = max(i, 0)
+            k = (d - cum[i]) / max(seg[i], 1e-9)
+            p = P[i] + (P[i + 1] - P[i]) * k
+            t = nrm(P[i + 1] - P[i])
+            n = nrm(Nn[i] * (1 - k) + Nn[i + 1] * k)
+            t = nrm(t - n * np.dot(t, n))
+            b = np.cross(n, t)
+            src = line[i] if k < 0.5 else line[i + 1]
+            for row in (-offset, offset):
+                c = p + b * row + n * lift * 0.5
+                geo = bmesh.ops.create_cube(bm, size=1.0)
+                M = np.stack([t * length, b * width, n * lift], 1)
+                for v in geo["verts"]:
+                    v.co = Vector(c + M @ np.array(v.co))
+                    for gi, w in src[dl].items():
+                        v[dl][gi] = w
+                for f in {f for v in geo["verts"] for f in v.link_faces}:
+                    f.material_index = mat
+                    f.smooth = True
+                count += 1
+    bm.to_mesh(me); bm.free()
+    me.update()
+    log(obj.name, "stitches:", count, "along", len(lines), "seams")
 
 
 def pre_smooth(obj, iters, k):
@@ -721,7 +788,7 @@ def decals(glove, sleeve, fr, side_of, t_of):
             if np.dot(Vv, up_axis(s)) < 0:
                 Vv = -Vv
             r = 0.5 * math.hypot(w, h) + 0.006
-            faces = [f for f in bm.faces if f.material_index not in (LOGO, PINK, PFLAG, PCLASS)
+            faces = [f for f in bm.faces if f.material_index not in NO_TILE_UV
                      and np.linalg.norm(np.array(f.calc_center_median()) - c) < r and np.dot(np.array(f.normal), n) > 0.5]
             if not faces:
                 continue
@@ -758,7 +825,7 @@ def uvs(glove, sleeve, fr, side_of, t_of):
         bm = bmesh.new(); bm.from_mesh(me); bm.normal_update()
         uvl = bm.loops.layers.uv.verify()
         for f in bm.faces:
-            if f.material_index in (LOGO, PINK, PFLAG, PCLASS):
+            if f.material_index in NO_TILE_UV:
                 continue
             uv = [fn(np.array(l.vert.co), np.array(f.normal), f.material_index) for l in f.loops]
             us = [u for u, _ in uv]

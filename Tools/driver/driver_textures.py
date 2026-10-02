@@ -151,6 +151,23 @@ def velcro():
     save(height_to_normal(h, 4.0), "velcro_n.png")
 
 
+def perforated():
+    """gusset panels: perforated stretch fabric, 2.5 mm hole pitch on a 4 cm tile (staggered), dimpled normal"""
+    x, y = grid()
+    k = 16
+    gy = y * k
+    row = np.floor(gy)
+    gx = x * k + (row % 2) * 0.5
+    cx, cy = gx - np.floor(gx) - 0.5, gy - row - 0.5
+    r = np.sqrt(cx * cx + cy * cy)
+    hole = np.clip((0.22 - r) / 0.05, 0, 1)
+    weave = twill(160) * 0.15 + tile_noise(64, 2, 51) * 0.1
+    h = weave - hole * 0.9 - np.clip((0.3 - r) / 0.1, 0, 1) * 0.2
+    save(height_to_normal(h, 6.0), "perf_n.png")
+    alb = np.clip(0.92 - hole * 0.85 + (weave - 0.12) * 0.3, 0, 1)
+    save(Image.fromarray((np.stack([alb] * 3, -1) * 255).astype(np.uint8), "RGB"), "perf_albedo.png")
+
+
 # ---------------------------------------------------------------- decals
 def font(name, px):
     return ImageFont.truetype(os.path.join(FONTS, name), px)
@@ -200,5 +217,5 @@ def patch_class():
 
 
 if __name__ == "__main__":
-    suit(); twill_panel(); leather(); suede(); knit(); velcro()
+    suit(); twill_panel(); leather(); suede(); knit(); velcro(); perforated()
     glove_logo(); patch_ink(); patch_flag(); patch_class()

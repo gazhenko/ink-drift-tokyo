@@ -116,6 +116,9 @@ namespace InkDrift
             { "M_DrvPatchInk", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_ink" } },
             { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_flag" } },
             { "M_DrvPatchClass", new Look { color = Color.white, smooth = 0.3f, decal = "patch_class" } },
+            // thread beads: glove contrast stitching (red) and suit stitching (light grey)
+            { "M_DrvStitchSuit", new Look { color = new Color(0.78f, 0.78f, 0.8f), smooth = 0.3f, sheen = 0.1f, sheenColor = Color.white } },
+            { "M_DrvStitch", new Look { color = new Color(0.62f, 0.05f, 0.06f), smooth = 0.32f, sheen = 0.1f, sheenColor = new Color(1f, 0.5f, 0.5f) } },
         };
 
         static void ApplyLook(Renderer r)
