@@ -41,7 +41,14 @@ struct InkSurface
 
 half3 InkShade(InkSurface s)
 {
+#if defined(INK_HAS_SOFTNESS)
+    // per-material override: realistic surfaces (the driver) shade with a soft terminator and highlight
+    half soft = _BandSoftness > 0.0h ? _BandSoftness : max(_ToonParams.x, 0.005h);
+    half specSoft = max(_SpecSoftness, 0.02h);
+#else
     half soft = max(_ToonParams.x, 0.005h);
+    half specSoft = 0.02h;
+#endif
     half3 N = s.normalWS;
     half3 V = s.viewDirWS;
     half NdotV = saturate(dot(N, V));
@@ -78,7 +85,7 @@ half3 InkShade(InkSurface s)
     half NdotH = saturate(dot(N, H));
     half specPow = exp2(10.0h * s.smoothness + 1.0h);
     half spec = pow(NdotH, specPow) * s.smoothness;
-    half specMask = InkBand(spec, 1.0h - _SpecSize, 0.02h) * lit;
+    half specMask = InkBand(spec, 1.0h - _SpecSize, specSoft) * lit;
     half3 specCol = lerp(half3(1, 1, 1), s.albedo, s.metallic * 0.6h);
     color += specCol * lightCol * specMask * _SpecIntensity;
 

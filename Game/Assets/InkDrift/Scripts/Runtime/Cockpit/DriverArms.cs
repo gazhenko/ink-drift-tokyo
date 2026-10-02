@@ -8,8 +8,11 @@ namespace InkDrift
     /// and gloves posed around a grip axis. Hands are placed by <see cref="CockpitRig"/> (wheel, shifter, handbrake).
     /// Index 0 = right arm, 1 = left arm. All positions are local to the cockpit root (= car space).
     /// </summary>
-    public class DriverArms
+    public class DriverArms : IDriverArms
     {
+        /// <summary>Procedural fallback (used if the rigged driver model is missing): holds are all the same fist.</summary>
+        public void Pose(int i, Vector3 gripPos, Quaternion gripRot, Grip grip, float open) => Pose(i, gripPos, gripRot);
+
         public const float UpperLen = 0.30f, ForeLen = 0.285f;
         /// <summary>Wrist point in glove space (the glove origin is the centre of whatever it grips).</summary>
         public static readonly Vector3 WristLocal = new Vector3(0f, 0.004f, -0.112f);

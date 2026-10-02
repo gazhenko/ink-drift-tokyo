@@ -379,7 +379,7 @@ namespace InkDrift
             lamp.renderMode = LightRenderMode.ForcePixel;
 
             // ---------------------------------------------------------------- driver's arms
-            rig.arms = DriverArms.Create(root.transform, e, mats.suit, mats.suitStripe, mats.glove, mats.cuff);
+            rig.arms = (IDriverArms)DriverModel.Create(root.transform, e) ?? DriverArms.Create(root.transform, e, mats.suit, mats.suitStripe, mats.glove, mats.cuff);
             rig.Init();
             SetLayerRecursive(root.transform, CarController.CarLayer);
             return rig;

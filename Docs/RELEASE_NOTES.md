@@ -1,8 +1,19 @@
-# INK DRIFT: TOKYO — v1.2.0: in-car view
+# INK DRIFT: TOKYO — v1.3.0: the driver
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.2.0
+## What's new in 1.3.0
+- **A real driver in the in-car view.** The capsule arms are replaced by a fully rigged human model with anatomically correct arms and hands. It is built from the MakeHuman CC0 base mesh with that project's own skeleton and hand-painted skin weights, scaled to a 1.75 m adult.
+- **Race suit and gloves, detailed to the stitch:**
+  - The suit sleeves are quilted multi-layer Nomex with a contrasting stripe down the top of the arm, fabric folds at the elbow, and embroidered patches.
+  - The leather gloves have a pebbled grain, a suede palm with a printed silicone grip, a padded knuckle guard and a flared gauntlet with a Velcro strap and pull tab. Every panel meets at a stitched seam groove.
+- **Hands that actually hold things.**
+  - Each finger joint curls about its anatomical axis, so the fingers wrap the wheel rim with the thumb over the top.
+  - The left hand cups the shift knob and closes round the hydraulic handbrake. Hands open as they let go and close again on the next hold.
+  - Two-bone arm IK keeps the elbows hinging the natural way, and the forearm's twist bone shares the wrist roll so the wrist never pinches.
+- **Realistic shading for the driver:** a soft light-to-shadow transition and real leather sheen, while the rest of the game keeps its comic look.
+
+## 1.2.0: in-car view
 - **In-car camera from the driver's seat.** Press **C / Y / △** to cycle cameras: chase, near chase, **in-car**, roof, bumper. The game remembers your choice.
 - **Right-hand drive, like the real Japanese cars.** Each car gets its own cockpit, sized from its windshield, roof and beltline. It includes a deep-dish wheel, an instrument pod with live tach, boost and water gauges, a digital gear and speed readout, a shift-light strip that flashes at the limiter, an H-pattern shifter, a hydraulic handbrake, bucket seats with harnesses, a roll cage in the car's colour, sun visors, door cards, and a rear-view mirror that shows the cars behind you.
 - **The driver's arms are rendered and animated.**
@@ -25,9 +36,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.2.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.2.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.2.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.3.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.3.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.3.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 

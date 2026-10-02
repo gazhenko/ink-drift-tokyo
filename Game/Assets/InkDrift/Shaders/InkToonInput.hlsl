@@ -37,7 +37,10 @@ CBUFFER_START(UnityPerMaterial)
     float _WorldUVScale;
     half _WetAmount;
     half _MaskHeightPuddles;
+    half _BandSoftness;
+    half _SpecSoftness;
 CBUFFER_END
+#define INK_HAS_SOFTNESS 1
 
 // Globals from ComicPostFX
 half4 _ToonShadowTint;

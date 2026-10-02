@@ -14,6 +14,8 @@ Shader "InkDrift/Toon"
         [HDR] _EmissionColor ("Emission", Color) = (0,0,0,0)
         _ShadowColor ("Shadow Color (x global tint)", Color) = (1,1,1,1)
         _ShadowThreshold ("Terminator", Range(-1,1)) = 0.0
+        _BandSoftness ("Band Softness (0 = global comic band)", Range(0,1)) = 0
+        _SpecSoftness ("Highlight Softness", Range(0.02,1)) = 0.02
         _HighlightThreshold ("Highlight Band", Range(0,1)) = 0.6
         _HighlightBoost ("Highlight Boost", Range(0,1)) = 0.12
         _SpecSize ("Spec Size", Range(0,1)) = 0.12

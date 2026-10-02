@@ -198,6 +198,16 @@ namespace InkDrift
             fovKick = Mathf.MoveTowards(fovKick, 0f, dt * 18f);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, f + fovKick * 0.4f + target.Boost * 1.5f, 1f - Mathf.Exp(-5f * dt));
             ApplyShake(speed, dt, 0.25f);
+            // dev: "-dbgCockpitCam px,py,pz,tx,ty,tz,fov" -- eye-relative camera position and look target (close-up review)
+            string dc = CommandLine.Get("-dbgCockpitCam");
+            if (dc != null)
+            {
+                var dcv = System.Array.ConvertAll(dc.Split(','), x => float.Parse(x, System.Globalization.CultureInfo.InvariantCulture));
+                Vector3 p = rig.EyeLocal + new Vector3(dcv[0], dcv[1], dcv[2]), tgt = rig.EyeLocal + new Vector3(dcv[3], dcv[4], dcv[5]);
+                transform.position = t.TransformPoint(p);
+                transform.rotation = t.rotation * Quaternion.LookRotation(tgt - p);
+                cam.fieldOfView = dcv.Length > 6 ? dcv[6] : 40f;
+            }
             return true;
         }
 

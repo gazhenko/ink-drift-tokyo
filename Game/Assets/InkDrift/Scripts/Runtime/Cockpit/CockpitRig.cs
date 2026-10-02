@@ -24,7 +24,7 @@ namespace InkDrift
         public Renderer mirrorRenderer;
         public Vector3 mirrorPos, knobLocal, handbrakeGripLocal;
         public float wheelRadius = 0.172f;
-        public DriverArms arms;
+        public IDriverArms arms;
 
         /// <summary>Steering-wheel turn at full lock (degrees each way).</summary>
         public const float WheelLockDeg = 300f;
@@ -120,6 +120,7 @@ namespace InkDrift
         /// <summary>Dev captures: -dbgHandbrake pulls the (visual) handbrake for 1.2 s every 4 s.</summary>
         static bool DevHandbrake() => devHb && Mathf.Repeat(Time.time, 4f) < 1.2f;
         static readonly bool devHb = CommandLine.Has("-dbgHandbrake");
+        static readonly string devTask = CommandLine.Get("-dbgTask");
 
         float WheelAngle() => car.SteerAngle / Mathf.Max(1f, car.spec.maxSteerDeg) * WheelLockDeg;
 
@@ -157,6 +158,7 @@ namespace InkDrift
             // ---------------------------------------------------------------- left-hand task
             bool hbWanted = (car.input.handbrake || DevHandbrake()) && !car.frozen;
             Task want = hbWanted ? Task.Handbrake : (pathT < 1f || Time.time < shiftLinger) ? Task.Shifter : Task.None;
+            if (devTask != null) want = devTask == "lever" ? Task.Handbrake : Task.Shifter;   // dev: -dbgTask knob|lever
             if (want != Task.None) task = want;
             if (want != Task.None && lastTask == Task.None) hands[1].gripW = Home[1] + w;   // come back to the home grip
             lastTask = want;
@@ -173,6 +175,9 @@ namespace InkDrift
             for (int i = 0; i < 2; i++)
             {
                 WheelHand(i, w, dt, oneHanded && i == 0, out Vector3 pos, out Quaternion rot);
+                var hand = hands[i];
+                Grip grip = Grip.Wheel;
+                float open = hand.regrab ? Mathf.Sin(Mathf.PI * hand.regrabT) : 0f;    // let go, move, take hold again
                 if (i == 1 && taskBlend > 0f && task != Task.None)
                 {
                     TaskPose(task, out Vector3 tp, out Quaternion tr);
@@ -183,8 +188,10 @@ namespace InkDrift
                     Vector3 lift = (Vector3.up * 0.6f - ColumnDir() * 0.4f) * 0.06f * Mathf.Sin(Mathf.PI * b);
                     pos = Vector3.Lerp(pos, taskPos, b) + lift;
                     rot = Quaternion.Slerp(rot, taskRot, b);
+                    if (b > 0.5f) grip = task == Task.Handbrake ? Grip.Lever : Grip.Knob;
+                    open = Mathf.Max(open, Mathf.Sin(Mathf.PI * b));
                 }
-                arms.Pose(i, pos, rot);
+                arms.Pose(i, pos, rot, grip, open);
             }
 
             UpdateGauges(dt);

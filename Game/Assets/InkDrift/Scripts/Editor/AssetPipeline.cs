@@ -62,6 +62,11 @@ namespace InkDrift.EditorTools
                 ti.sRGBTexture = true;
                 ti.alphaIsTransparency = In(p, "/Decals/") || In(p, "/Signs/") || lower.Contains("leaves") || lower.Contains("leaf") || lower.Contains("atlas") || lower.Contains("grass") || lower.Contains("fern");
             }
+            if (In(p, "/Models/Driver/") && (file.StartsWith("patch_") || file.Contains("logo")))
+            {
+                ti.alphaIsTransparency = true;          // suit patches / glove logo are alpha-clipped decals
+                ti.wrapMode = TextureWrapMode.Clamp;
+            }
             if (In(p, "/Art/Signs/") || In(p, "/Art/Decals/")) ti.wrapMode = TextureWrapMode.Clamp;
         }
 
@@ -85,6 +90,14 @@ namespace InkDrift.EditorTools
             mi.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
             mi.materialLocation = ModelImporterMaterialLocation.InPrefab;
             mi.addCollider = false;
+            if (In(assetPath, "/Models/Driver/"))
+            {
+                // skinned driver arms: keep the bones as transforms for the runtime IK
+                mi.animationType = ModelImporterAnimationType.Generic;
+                mi.avatarSetup = ModelImporterAvatarSetup.NoAvatar;
+                mi.optimizeGameObjects = false;
+                mi.skinWeights = ModelImporterSkinWeights.Standard;
+            }
         }
 
         /// <summary>FBX materials from Blender become InkDrift/Toon materials, keeping base color, textures and emission.</summary>
@@ -154,7 +167,36 @@ namespace InkDrift.EditorTools
                 m.SetFloat("_ShadowThreshold", foliage ? -0.15f : 0f);
             }
             if (In(assetPath, "/Models/Cars/")) CarMaterial(m, n, baseCol, hasTex);
+            if (In(assetPath, "/Models/Driver/")) DriverMaterial(m, n);
             m.enableInstancing = true;
+        }
+
+        /// <summary>Realistic shading for the driver's suit and gloves: soft terminator, real highlights, fine normal detail.</summary>
+        static void DriverMaterial(Material m, string name)
+        {
+            void P(float smooth, float spec, float specSize, float specSoft, float bump)
+            {
+                m.SetFloat("_Smoothness", smooth); m.SetFloat("_SpecIntensity", spec); m.SetFloat("_SpecSize", specSize);
+                m.SetFloat("_SpecSoftness", specSoft); m.SetFloat("_BumpScale", bump);
+            }
+            m.SetFloat("_BandSoftness", 0.32f);
+            m.SetFloat("_ShadowThreshold", -0.12f);
+            m.SetFloat("_HalftoneAmount", 0.12f);
+            m.SetFloat("_HighlightBoost", 0.05f);
+            m.SetFloat("_RimAmount", 0.3f);
+            m.SetFloat("_ReceiveShadows", 0.35f);
+            m.SetFloat("_Metallic", 0f);
+            m.SetFloat("_ReflectStrength", 0f);
+            if (name.Contains("GloveBack") || name.Contains("Knuckle")) P(0.55f, 0.55f, 0.3f, 0.35f, 1.1f);        // full-grain leather sheen
+            else if (name.Contains("GlovePalm")) P(0.12f, 0.15f, 0.1f, 0.5f, 1.3f);                              // suede + silicone print
+            else if (name.Contains("Strap") || name.Contains("Knit")) P(0.05f, 0.05f, 0.05f, 0.5f, 1.2f);
+            else if (name.Contains("Stripe") || name.Contains("Stretch")) P(0.22f, 0.2f, 0.15f, 0.45f, 0.9f);
+            else if (name.Contains("Suit")) P(0.18f, 0.18f, 0.15f, 0.5f, 1.0f);                                   // quilted Nomex
+            if (name.Contains("Logo") || name.Contains("Patch"))
+            {
+                m.EnableKeyword("_ALPHATEST_ON"); m.SetFloat("_AlphaClip", 1f); m.SetFloat("_Cutoff", 0.5f);
+                P(0.35f, 0.3f, 0.15f, 0.35f, 1f);
+            }
         }
 
         static void CarMaterial(Material m, string name, Color baseCol, bool hasTex)
