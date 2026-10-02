@@ -94,25 +94,27 @@ namespace InkDrift
         // ---------------------------------------------------------------- materials (sRGB colours)
         struct Look
         {
-            public Color color; public string normal; public float bump, smooth, sheen, wear; public Color sheenColor, wearColor; public string decal;
+            public Color color; public string scan; public float desat, unit, bump, smooth, sheen, wear; public Color sheenColor, wearColor;
+            public string normal, decal; public float quilt;
         }
 
+        // sRGB target colours; scans are tinted to them at real-world scale (UV0: glove 4 cm, suit 8 cm, trim 4 cm per unit)
         static readonly Dictionary<string, Look> Looks = new Dictionary<string, Look>
         {
-            // quilted Nomex: deep racing blue with a soft cloth sheen
-            { "M_DrvSuit", new Look { color = new Color(0.12f, 0.21f, 0.5f), normal = "suit_n", bump = 0.8f, smooth = 0.2f, sheen = 0.35f, sheenColor = new Color(0.55f, 0.7f, 1f) } },
-            { "M_DrvStripe", new Look { color = new Color(0.86f, 0.86f, 0.88f), normal = "twill_n", bump = 0.7f, smooth = 0.26f, sheen = 0.35f, sheenColor = Color.white } },
-            { "M_DrvStretch", new Look { color = new Color(0.11f, 0.13f, 0.22f), normal = "twill_n", bump = 0.9f, smooth = 0.2f, sheen = 0.4f, sheenColor = new Color(0.5f, 0.6f, 0.9f) } },
-            { "M_DrvKnit", new Look { color = new Color(0.085f, 0.085f, 0.095f), normal = "knit_n", bump = 1.0f, smooth = 0.14f, sheen = 0.3f, sheenColor = new Color(0.5f, 0.5f, 0.55f) } },
-            // full-grain leather: dark, glossy, scuffed lighter on the knuckles and edges
-            { "M_DrvGloveBack", new Look { color = new Color(0.085f, 0.085f, 0.09f), normal = "leather_n", bump = 0.28f, smooth = 0.33f, wear = 0.5f, wearColor = new Color(0.24f, 0.24f, 0.26f) } },
-            { "M_DrvKnuckle", new Look { color = new Color(0.55f, 0.06f, 0.09f), normal = "leather_n", bump = 0.28f, smooth = 0.3f, wear = 0.4f, wearColor = new Color(0.7f, 0.3f, 0.32f) } },
-            // suede palm with silicone grip print
-            { "M_DrvGlovePalm", new Look { color = new Color(0.13f, 0.13f, 0.14f), normal = "suede_n", bump = 0.6f, smooth = 0.15f, sheen = 0.3f, sheenColor = new Color(0.6f, 0.6f, 0.65f) } },
-            { "M_DrvStrap", new Look { color = new Color(0.1f, 0.1f, 0.11f), normal = "velcro_n", bump = 0.9f, smooth = 0.1f, sheen = 0.2f, sheenColor = new Color(0.5f, 0.5f, 0.5f) } },
+            // multi-layer Nomex: scanned technical weave, quilted, deep racing blue with a cloth sheen
+            { "M_DrvSuit", new Look { color = new Color(0.12f, 0.2f, 0.48f), scan = "nomex_weave", desat = 1f, unit = 0.08f, bump = 1.0f, smooth = 0.12f, quilt = 0.9f, sheen = 0.1f, sheenColor = new Color(0.55f, 0.7f, 1f) } },
+            { "M_DrvStripe", new Look { color = new Color(0.84f, 0.84f, 0.86f), scan = "nomex_weave", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.13f, quilt = 0.5f, sheen = 0.1f, sheenColor = Color.white } },
+            { "M_DrvStretch", new Look { color = new Color(0.1f, 0.12f, 0.2f), scan = "nomex_weave", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.12f, sheen = 0.1f, sheenColor = new Color(0.5f, 0.6f, 0.9f) } },
+            { "M_DrvKnit", new Look { color = new Color(0.075f, 0.075f, 0.085f), scan = "knit", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.09f, sheen = 0.1f, sheenColor = new Color(0.5f, 0.5f, 0.55f) } },
+            // scanned full-grain leather: black, satin, scuffed lighter on the knuckles and edges
+            { "M_DrvGloveBack", new Look { color = new Color(0.075f, 0.075f, 0.08f), scan = "leather_grain", desat = 1f, unit = 0.04f, bump = 0.9f, smooth = 0.21f, wear = 0.45f, wearColor = new Color(0.22f, 0.22f, 0.24f) } },
+            { "M_DrvKnuckle", new Look { color = new Color(0.5f, 0.05f, 0.075f), scan = "leather_grain", desat = 1f, unit = 0.04f, bump = 0.9f, smooth = 0.2f, wear = 0.35f, wearColor = new Color(0.66f, 0.28f, 0.3f) } },
+            // scanned suede palm (grip print from the procedural map rides on top as the macro layer)
+            { "M_DrvGlovePalm", new Look { color = new Color(0.12f, 0.12f, 0.13f), scan = "suede", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.14f, normal = "suede_n", quilt = 0.5f, sheen = 0.1f, sheenColor = new Color(0.6f, 0.6f, 0.65f) } },
+            { "M_DrvStrap", new Look { color = new Color(0.1f, 0.1f, 0.11f), normal = "velcro_n", bump = 0.9f, smooth = 0.1f, sheen = 0.08f, sheenColor = new Color(0.5f, 0.5f, 0.5f) } },
             { "M_DrvLogo", new Look { color = Color.white, smooth = 0.4f, decal = "glove_logo" } },
-            { "M_DrvPatchInk", new Look { color = Color.white, smooth = 0.3f, sheen = 0.2f, sheenColor = Color.white, decal = "patch_ink" } },
-            { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.2f, sheenColor = Color.white, decal = "patch_flag" } },
+            { "M_DrvPatchInk", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_ink" } },
+            { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_flag" } },
             { "M_DrvPatchClass", new Look { color = Color.white, smooth = 0.3f, decal = "patch_class" } },
         };
 
@@ -127,12 +129,23 @@ namespace InkDrift
                 foreach (var k in Looks.Keys) if (m.name.StartsWith(k) && (key == null || k.Length > key.Length)) key = k;
                 if (key == null) continue;
                 var l = Looks[key];
-                m.SetColor("_BaseColor", l.color);
+                if (l.scan != null) ScanLibrary.Apply(m, l.scan, l.color, l.desat, l.smooth, l.bump, l.unit);
+                else
+                {
+                    m.SetColor("_BaseColor", l.color);
+                    m.SetFloat("_Smoothness", l.smooth);
+                    m.SetFloat("_MaskStrength", 0f);
+                    if (l.normal != null) { m.SetTexture("_BumpMap", Resources.Load<Texture2D>("Driver/" + l.normal)); m.SetFloat("_BumpScale", l.bump); }
+                }
                 if (l.decal != null) m.SetTexture("_BaseMap", Resources.Load<Texture2D>("Driver/" + l.decal));
-                if (l.normal != null) m.SetTexture("_BumpMap", Resources.Load<Texture2D>("Driver/" + l.normal));
-                m.SetFloat("_BumpScale", l.bump);
+                // macro layer: suit quilting / palm grip print from the procedural maps, at UV0 tile size
+                if (l.quilt > 0f)
+                {
+                    m.SetTexture("_DetailNormal", Resources.Load<Texture2D>("Driver/" + (l.normal ?? "suit_n")));
+                    m.SetFloat("_DetailTiling", key == "M_DrvStripe" ? 0.5f : 1f);
+                    m.SetFloat("_DetailScale", l.quilt);
+                }
                 if (bake != null) m.SetTexture("_BakeMap", bake);
-                m.SetFloat("_Smoothness", l.smooth);
                 m.SetFloat("_Sheen", l.sheen);
                 m.SetColor("_SheenColor", l.sheenColor);
                 m.SetFloat("_Wear", l.wear);
@@ -140,12 +153,19 @@ namespace InkDrift
                 m.SetFloat("_AOStrength", 1f);
                 m.SetFloat("_CavityStrength", 0.6f);
                 m.SetFloat("_AmbientBoost", AmbientBoost);
+                // cloth barely reflects its surroundings; leather keeps a little sheen of the cabin
+                bool leather = key == "M_DrvGloveBack" || key == "M_DrvKnuckle" || key == "M_DrvLogo";
+                m.SetFloat("_EnvSpecular", leather ? InteriorEnvSpecular : ClothEnvSpecular);
             }
             r.materials = mats;
         }
 
         /// <summary>Cockpit ambient: the toon interior is lit "anime bright"; the driver needs a little more fill to sit in it.</summary>
         public static float AmbientBoost = 1.3f;
+
+        /// <summary>Share of the environment reflection that reaches surfaces inside the cabin (roof/doors block the rest).</summary>
+        public static float InteriorEnvSpecular = 0.15f;
+        public static float ClothEnvSpecular = 0.04f;
 
         static Transform Find(Transform t, string name)
         {

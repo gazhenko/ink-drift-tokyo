@@ -1,8 +1,27 @@
-# INK DRIFT: TOKYO — v1.4.0: a realistic driver
+# INK DRIFT: TOKYO — v1.5.0: photo-scanned driver and cockpit
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.4.0
+## What's new in 1.5.0
+- **Photo-scanned materials.** The driver's gloves and suit now use CC0 photo-scans from Poly Haven at their real-world scale:
+  - full-grain leather for the glove backs and knuckle guards
+  - scanned suede for the palms, with the silicone grip print on top
+  - a scanned technical weave under the suit's quilting
+  - scanned knit for the cuffs
+
+  Each scan is tinted to the suit colours while keeping its own natural variation.
+- **A realistic cockpit around the hands.** The whole interior now uses the same physically based, photo-scanned rendering as the driver, so the hands sit in a consistent realistic space. The game's comic ink filter stays off everything inside the car; the city outside keeps the comic style.
+  - grain-embossed dash
+  - Alcantara wheel rim, headliner and visors
+  - stitched leather door cards
+  - herringbone seat fabric and floor carpet
+  - brushed metal and chrome fittings
+  - a powder-coated roll cage
+- **Real shadows across the cockpit:** the wheel, cage and pillars now cast shadows onto the dash and the driver's hands.
+- **Interior lighting:** the cabin now blocks reflections of the street the way a real roof and doors do (specular occlusion), so the fabric reads as matte cloth and the leather as satin, even under Shibuya's neon. Cloth reflects almost nothing; metal fittings keep their reflections.
+- **Verified on Linux:** the Linux build was run headless on Linux with OpenGL 4.5 software rendering and renders the same in-car view as macOS.
+
+## 1.4.0: a realistic driver
 - **Realistic driver shading.** The driver now has its own physically based shader:
   - Realistic lighting with soft shadows, cabin and street lights, and reflections.
   - Cloth sheen on the suit and satin leather on the gloves.
@@ -52,9 +71,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.4.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.4.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.4.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.5.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.5.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.5.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 
@@ -78,6 +97,6 @@ Checksums: `SHA256SUMS.txt`.
 
 ## Known limitations
 - Builds are unsigned; macOS/Windows will warn on first launch.
-- Tested natively on macOS (Apple Silicon). The controller support is covered by automated tests with simulated Xbox, PlayStation, Switch, generic HID and Linux devices, but hasn't been tried with physical controllers on Windows or Linux.
+- Tested natively on macOS (Apple Silicon); the Linux build is verified rendering on Linux (OpenGL, software). The Windows build is produced by the same pipeline but hasn't been run on Windows hardware. Controller support is covered by automated tests with simulated devices.
 - Wired third-party Xbox-protocol pads that macOS itself doesn't expose to apps can't be seen by any game on macOS; connect over Bluetooth or switch the pad to its DirectInput/Switch mode.
 - The announcer voice is Japanese text-to-speech; the voice lines can be regenerated with `Tools/audio/elevenlabs_voices.py`.

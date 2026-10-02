@@ -1,0 +1,123 @@
+{
+ "sets": [
+  {
+   "name": "leather_grain",
+   "asset": "leather_white",
+   "use": "glove back + knuckle guard, embossed dash plastic",
+   "url": "https://polyhaven.com/a/leather_white",
+   "authors": "Rob Tuytel",
+   "license": "CC0",
+   "size_m": 0.3,
+   "mean_srgb": [
+    0.588,
+    0.5755,
+    0.5027
+   ],
+   "mean_lum_srgb": 0.5731,
+   "mean_smooth": 0.3829,
+   "mean_ao": 0.8683
+  },
+  {
+   "name": "suede",
+   "asset": "scuba_suede",
+   "use": "glove palm, Alcantara wheel rim and headliner",
+   "url": "https://polyhaven.com/a/scuba_suede",
+   "authors": "colormass, Rico Cilliers",
+   "license": "CC0",
+   "size_m": 0.2852,
+   "mean_srgb": [
+    0.075,
+    0.3725,
+    0.4239
+   ],
+   "mean_lum_srgb": 0.3397,
+   "mean_smooth": 0.2855,
+   "mean_ao": 0.9524
+  },
+  {
+   "name": "nomex_weave",
+   "asset": "stretch_poplin",
+   "use": "race-suit outer weave",
+   "url": "https://polyhaven.com/a/stretch_poplin",
+   "authors": "colormass, Rico Cilliers",
+   "license": "CC0",
+   "size_m": 0.291,
+   "mean_srgb": [
+    0.7157,
+    0.8323,
+    0.3901
+   ],
+   "mean_lum_srgb": 0.7851,
+   "mean_smooth": 0.1919,
+   "mean_ao": 0.8648
+  },
+  {
+   "name": "knit",
+   "asset": "jersey_melange",
+   "use": "knit cuffs",
+   "url": "https://polyhaven.com/a/jersey_melange",
+   "authors": "colormass, Rico Cilliers",
+   "license": "CC0",
+   "size_m": 0.2906,
+   "mean_srgb": [
+    0.4546,
+    0.533,
+    0.7046
+   ],
+   "mean_lum_srgb": 0.5325,
+   "mean_smooth": 0.4411,
+   "mean_ao": 0.874
+  },
+  {
+   "name": "seat_fabric",
+   "asset": "poly_wool_herringbone",
+   "use": "bucket-seat fabric",
+   "url": "https://polyhaven.com/a/poly_wool_herringbone",
+   "authors": "colormass, Rico Cilliers",
+   "license": "CC0",
+   "size_m": 0.2701,
+   "mean_srgb": [
+    0.4775,
+    0.4629,
+    0.4448
+   ],
+   "mean_lum_srgb": 0.4647,
+   "mean_smooth": 0.3719,
+   "mean_ao": 0.8509
+  },
+  {
+   "name": "carpet",
+   "asset": "dirty_carpet",
+   "use": "floor carpet",
+   "url": "https://polyhaven.com/a/dirty_carpet",
+   "authors": "Rohit Seervi",
+   "license": "CC0",
+   "size_m": 0.6,
+   "mean_srgb": [
+    0.2207,
+    0.1969,
+    0.1566
+   ],
+   "mean_lum_srgb": 0.1998,
+   "mean_smooth": 0.1874,
+   "mean_ao": 0.4778
+  },
+  {
+   "name": "door_leather",
+   "asset": "fabric_leather_02",
+   "use": "stitched door-card leather",
+   "url": "https://polyhaven.com/a/fabric_leather_02",
+   "authors": "Rob Tuytel",
+   "license": "CC0",
+   "size_m": 0.5,
+   "mean_srgb": [
+    0.509,
+    0.3106,
+    0.11
+   ],
+   "mean_lum_srgb": 0.3563,
+   "mean_smooth": 0.539,
+   "mean_ao": 0.5526
+  }
+ ]
+}

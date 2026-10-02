@@ -56,6 +56,7 @@ namespace InkDrift
 
         class Mats
         {
+            public Material door, carpet;
             public Material dark, dash, soft, trim, metal, accent, cage, seat, insert, harness, marker, suit, suitStripe, glove, cuff, needle, ledOff, screen, chrome;
             public Material[] ledOn;
             public Material gaugeFace(Texture t) { var m = new Material(Shader.Find("UI/Default")); m.mainTexture = t; m.color = Color.white; m.renderQueue = 3000; return m; }   // after the opaque binnacle (the UI shader doesn't write depth)
@@ -90,6 +91,7 @@ namespace InkDrift
             var dark = new ProcMesh(); var dash = new ProcMesh(); var soft = new ProcMesh(); var trim = new ProcMesh();
             var metal = new ProcMesh(); var accent = new ProcMesh(); var seat = new ProcMesh(); var insert = new ProcMesh();
             var harness = new ProcMesh(); var chrome = new ProcMesh(); var screen = new ProcMesh();
+            var doorCard = new ProcMesh(); var carpet = new ProcMesh();
 
             // ---------------------------------------------------------------- dash
             var prof = new List<Vector2>
@@ -276,7 +278,7 @@ namespace InkDrift
             float doorFront = dashEdgeZ + 0.12f, doorRear = ez - 0.60f;
             foreach (int s in new[] { 1, -1 })
             {
-                dash.Surface((u, vv) =>
+                doorCard.Surface((u, vv) =>
                 {
                     float zz = Mathf.Lerp(doorFront, dims.backBottomZ + 0.05f, u);
                     float top = dims.Belt(zz) - 0.012f;
@@ -290,7 +292,7 @@ namespace InkDrift
                 chrome.Box(new Vector3(s * (dims.BeltW(ez + 0.15f) - 0.083f), dims.Belt(ez + 0.15f) - 0.10f, ez + 0.15f), new Vector3(0.012f, 0.022f, 0.10f));
                 dark.Disc(new Vector3(s * (dims.BeltW(doorFront - 0.25f) - 0.087f), floor + 0.17f, doorFront - 0.25f), new Vector3(-s, 0f, 0f), 0.07f, 20);
             }
-            dark.Quad(new Vector3(-dashW, floor, cz), new Vector3(dashW, floor, cz), new Vector3(dashW, floor, dims.backBottomZ), new Vector3(-dashW, floor, dims.backBottomZ), Vector3.up);
+            carpet.Quad(new Vector3(-dashW, floor, cz), new Vector3(dashW, floor, cz), new Vector3(dashW, floor, dims.backBottomZ), new Vector3(-dashW, floor, dims.backBottomZ), Vector3.up);
             float shelfZ = ez - 1.0f;
             if (dims.backBottomZ < shelfZ)
                 dark.Quad(new Vector3(-dashW, dims.Belt(shelfZ) - 0.02f, shelfZ), new Vector3(dashW, dims.Belt(shelfZ) - 0.02f, shelfZ),
@@ -357,6 +359,8 @@ namespace InkDrift
             }
 
             Part(root.transform, "Dark", dark, mats.dark);
+            Part(root.transform, "DoorCards", doorCard, mats.door);
+            Part(root.transform, "Carpet", carpet, mats.carpet);
             Part(root.transform, "Dash", dash, mats.dash);
             Part(root.transform, "Soft", soft, mats.soft);
             Part(root.transform, "Trim", trim, mats.trim);
@@ -381,10 +385,10 @@ namespace InkDrift
             // instrument backlight spill: lights the gloves and rim from below at night like a real dash
             var glow = new GameObject("GaugeGlow").AddComponent<Light>();
             glow.transform.SetParent(root.transform, false);
-            glow.transform.localPosition = gaugeC + gaugeN * 0.03f;
+            glow.transform.localPosition = gaugeC + gaugeN * 0.16f + Vector3.down * 0.05f;   // well clear of the chrome bezels
             glow.type = LightType.Point;
-            glow.range = 0.75f;
-            glow.intensity = 0.22f;
+            glow.range = 0.6f;
+            glow.intensity = 0.035f;
             glow.color = new Color(1f, 0.55f, 0.4f);
             glow.shadows = LightShadows.None;
             glow.renderMode = LightRenderMode.ForcePixel;
@@ -443,7 +447,7 @@ namespace InkDrift
             go.AddComponent<MeshFilter>().sharedMesh = pm.ToMesh("Cockpit_" + name);
             var mr = go.AddComponent<MeshRenderer>();
             mr.sharedMaterial = mat;
-            mr.shadowCastingMode = ShadowCastingMode.Off;
+            mr.shadowCastingMode = ShadowCastingMode.On;    // the wheel, cage and pillars shade the dash and the hands
             mr.receiveShadows = true;
             mr.lightProbeUsage = LightProbeUsage.Off;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
@@ -479,8 +483,51 @@ namespace InkDrift
             return m;
         }
 
+        /// <summary>Photo-scanned, physically based interior (InkDrift/Realistic, triplanar at real-world scale).</summary>
+        static Mats RealisticMaterials(Color accent)
+        {
+            Material R(string name, string scan, Color tint, float desat, float smooth, float bump, float metallic = 0f, float sheen = 0f, Color? emission = null)
+                => ScanLibrary.Create(name, scan, tint, desat, smooth, bump, metallic, sheen, emission);
+            var m = new Mats
+            {
+                dark = R("Dark", "leather_grain", new Color(0.035f, 0.035f, 0.04f), 1f, 0.28f, 0.35f),
+                dash = R("Dash", "leather_grain", new Color(0.055f, 0.055f, 0.06f), 1f, 0.12f, 0.5f),         // grain-embossed soft-touch plastic
+                soft = R("Alcantara", "suede", new Color(0.075f, 0.072f, 0.08f), 1f, 0.1f, 1f, 0f, 0.08f),
+                trim = R("Trim", "leather_grain", new Color(0.085f, 0.085f, 0.09f), 1f, 0.36f, 0.25f),
+                metal = R("Metal", null, new Color(0.5f, 0.51f, 0.53f), 0f, 0.62f, 0f, 1f),
+                chrome = R("Chrome", null, new Color(0.88f, 0.89f, 0.9f), 0f, 0.9f, 0f, 1f),
+                accent = R("Accent", null, accent, 0f, 0.6f, 0f, 0.15f),
+                cage = R("Cage", null, Color.Lerp(accent, new Color(0.05f, 0.05f, 0.06f), 0.45f), 0f, 0.25f, 0f),   // powder-coated steel
+                seat = R("Seat", "seat_fabric", new Color(0.055f, 0.055f, 0.06f), 1f, 0.14f, 1f, 0f, 0.08f),
+                insert = R("SeatInsert", "seat_fabric", Color.Lerp(accent, Color.black, 0.35f), 1f, 0.14f, 1f, 0f, 0.08f),
+                harness = R("Harness", "nomex_weave", accent, 1f, 0.2f, 1f, 0f, 0.08f),
+                marker = R("Marker", "suede", new Color(0.95f, 0.78f, 0.1f), 1f, 0.15f, 1f),
+                door = R("DoorCard", "door_leather", new Color(0.06f, 0.06f, 0.065f), 1f, 0.4f, 0.8f),
+                carpet = R("Carpet", "carpet", new Color(0.05f, 0.05f, 0.055f), 1f, 0.1f, 1f),
+                needle = R("Needle", null, new Color(1f, 0.35f, 0.1f), 0f, 0.4f, 0f, 0f, 0f, new Color(0.9f, 0.25f, 0.05f)),
+                ledOff = R("LedOff", null, new Color(0.05f, 0.05f, 0.06f), 0f, 0.85f, 0f),
+                screen = R("Screen", null, new Color(0.02f, 0.02f, 0.04f), 0f, 0.92f, 0f, 0f, 0f, new Color(0.25f, 0.05f, 0.35f)),
+            };
+            m.ledOn = new[]
+            {
+                R("LedGreen", null, new Color(0.2f, 1f, 0.3f), 0f, 0.8f, 0f, 0f, 0f, new Color(0.4f, 3f, 0.6f)),
+                R("LedYellow", null, new Color(1f, 0.85f, 0.1f), 0f, 0.8f, 0f, 0f, 0f, new Color(3f, 2.4f, 0.3f)),
+                R("LedRed", null, new Color(1f, 0.1f, 0.1f), 0f, 0.8f, 0f, 0f, 0f, new Color(3.5f, 0.3f, 0.3f)),
+                R("LedBlue", null, new Color(0.2f, 0.5f, 1f), 0f, 0.8f, 0f, 0f, 0f, new Color(0.5f, 1.4f, 3.5f)),
+            };
+            return m;
+        }
+
         static Mats MakeMaterials(CarController car)
         {
+            Color accentReal = CageColors.TryGetValue(car.spec.id, out var ac) ? ac : Palette.Magenta;
+            if (ScanLibrary.Realistic != null)
+            {
+                var real = RealisticMaterials(accentReal);
+                // the procedural fallback arms (only used if the rigged driver is missing) keep simple materials
+                real.suit = real.trim; real.suitStripe = real.trim; real.glove = real.dark; real.cuff = real.accent;
+                return real;
+            }
             var baseMat = FindMat(car, "M_Trim") ?? FindMat(car, "M_Interior") ?? FindMat(car, "M_Paint");
             var chromeT = FindMat(car, "M_Chrome") ?? baseMat;
             if (baseMat == null)
@@ -512,6 +559,8 @@ namespace InkDrift
                 ledOff = Clone(baseMat, "LedOff", new Color(0.05f, 0.05f, 0.06f), 0.8f, 0f, 0.8f),
                 screen = Clone(baseMat, "Screen", new Color(0.02f, 0.02f, 0.04f), 0.9f, 0f, 1f, new Color(0.25f, 0.05f, 0.35f)),
             };
+            m.door = m.dash;
+            m.carpet = m.dark;
             m.ledOn = new[]
             {
                 Clone(baseMat, "LedGreen", new Color(0.2f, 1f, 0.3f), 0.8f, 0f, 0.5f, new Color(0.4f, 3f, 0.6f)),

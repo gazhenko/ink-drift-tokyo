@@ -170,6 +170,9 @@ namespace InkDrift
         {
             if (CommandLine.Has("-dbgCam")) FixedCam();
             if (CommandLine.Has("-dbgNoInk")) Shader.SetGlobalColor("_InkColor", new Color(0, 0, 0, 0));
+            if (CommandLine.Has("-dbgNoEnvRefl")) RenderSettings.reflectionIntensity = 0f;   // dev: isolate environment reflections
+            if (CommandLine.Has("-dbgNoAddLights") && Time.frameCount % 30 == 0)               // dev: isolate point/spot lights
+                foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None)) if (l.type != LightType.Directional) l.enabled = false;
             if (CommandLine.Has("-dbgNoHud") && Time.frameCount % 30 == 0)
                 foreach (var c in FindObjectsByType<Canvas>(FindObjectsSortMode.None)) c.enabled = false;
         }
