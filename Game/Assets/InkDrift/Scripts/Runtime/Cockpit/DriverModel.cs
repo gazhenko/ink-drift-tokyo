@@ -118,9 +118,10 @@ namespace InkDrift
             { "M_DrvStripe", new Look { color = new Color(0.84f, 0.84f, 0.86f), scan = "nomex_weave", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.13f, quilt = 0.5f, sheen = 0.1f, sheenColor = Color.white } },
             { "M_DrvStretch", new Look { color = new Color(0.1f, 0.12f, 0.2f), scan = "nomex_weave", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.12f, sheen = 0.1f, sheenColor = new Color(0.5f, 0.6f, 0.9f) } },
             { "M_DrvKnit", new Look { color = new Color(0.075f, 0.075f, 0.085f), scan = "knit", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.09f, sheen = 0.1f, sheenColor = new Color(0.5f, 0.5f, 0.55f) } },
-            // scanned full-grain leather: black, satin, scuffed lighter on the knuckles and edges
-            { "M_DrvGloveBack", new Look { color = new Color(0.075f, 0.075f, 0.08f), scan = "leather_grain", desat = 1f, unit = 0.04f, bump = 0.9f, smooth = 0.21f, wear = 0.45f, wearColor = new Color(0.22f, 0.22f, 0.24f) } },
-            { "M_DrvKnuckle", new Look { color = new Color(0.5f, 0.05f, 0.075f), scan = "leather_grain", desat = 1f, unit = 0.04f, bump = 0.9f, smooth = 0.2f, wear = 0.35f, wearColor = new Color(0.66f, 0.28f, 0.3f) } },
+            // scanned full-grain leather: black, satin, scuffed lighter on the knuckles and edges. The scan is upholstery
+            // hide, so its grain is scaled 2.5x finer and softened toward the thin nappa of a driving glove
+            { "M_DrvGloveBack", new Look { color = new Color(0.075f, 0.075f, 0.08f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.21f, wear = 0.45f, wearColor = new Color(0.22f, 0.22f, 0.24f) } },
+            { "M_DrvKnuckle", new Look { color = new Color(0.5f, 0.05f, 0.075f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.2f, wear = 0.35f, wearColor = new Color(0.66f, 0.28f, 0.3f) } },
             // scanned suede palm (grip print from the procedural map rides on top as the macro layer)
             { "M_DrvGlovePalm", new Look { color = new Color(0.12f, 0.12f, 0.13f), scan = "suede", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.14f, normal = "suede_n", quilt = 0.5f, sheen = 0.1f, sheenColor = new Color(0.6f, 0.6f, 0.65f) } },
             { "M_DrvStrap", new Look { color = new Color(0.1f, 0.1f, 0.11f), normal = "velcro_n", bump = 0.9f, smooth = 0.1f, sheen = 0.08f, sheenColor = new Color(0.5f, 0.5f, 0.5f) } },

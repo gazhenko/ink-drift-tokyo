@@ -225,21 +225,39 @@ Shader "InkDrift/Realistic"
                 s.metallic = _Metallic;
                 s.smoothness = smooth;
                 s.normalTS = half3(0, 0, 1);
-                // interior: the cabin blocks most of the environment, so reflections of the outside world are
-                // occluded (specular occlusion) while the ambient fill is kept (added back below)
-                s.occlusion = ao * _EnvSpecular;
+                // indirect light is done here rather than by URP (occlusion 0 switches its GI off), so the reflection
+                // can use the smooth normal's Fresnel and horizon occlusion
+                s.occlusion = 0.0h;
                 s.emission = _EmissionColor.rgb;
                 s.alpha = 1.0h;
 
                 half4 color = UniversalFragmentPBR(input, s);
-                color.rgb += input.bakedGI * s.albedo * (1.0h - _Metallic) * 0.96h * ao * (1.0h - _EnvSpecular);
+                // ambient fill
+                color.rgb += input.bakedGI * s.albedo * (1.0h - _Metallic) * 0.96h * ao;
+                // environment reflection. Interior: the cabin blocks most of the outside world (_EnvSpecular). Fresnel
+                // comes from the smooth normal, and reflections the bumpy normal sends back into the surface are dropped
+                // (horizon occlusion); otherwise every grazing grain of leather or suede sparkles with the sky.
+                {
+                    BRDFData brdf;
+                    SurfaceData sb = s;
+                    InitializeBRDFData(sb, brdf);
+                    half3 V = input.viewDirectionWS;
+                    half3 R = reflect(-V, normalWS);
+                    half horizon = saturate(1.0h + 1.3h * dot(R, nWS0));
+                    half fresnel = Pow4(1.0h - saturate(dot(nWS0, V)));
+                    half3 env = GlossyEnvironmentReflection(R, input.positionWS, brdf.perceptualRoughness, 1.0h, input.normalizedScreenSpaceUV);
+                    env = min(env, 4.0h);   // no single sun-lit texel of the probe as a hot speck
+                    color.rgb += env * EnvironmentBRDFSpecular(brdf, fresnel) * ao * _EnvSpecular * horizon * horizon;
+                }
 
                 // fabric sheen: grazing-angle retro-reflection of the weave
                 if (_Sheen > 0.001h)
                 {
                     Light ml = GetMainLight(input.shadowCoord, input.positionWS, input.shadowMask);
-                    half NdotV = saturate(dot(normalWS, input.viewDirectionWS));
-                    half f = pow(1.0h - NdotV, 4.0h);
+                    // grazing factor from the smooth surface normal: with the bumpy detail normal it spikes to 1 on
+                    // every fibre that tips past the silhouette, sparkling with the ambient colour
+                    half NdotV = saturate(dot(nWS0, input.viewDirectionWS));
+                    half f = pow(1.0h - NdotV, 4.0h) * lerp(0.7h, 1.0h, saturate(dot(normalWS, input.viewDirectionWS) * 4.0h));
                     half wrap = saturate(dot(normalWS, ml.direction) * 0.5h + 0.5h);
                     half3 light = ml.color * ml.shadowAttenuation * ml.distanceAttenuation * wrap + input.bakedGI;
                     color.rgb += _SheenColor.rgb * _Sheen * f * light * ao;

@@ -1,8 +1,13 @@
-# INK DRIFT: TOKYO — v1.10.0: a natural grip
+# INK DRIFT: TOKYO — v1.11.0: cleaner materials
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.10.0
+## What's new in 1.11.0
+- **No more sparkling edges.** Gloves, suit and the leather and suede in the cockpit glittered with bright specks along their edges. Each grain of the material near the silhouette reflected the sky at full strength. Reflections now take their Fresnel from the smooth surface and drop any reflection that would point back into the material, so edges stay clean.
+- **Finer glove leather.** The glove backs and knuckle guards now have the fine grain of thin driving-glove nappa instead of coarse upholstery hide.
+- **A real silicone grip print.** The palm's grip dots are smaller and stand only slightly proud, as a printed pattern does, instead of reading as bumpy skin.
+
+## 1.10.0: a natural grip
 - **A natural grip on the wheel.** At 9 and 3 o'clock the driver's wrists were bent about 100 degrees, further than a real wrist can go, so the gloves folded like a bent hose. Each fist now settles on the rim as a real hand does. It sits on the outside of the rim with the knuckles forward and the rim running diagonally across the palm, and the thumb lies over the spoke.
 - **The wrist stays within a comfortable bend** (about 40 degrees) in every position on the rim. The grip adjusts smoothly as the wheel turns and as the hands move hand over hand.
 

@@ -6,7 +6,7 @@ Normal maps (OpenGL convention, *_n.png so Unity imports them as normal maps):
   suit_n      quilted multi-layer Nomex: diamond quilting with stitch rows over a fine twill weave (tile = 8 cm)
   twill_n     plain twill for stripes and stretch panels                                             (tile = 4 cm)
   leather_n   glove back: pebbled full-grain leather                                                  (tile = 4 cm)
-  suede_n     palm: brushed suede with a printed silicone grip pattern                                (tile = 4 cm)
+  suede_n     palm: brushed suede with a low printed silicone grip pattern                            (tile = 4 cm)
   knit_n      ribbed knit cuff                                                                         (tile = 4 cm)
   velcro_n    hook-and-loop strap                                                                      (tile = 4 cm)
 Decals (RGBA, alpha-clipped): glove_logo, patch_ink, patch_flag, patch_fia.
@@ -126,16 +126,17 @@ def leather():
 def suede():
     x, y = grid()
     fibre = tile_noise(128, 2, 21) * 0.5 + tile_noise(64, 2, 22) * 0.3
-    # printed silicone grip: staggered small hexagon-ish dots, 3 mm pitch on a 4 cm tile
-    k = 13
+    # printed silicone grip: staggered small hexagon-ish dots, ~2.2 mm pitch on a 4 cm tile. A print stands only a
+    # fraction of a millimetre proud, so the relief is low (taller dots read as pimply skin)
+    k = 18
     gy = y * k
     row = np.floor(gy)
     gx = x * k + (row % 2) * 0.5
     cx, cy = gx - np.floor(gx) - 0.5, gy - row - 0.5
     d = np.maximum(np.abs(cx) * 1.0 + np.abs(cy) * 0.58, np.abs(cy) * 1.15)
-    dots = np.clip((0.30 - d) / 0.04, 0, 1)
-    h = fibre * 0.25 + dots * 0.8
-    save(height_to_normal(h, 6.0), "suede_n.png")
+    dots = np.clip((0.25 - d) / 0.05, 0, 1)
+    h = fibre * 0.25 + dots * 0.3
+    save(height_to_normal(h, 5.0), "suede_n.png")
 
 
 def knit():
