@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.15.0: contact shadows in the cockpit
+# INK DRIFT: TOKYO — v1.16.0: stitched thumbs and fingertips
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.15.0
+## What's new in 1.16.0
+- **Seams over every fingertip.** The twin side seams on each finger now continue over the tip in one unbroken seam, as on a real glove.
+- **A stitched thumb.** The thumb, the part you see most as it lies over the spoke at 9 and 3, gets seams along both sides and over its tip, following the way the thumb is turned.
+
+## 1.15.0: contact shadows in the cockpit
 - **Contact shadows inside the car.** The in-car view now has ambient occlusion where things touch or nearly touch: fingers wrapped round the rim, the glove against the wheel, gauges in their binnacle, the shifter in its boot. In a cabin lit mostly by soft light from outside, this is what keeps the hands from looking pasted onto the wheel.
 - It only runs while you're in the in-car view (on High and Medium quality), and the comic city outside the windows keeps its own look.
 

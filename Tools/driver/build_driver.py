@@ -590,7 +590,7 @@ def stitch_seams(obj, pairs, mat, spacing=0.0034, offset=0.0016, length=0.0024, 
 
 
 def finger_details(obj, fr):
-    """external seams down both sides of each finger + vent perforations on the back of the first segment"""
+    """external seams down both sides of each finger and the thumb, joined over every tip; vent perforations"""
     me = obj.data
     P, N = vert_arrays(me)
     sides = np.where(P[:, 0] < 0, "R", "L")
@@ -625,30 +625,58 @@ def finger_details(obj, fr):
             f.material_index = mat
             f.smooth = True
 
+    def stitch_line(s, q_of, t_of_, n_steps):
+        """stitch beads along a parametric line q(u), snapped onto the glove"""
+        count = 0
+        for u in np.linspace(0, 1, n_steps):
+            q = q_of(u)
+            k = snap(s, q, [BACK, PALM, KNUCKLE])
+            if np.linalg.norm(P[k] - q) > 0.008:
+                continue
+            c, n = P[k], nrm(N[k])
+            t = t_of_(u); t = nrm(t - n * np.dot(t, n))
+            bead(k, c + n * 0.0003, t, n, 0.0022, 0.0006, 0.0005, STITCH)
+            count += 1
+        return count
+
     seams = vents = 0
     for s in ("R", "L"):
         F = fr[s]
         J = F["joints"]
-        for i in range(2, 6):
+        for i in range(1, 6):
             chain = [J[(i - 1) * 3 + j] for j in range(3)]
             heads = [c for c, _, _ in chain]
-            tip = heads[2] + chain[2][1] * 0.022
+            tip_dir = chain[2][1]
+            if i == 1:
+                # the thumb's nail faces half-way between the back of the hand and its own outer side
+                out = heads[1] - J[3][0]
+                out = nrm(out - F["back"] * np.dot(out, F["back"]))
+                dorsal = nrm(F["back"] + out)
+                lat_of = [nrm(np.cross(chain[j][1], dorsal)) for j in range(3)]
+                tip_len, half_w, lift = 0.02, 0.0115, dorsal * 0.0015
+            else:
+                lat_of = [F["side"]] * 3
+                tip_len, half_w, lift = 0.022, 0.012, F["back"] * 0.002
+            tip = heads[2] + tip_dir * tip_len
             pts = heads + [tip]
+            # twin side seams from the knuckle to the tip
             for side_sign in (-1, 1):
-                if (i == 2 and side_sign > 0) or (i == 5 and side_sign < 0):
-                    pass   # outer edges of the hand get a seam too
-                lat = F["side"] * side_sign
-                prev = None
                 for seg in range(3):
+                    if i == 1 and seg == 0:
+                        continue                                  # the thumb's first bone is inside the palm
                     a, b = pts[seg], pts[seg + 1]
                     L = np.linalg.norm(b - a)
-                    for u in np.arange(0.12, 1.0, 0.0034 / max(L, 1e-4)):
-                        q = a + (b - a) * u + lat * 0.012 + F["back"] * 0.002
-                        k = snap(s, q, [BACK, PALM, KNUCKLE])
-                        c, n = P[k], nrm(N[k])
-                        t = nrm(b - a); t = nrm(t - n * np.dot(t, n))
-                        bead(k, c + n * 0.0003, t, n, 0.0022, 0.0006, 0.0005, STITCH)
-                        seams += 1
+                    lat = lat_of[seg] * side_sign
+                    n_steps = max(2, int(L * 0.88 / 0.0034))
+                    seams += stitch_line(s, lambda u, a=a, b=b, lat=lat: a + (b - a) * (0.12 + 0.88 * u) + lat * half_w + lift,
+                                         lambda u, a=a, b=b: b - a, n_steps)
+            # and over the tip, joining the two side seams (one continuous seam round the finger end)
+            centre = heads[2] + tip_dir * (tip_len - half_w)
+            lat = lat_of[2]
+            seams += stitch_line(s, lambda u: centre + lat * half_w * math.cos(math.pi * u) + tip_dir * half_w * math.sin(math.pi * u) + lift,
+                                 lambda u: -lat * math.sin(math.pi * u) + tip_dir * math.cos(math.pi * u), 11)
+            if i == 1:
+                continue
             # vents: 2 x 3 holes on the back of the first segment
             a, b = heads[0], heads[1]
             for u in (0.35, 0.6, 0.85):
