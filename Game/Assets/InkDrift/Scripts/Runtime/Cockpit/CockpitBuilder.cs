@@ -91,7 +91,7 @@ namespace InkDrift
             var dark = new ProcMesh(); var dash = new ProcMesh(); var soft = new ProcMesh(); var trim = new ProcMesh();
             var metal = new ProcMesh(); var accent = new ProcMesh(); var seat = new ProcMesh(); var insert = new ProcMesh();
             var harness = new ProcMesh(); var chrome = new ProcMesh(); var screen = new ProcMesh();
-            var doorCard = new ProcMesh(); var carpet = new ProcMesh();
+            var doorCard = new ProcMesh(); var carpet = new ProcMesh(); var thread = new ProcMesh();
 
             // ---------------------------------------------------------------- dash
             var prof = new List<Vector2>
@@ -100,10 +100,29 @@ namespace InkDrift
                 new Vector2(dashEdgeZ, yEdge - 0.035f), new Vector2(dashEdgeZ + 0.025f, yEdge - 0.15f),
                 new Vector2(dashEdgeZ + 0.11f, floor + 0.30f), new Vector2(cz - 0.08f, floor + 0.24f),
             };
-            dash.ExtrudeX(prof, -dashW, dashW);
+            // one smooth moulded skin from the windshield base over the crest, round the lip and down the face
+            Vector3 DashAt(float u, float v)
+            {
+                Vector2 q = CatmullRom(prof, v * (prof.Count - 2));   // last profile point closes the old extrusion underneath
+                return new Vector3(Mathf.Lerp(-dashW, dashW, u), q.y, q.x);
+            }
+            dash.SurfaceRaw(DashAt, 28, 56);
+            // leather dash top: twin-needle seam just behind the crest, across the full width
+            {
+                var sp = new List<Vector3>(); var sn = new List<Vector3>();
+                float sv = 1.55f / (prof.Count - 2);
+                for (int i = 0; i <= 40; i++)
+                {
+                    float u = Mathf.Lerp(0.06f, 0.94f, i / 40f);
+                    Vector3 p0 = DashAt(u, sv);
+                    Vector3 nn = Vector3.Cross((DashAt(u + 0.002f, sv) - DashAt(u - 0.002f, sv)).normalized, (DashAt(u, sv + 0.004f) - DashAt(u, sv - 0.004f)).normalized).normalized;
+                    sp.Add(p0); sn.Add(nn);
+                }
+                thread.Stitches(sp, sn, 0.0065f, 0.005f);
+            }
             // trim strip across the dash face and the passenger-side glovebox outline
             accent.Box(new Vector3(-0.08f, yEdge - 0.075f, dashEdgeZ + 0.012f), new Vector3(dashW * 2f - 0.5f, 0.012f, 0.012f));
-            trim.Box(new Vector3(-ex, yEdge - 0.16f, dashEdgeZ + 0.045f), new Vector3(0.36f, 0.11f, 0.02f), Quaternion.Euler(-12f, 0f, 0f));
+            trim.RoundBox(new Vector3(-ex, yEdge - 0.16f, dashEdgeZ + 0.045f), new Vector3(0.36f, 0.11f, 0.02f), Quaternion.Euler(-12f, 0f, 0f), 0.22f, 12);   // glovebox lid
             // round "eyeball" vents at both dash ends and two in the centre
             foreach (float vx in new[] { dashW - 0.09f, -dashW + 0.09f, 0.07f, -0.07f })
             {
@@ -151,11 +170,21 @@ namespace InkDrift
 
             // ---------------------------------------------------------------- centre stack + console
             float stackZ = dashEdgeZ + 0.03f;
-            dash.Box(new Vector3(0f, (yEdge - 0.11f + floor + 0.30f) * 0.5f, stackZ - 0.01f), new Vector3(0.30f, yEdge - 0.11f - floor - 0.30f, 0.06f), Quaternion.Euler(-8f, 0f, 0f));
+            dash.RoundBox(new Vector3(0f, (yEdge - 0.11f + floor + 0.30f) * 0.5f, stackZ - 0.01f), new Vector3(0.30f, yEdge - 0.11f - floor - 0.30f, 0.06f), Quaternion.Euler(-8f, 0f, 0f), 0.2f, 12);
             screen.Box(new Vector3(0f, yEdge - 0.16f, stackZ - 0.045f), new Vector3(0.20f, 0.08f, 0.006f), Quaternion.Euler(-10f, 0f, 0f));
             for (int k = -1; k <= 1; k++) metal.Tube(new Vector3(k * 0.07f, yEdge - 0.26f, stackZ - 0.035f), new Vector3(k * 0.07f, yEdge - 0.26f, stackZ - 0.06f), 0.017f, 0.015f, 14);
             float conRear = ez - 0.22f;
-            dash.Box(new Vector3(0f, (floor + consoleTop) * 0.5f, (stackZ + conRear) * 0.5f), new Vector3(0.26f, consoleTop - floor, stackZ - conRear));
+            dash.RoundBox(new Vector3(0f, (floor + consoleTop) * 0.5f, (stackZ + conRear) * 0.5f), new Vector3(0.26f, consoleTop - floor, stackZ - conRear), Quaternion.identity, 0.18f, 14);
+            foreach (int sx in new[] { 1, -1 })   // stitched edges along the console top
+            {
+                var sp = new List<Vector3>(); var sn = new List<Vector3>();
+                for (int i = 0; i <= 12; i++)
+                {
+                    float z = Mathf.Lerp(stackZ - 0.06f, conRear + 0.26f, i / 12f);
+                    sp.Add(new Vector3(sx * 0.105f, consoleTop + 0.001f, z)); sn.Add(Vector3.up);
+                }
+                thread.Stitches(sp, sn);
+            }
             soft.RoundBox(new Vector3(0f, consoleTop + 0.03f, conRear + 0.12f), new Vector3(0.22f, 0.07f, 0.26f), Quaternion.identity, 0.3f);   // armrest
 
             // H-pattern shifter (pivot at the base of the lever)
@@ -234,7 +263,8 @@ namespace InkDrift
             {
                 Vector3 a0 = new Vector3(s * (dims.cowlHalfW - 0.015f), cy - 0.02f, cz - 0.03f);
                 Vector3 a1 = new Vector3(s * (dims.headerHalfW - 0.01f), hy - 0.035f, hz + 0.01f);
-                trim.Beam(a0, a1, 0.095f, 0.05f, new Vector3(-s, 0.3f, 0f));
+                // moulded A-pillar trim: rounded section, tapering where it meets the dash and the header
+                trim.RoundBox((a0 + a1) * 0.5f, new Vector3(0.095f, 0.05f, (a1 - a0).magnitude + 0.04f), Quaternion.LookRotation(a1 - a0, new Vector3(-s, 0.3f, 0f)), 0.4f, 14);
                 // B-pillar / quarter post behind the doors
                 float bz = ez - 0.62f;
                 trim.Beam(new Vector3(s * (dims.BeltW(bz) - 0.07f), dims.Belt(bz) - 0.02f, bz), new Vector3(s * (dims.RoofW(bz) - 0.02f), dims.Roof(bz) - 0.05f, bz - 0.06f), 0.10f, 0.04f, new Vector3(-s, 0f, 0f));
@@ -249,7 +279,7 @@ namespace InkDrift
                         return new Vector3(s * xx, yy, zz);
                     }, 6, 4, new Vector3(-s, 0f, 0f));
             }
-            trim.Beam(new Vector3(-dims.headerHalfW, hy - 0.04f, hz), new Vector3(dims.headerHalfW, hy - 0.04f, hz), 0.06f, 0.05f, Vector3.up);
+            trim.RoundBox(new Vector3(0f, hy - 0.04f, hz), new Vector3(dims.headerHalfW * 2f + 0.03f, 0.05f, 0.06f), Quaternion.identity, 0.35f, 14);   // header rail
             float hl0 = hz - 0.02f, hl1 = dims.backTopZ;
             soft.Surface((u, vv) =>
             {
@@ -293,6 +323,15 @@ namespace InkDrift
                 var sill = new List<Vector3>();
                 for (float zz = doorFront; zz >= dims.backBottomZ; zz -= 0.1f) sill.Add(new Vector3(s * (dims.BeltW(zz) - 0.05f), dims.Belt(zz) - 0.006f, zz));
                 trim.Sweep(sill, 0.022f, 8);
+                {
+                    var sp = new List<Vector3>(); var sn = new List<Vector3>();
+                    for (float zz = doorFront - 0.02f; zz >= doorRear; zz -= 0.05f)
+                    {
+                        sp.Add(new Vector3(s * (dims.BeltW(zz) - 0.087f), dims.Belt(zz) - 0.05f, zz));
+                        sn.Add(new Vector3(-s, 0f, 0f));
+                    }
+                    if (sp.Count > 1) thread.Stitches(sp, sn);
+                }
                 float az = (doorFront + doorRear) * 0.5f - 0.05f;
                 soft.RoundBox(new Vector3(s * (dims.BeltW(az) - 0.12f), floor + 0.45f, az), new Vector3(0.09f, 0.05f, 0.42f), Quaternion.identity, 0.3f);
                 chrome.Box(new Vector3(s * (dims.BeltW(ez + 0.15f) - 0.083f), dims.Belt(ez + 0.15f) - 0.10f, ez + 0.15f), new Vector3(0.012f, 0.022f, 0.10f));
@@ -367,6 +406,7 @@ namespace InkDrift
             Part(root.transform, "Dark", dark, mats.dark);
             Part(root.transform, "DoorCards", doorCard, mats.door);
             Part(root.transform, "Carpet", carpet, mats.carpet);
+            Part(root.transform, "Thread", thread, mats.stitch);
             Part(root.transform, "Dash", dash, mats.dash);
             Part(root.transform, "Soft", soft, mats.soft);
             Part(root.transform, "Trim", trim, mats.trim);
@@ -404,6 +444,18 @@ namespace InkDrift
             rig.Init();
             SetLayerRecursive(root.transform, CarController.CarLayer);
             return rig;
+        }
+
+        /// <summary>Open Catmull-Rom spline through pts at parameter t (0 .. pts.Count-1).</summary>
+        static Vector2 CatmullRom(List<Vector2> pts, float t)
+        {
+            int n = pts.Count;
+            t = Mathf.Clamp(t, 0f, n - 1.0001f);
+            int i = Mathf.FloorToInt(t);
+            float f = t - i;
+            Vector2 p0 = pts[Mathf.Max(i - 1, 0)], p1 = pts[i], p2 = pts[Mathf.Min(i + 1, n - 1)], p3 = pts[Mathf.Min(i + 2, n - 1)];
+            float f2 = f * f, f3 = f2 * f;
+            return 0.5f * (2f * p1 + (-p0 + p2) * f + (2f * p0 - 5f * p1 + 4f * p2 - p3) * f2 + (-p0 + 3f * p1 - 3f * p2 + p3) * f3);
         }
 
         /// <summary>

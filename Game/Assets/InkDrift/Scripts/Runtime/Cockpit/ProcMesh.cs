@@ -275,6 +275,56 @@ namespace InkDrift
                 }
         }
 
+        /// <summary>
+        /// Smooth grid surface f(u,v) whose normals follow cross(df/du, df/dv) consistently (no per-vertex flipping),
+        /// for panels that turn through 90° or more (a dash that wraps from its top round into its face).
+        /// </summary>
+        public void SurfaceRaw(System.Func<float, float, Vector3> f, int nu, int nv, bool flip = false)
+        {
+            int i0 = v.Count;
+            for (int j = 0; j <= nv; j++)
+                for (int i = 0; i <= nu; i++)
+                {
+                    float uu = (float)i / nu, vv = (float)j / nv;
+                    Vector3 p = f(uu, vv);
+                    Vector3 du = f(Mathf.Min(1f, uu + 0.002f), vv) - f(Mathf.Max(0f, uu - 0.002f), vv);
+                    Vector3 dv = f(uu, Mathf.Min(1f, vv + 0.002f)) - f(uu, Mathf.Max(0f, vv - 0.002f));
+                    // normalise the (millimetre-scale) tangents first: Vector3.normalized returns zero below 1e-5
+                    Vector3 nn = Vector3.Cross(du.normalized, dv.normalized).normalized;
+                    if (nn.sqrMagnitude < 0.5f) nn = Vector3.up;
+                    if (flip) nn = -nn;
+                    V(p, nn, new Vector2(uu, vv));
+                }
+            for (int j = 0; j < nv; j++)
+                for (int i = 0; i < nu; i++)
+                {
+                    int a = i0 + j * (nu + 1) + i, b = a + 1, c = a + nu + 1, d = c + 1;
+                    Vector3 o = M.inverse.MultiplyVector(n[a] + n[d]);
+                    Tri(a, b, d, o); Tri(a, d, c, o);
+                }
+        }
+
+        /// <summary>Twin-needle stitching: thread beads in two rows either side of the line through pts (normal n per point).</summary>
+        public void Stitches(IList<Vector3> pts, IList<Vector3> normals, float spacing = 0.006f, float rowGap = 0.0045f,
+                             float len = 0.0038f, float width = 0.0009f, float height = 0.0006f)
+        {
+            float total = 0f;
+            for (int i = 1; i < pts.Count; i++) total += Vector3.Distance(pts[i - 1], pts[i]);
+            for (float d = spacing * 0.5f; d < total; d += spacing)
+            {
+                float acc = 0f; int k = 1;
+                while (k < pts.Count - 1 && acc + Vector3.Distance(pts[k - 1], pts[k]) < d) { acc += Vector3.Distance(pts[k - 1], pts[k]); k++; }
+                float segLen = Mathf.Max(1e-5f, Vector3.Distance(pts[k - 1], pts[k]));
+                float t = Mathf.Clamp01((d - acc) / segLen);
+                Vector3 p = Vector3.Lerp(pts[k - 1], pts[k], t);
+                Vector3 nn = Vector3.Lerp(normals[k - 1], normals[k], t).normalized;
+                Vector3 tan = Vector3.ProjectOnPlane(pts[k] - pts[k - 1], nn).normalized;
+                Vector3 side = Vector3.Cross(nn, tan);
+                foreach (float row in new[] { -rowGap * 0.5f, rowGap * 0.5f })
+                    Box(p + side * row + nn * (height * 0.5f), new Vector3(width, height, len), Quaternion.LookRotation(tan, nn));
+            }
+        }
+
         /// <summary>Appends another builder's geometry (already in this space).</summary>
         public void Append(ProcMesh o)
         {
