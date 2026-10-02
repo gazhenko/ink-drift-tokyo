@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.17.0: a sleeve that bunches
+# INK DRIFT: TOKYO — v1.18.0: multisampled edges
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.17.0
+## What's new in 1.18.0
+- **Multisample anti-aliasing.** The finest geometry in the car is narrower than a pixel at 1080p: glove and wheel stitching, the rim's edges, the shift lever. It used to break up into jagged dashes and crawl as the view moved. High quality now renders with 4x MSAA and Medium with 2x, on top of the existing SMAA, so the stitches read as clean, steady lines. Low quality is unchanged.
+
+## 1.17.0: a sleeve that bunches
 - **The suit sleeve gathers at the glove.** Where the glove's gauntlet closes over the sleeve, the race suit now piles up into a soft bulge of uneven folds, like real fabric pushed up the forearm, instead of running into the glove as a smooth tube.
 - The sewn-on INK DRIFT patch stays flat over the folds, because a patch stiffens the cloth it covers.
 

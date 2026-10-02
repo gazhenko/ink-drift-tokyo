@@ -44,7 +44,7 @@ namespace InkDrift.EditorTools
             PlayerSettings.companyName = "Gazhenko";
             PlayerSettings.productName = "INK DRIFT TOKYO";
             PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone, "com.gazhenko.inkdrift");
-            PlayerSettings.bundleVersion = "1.17.0";
+            PlayerSettings.bundleVersion = "1.18.0";
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.defaultScreenWidth = 1920;
             PlayerSettings.defaultScreenHeight = 1080;
@@ -134,7 +134,7 @@ namespace InkDrift.EditorTools
             SetB("m_RequireDepthTexture", true);
             SetB("m_RequireOpaqueTexture", false);
             SetB("m_SupportsHDR", true);
-            SetI("m_MSAA", 1);
+            SetI("m_MSAA", Msaa(tier));
             SetF("m_RenderScale", renderScale);
             SetI("m_MainLightRenderingMode", 1);
             SetB("m_MainLightShadowsSupported", true);
@@ -156,11 +156,25 @@ namespace InkDrift.EditorTools
             return asset;
         }
 
-        /// <summary>Renderer features only (no other project changes): -executeMethod InkDrift.EditorTools.ProjectSetup.EnsureRenderFeatures</summary>
+        /// <summary>
+        /// Multisampling per tier: the cockpit's thinnest geometry (stitches, rim and lever edges) is sub-pixel at
+        /// 1080p and crawls under SMAA alone.
+        /// </summary>
+        static int Msaa(string tier) => tier == "High" ? 4 : tier == "Medium" ? 2 : 1;
+
+        /// <summary>Renderer features and MSAA only (no other project changes): -executeMethod InkDrift.EditorTools.ProjectSetup.EnsureRenderFeatures</summary>
         public static void EnsureRenderFeatures()
         {
             foreach (var tier in new[] { "High", "Medium", "Low" })
             {
+                var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>($"{SettingsDir}/URP_{tier}.asset");
+                if (asset != null)
+                {
+                    var so = new SerializedObject(asset);
+                    so.FindProperty("m_MSAA").intValue = Msaa(tier);
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(asset);
+                }
                 var r = AssetDatabase.LoadAssetAtPath<UniversalRendererData>($"{SettingsDir}/URP_{tier}_Renderer.asset");
                 if (r == null) continue;
                 EnsureFeature<InkMaskFeature>(r, "InkMask");

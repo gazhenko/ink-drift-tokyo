@@ -426,7 +426,7 @@ Shader "InkDrift/Realistic"
             Name "InkMask"
             Tags { "LightMode" = "InkMask" }
             ZWrite Off
-            ZTest LEqual
+            ZTest Always
             Cull [_Cull]
             ColorMask R
 

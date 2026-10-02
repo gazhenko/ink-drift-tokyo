@@ -7,9 +7,10 @@ using UnityEngine.Rendering.Universal;
 namespace InkDrift
 {
     /// <summary>
-    /// Renders every visible material with an "InkMask" pass (InkDrift/Realistic: the driver) into _InkMaskTex after
-    /// opaques, depth-tested against the scene so only the visible pixels are marked. The comic post pass reads it and
-    /// leaves those pixels — and the outline around them — free of ink lines and paper grain.
+    /// Renders every visible material with an "InkMask" pass (InkDrift/Realistic: the cockpit and driver) into
+    /// _InkMaskTex after opaques. The comic post pass reads it and leaves those pixels — and the outline around them —
+    /// free of ink lines and paper grain. No depth test: the realistic interior is never behind the comic world, and
+    /// not sharing the camera's (multisampled) depth buffer keeps this pass independent of MSAA.
     /// </summary>
     public class InkMaskFeature : ScriptableRendererFeature
     {
@@ -24,7 +25,6 @@ namespace InkDrift
 
             public override void RecordRenderGraph(RenderGraph rg, ContextContainer frame)
             {
-                var res = frame.Get<UniversalResourceData>();
                 var cam = frame.Get<UniversalCameraData>();
                 var rendering = frame.Get<UniversalRenderingData>();
                 var lights = frame.Get<UniversalLightData>();
@@ -43,7 +43,6 @@ namespace InkDrift
                     data.list = rg.CreateRendererList(new RendererListParams(rendering.cullResults, draw, filter));
                     b.UseRendererList(data.list);
                     b.SetRenderAttachment(mask, 0, AccessFlags.Write);
-                    b.SetRenderAttachmentDepth(res.activeDepthTexture, AccessFlags.Read);
                     b.SetGlobalTextureAfterPass(mask, MaskId);
                     b.AllowGlobalStateModification(true);
                     b.SetRenderFunc((PassData d, RasterGraphContext ctx) => ctx.cmd.DrawRendererList(d.list));
