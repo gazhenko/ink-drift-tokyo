@@ -72,6 +72,35 @@ namespace InkDrift
             set { PlayerPrefs.SetInt("quality", value); QualitySettings.SetQualityLevel(value, true); }
         }
 
+        // controller settings are read every frame, so they're cached
+        static int? padLabels;
+        static bool? vibration;
+        static float? deadzone, steerResponse;
+
+        /// <summary>Controller button labels: 0 auto-detect, 1 Xbox, 2 PlayStation, 3 Nintendo.</summary>
+        public static int PadLabels
+        {
+            get => padLabels ??= PlayerPrefs.GetInt("pad_labels", 0);
+            set { padLabels = value; PlayerPrefs.SetInt("pad_labels", value); }
+        }
+        public static bool Vibration
+        {
+            get => vibration ??= PlayerPrefs.GetInt("pad_rumble", 1) == 1;
+            set { vibration = value; PlayerPrefs.SetInt("pad_rumble", value ? 1 : 0); }
+        }
+        /// <summary>Inner dead zone for sticks (Input System default dead zone).</summary>
+        public static float StickDeadzone
+        {
+            get => deadzone ??= PlayerPrefs.GetFloat("pad_deadzone", 0.1f);
+            set { deadzone = value; PlayerPrefs.SetFloat("pad_deadzone", value); GameInput.ApplyDeadzone(); }
+        }
+        /// <summary>Steering response exponent for analog sticks (1 = linear).</summary>
+        public static float SteerResponse
+        {
+            get => steerResponse ??= PlayerPrefs.GetFloat("pad_steer_curve", 1.35f);
+            set { steerResponse = value; PlayerPrefs.SetFloat("pad_steer_curve", value); }
+        }
+
         public static long BestScore(string track) => long.Parse(PlayerPrefs.GetString("best_" + track, "0"));
         public static void SetBestScore(string track, long s) => PlayerPrefs.SetString("best_" + track, s.ToString());
         public static float BestLap(string track) => PlayerPrefs.GetFloat("lap_" + track, 0f);

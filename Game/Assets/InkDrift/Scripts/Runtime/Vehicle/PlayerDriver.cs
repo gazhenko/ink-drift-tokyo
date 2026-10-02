@@ -1,111 +1,88 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace InkDrift
 {
-    /// <summary>Keyboard + gamepad driving input. Digital keys are smoothed so keyboard drifting is possible.</summary>
+    /// <summary>Feeds <see cref="GameInput"/> into the car. Keys are smoothed so keyboard drifting is possible; analog input is shaped by the player's response curve.</summary>
     [RequireComponent(typeof(CarController))]
     public class PlayerDriver : MonoBehaviour
     {
         CarController car;
-        InputAction steer, throttle, brake, handbrake, clutch, shiftUp, shiftDown, resetCar, cameraCycle, pause, lookBack;
         float kbSteer, kbThrottle, kbBrake;
+        bool steerAnalog, throttleAnalog, brakeAnalog;
 
         public static bool LookBackHeld { get; private set; }
         public static event System.Action CameraCyclePressed;
         public static event System.Action PausePressed;
         public static event System.Action ResetPressed;
 
-        void Awake() { car = GetComponent<CarController>(); }
-
-        void OnEnable()
+        void Awake()
         {
-            steer = new InputAction("Steer", InputActionType.Value);
-            steer.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/a").With("Positive", "<Keyboard>/d");
-            steer.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/leftArrow").With("Positive", "<Keyboard>/rightArrow");
-            steer.AddBinding("<Gamepad>/leftStick/x");
-
-            throttle = Make("Throttle", "<Keyboard>/w", "<Keyboard>/upArrow", "<Gamepad>/rightTrigger");
-            brake = Make("Brake", "<Keyboard>/s", "<Keyboard>/downArrow", "<Gamepad>/leftTrigger");
-            handbrake = Make("Handbrake", "<Keyboard>/space", "<Gamepad>/buttonSouth");
-            clutch = Make("Clutch", "<Keyboard>/leftShift", "<Gamepad>/buttonWest");
-            shiftUp = Make("ShiftUp", "<Keyboard>/e", "<Gamepad>/rightShoulder");
-            shiftDown = Make("ShiftDown", "<Keyboard>/q", "<Gamepad>/leftShoulder");
-            resetCar = Make("Reset", "<Keyboard>/r", "<Gamepad>/select");
-            cameraCycle = Make("Camera", "<Keyboard>/c", "<Gamepad>/buttonNorth");
-            pause = Make("Pause", "<Keyboard>/escape", "<Gamepad>/start");
-            lookBack = Make("LookBack", "<Keyboard>/b", "<Gamepad>/rightStickPress");
-
-            foreach (var a in All()) a.Enable();
-            shiftUp.performed += _ => car.ShiftUp();
-            shiftDown.performed += _ => car.ShiftDown();
-            resetCar.performed += _ => ResetPressed?.Invoke();
-            cameraCycle.performed += _ => CameraCyclePressed?.Invoke();
-            pause.performed += _ => PausePressed?.Invoke();
+            car = GetComponent<CarController>();
+            GameInput.Init();
         }
 
         void OnDisable()
         {
-            foreach (var a in All()) { a.Disable(); a.Dispose(); }
-        }
-
-        InputAction[] All() => new[] { steer, throttle, brake, handbrake, clutch, shiftUp, shiftDown, resetCar, cameraCycle, pause, lookBack };
-
-        static InputAction Make(string name, params string[] bindings)
-        {
-            var a = new InputAction(name, InputActionType.Value);
-            foreach (var b in bindings) a.AddBinding(b);
-            return a;
-        }
-
-        bool GamepadActive()
-        {
-            var g = Gamepad.current;
-            if (g == null) return false;
-            return Mathf.Abs(g.leftStick.x.ReadValue()) > 0.08f || g.rightTrigger.ReadValue() > 0.05f || g.leftTrigger.ReadValue() > 0.05f;
+            LookBackHeld = false;
+            GameInput.SetEngineRumble(0f, 0f);
         }
 
         void Update()
         {
-            float dt = Time.unscaledDeltaTime;
-            float rawSteer = steer.ReadValue<float>();
-            float rawThrottle = throttle.ReadValue<float>();
-            float rawBrake = brake.ReadValue<float>();
-            bool pad = GamepadActive();
+            if (GameInput.Pause.WasPressedThisFrame()) PausePressed?.Invoke();
+            if (Time.timeScale <= 0f) { GameInput.SetEngineRumble(0f, 0f); return; }
 
-            CarInputState s = car.input;
-            if (pad)
+            if (GameInput.ShiftUp.WasPressedThisFrame()) car.ShiftUp();
+            if (GameInput.ShiftDown.WasPressedThisFrame()) car.ShiftDown();
+            if (GameInput.ResetCar.WasPressedThisFrame()) ResetPressed?.Invoke();
+            if (GameInput.CameraCycle.WasPressedThisFrame()) CameraCyclePressed?.Invoke();
+
+            float dt = Time.unscaledDeltaTime;
+            float rawSteer = GameInput.Steer.ReadValue<float>();
+            float rawThrottle = GameInput.Throttle.ReadValue<float>();
+            float rawBrake = GameInput.Brake.ReadValue<float>();
+
+            if (GameInput.FromController(GameInput.Steer, ref steerAnalog))
             {
-                float x = rawSteer;
-                float dead = 0.06f;
-                x = Mathf.Sign(x) * Mathf.Clamp01((Mathf.Abs(x) - dead) / (1f - dead));
-                x = Mathf.Sign(x) * Mathf.Pow(Mathf.Abs(x), 1.35f);
-                s.steer = x;
-                s.throttle = rawThrottle;
-                s.brake = rawBrake;
-                kbSteer = x; kbThrottle = rawThrottle; kbBrake = rawBrake;
+                // dead zone is applied by the Input System (Settings ▸ Controls ▸ dead zone); shape the rest
+                kbSteer = Mathf.Sign(rawSteer) * Mathf.Pow(Mathf.Abs(rawSteer), GameSession.SteerResponse);
             }
             else
             {
-                // Keyboard: ramp toward the target, return to center faster, and counter-steer snaps quickly.
+                // keyboard: ramp toward the target, return to center faster, and counter-steer snaps quickly
                 float target = rawSteer;
                 bool reversing = Mathf.Abs(target) > 0.01f && Mathf.Sign(target) != Mathf.Sign(kbSteer) && Mathf.Abs(kbSteer) > 0.05f;
                 float rate = Mathf.Abs(target) < 0.01f ? 5.5f : (reversing ? 9f : 3.4f);
                 kbSteer = Mathf.MoveTowards(kbSteer, target, rate * dt);
-                kbThrottle = Mathf.MoveTowards(kbThrottle, rawThrottle, (rawThrottle > kbThrottle ? 7f : 10f) * dt);
-                kbBrake = Mathf.MoveTowards(kbBrake, rawBrake, 8f * dt);
-                s.steer = kbSteer;
-                s.throttle = kbThrottle;
-                s.brake = kbBrake;
             }
-            s.handbrake = handbrake.ReadValue<float>() > 0.5f;
-            s.clutch = clutch.ReadValue<float>();
-            car.input.steer = s.steer;
-            car.input.throttle = s.throttle;
-            car.input.brake = s.brake;
-            car.input.handbrake = s.handbrake;
-            car.input.clutch = s.clutch;
-            LookBackHeld = lookBack.ReadValue<float>() > 0.5f;
+            kbThrottle = GameInput.FromController(GameInput.Throttle, ref throttleAnalog)
+                ? Pedal(rawThrottle)
+                : Mathf.MoveTowards(kbThrottle, rawThrottle, (rawThrottle > kbThrottle ? 7f : 10f) * dt);
+            kbBrake = GameInput.FromController(GameInput.Brake, ref brakeAnalog)
+                ? Pedal(rawBrake)
+                : Mathf.MoveTowards(kbBrake, rawBrake, 8f * dt);
+
+            car.input.steer = kbSteer;
+            car.input.throttle = kbThrottle;
+            car.input.brake = kbBrake;
+            car.input.handbrake = GameInput.Handbrake.ReadValue<float>() > 0.5f;
+            car.input.clutch = GameInput.Clutch.ReadValue<float>();
+            LookBackHeld = GameInput.LookBack.ReadValue<float>() > 0.5f;
+
+            UpdateRumble();
+        }
+
+        /// <summary>Small trigger dead zone so a resting trigger never creeps the throttle.</summary>
+        static float Pedal(float v) => Mathf.Clamp01((v - 0.03f) / 0.97f);
+
+        void UpdateRumble()
+        {
+            if (!GameInput.UsingGamepad || car.frozen) { GameInput.SetEngineRumble(0f, 0f); return; }
+            // low motor: tyres sliding / scrubbing; high motor: rev limiter buzz and big wheelspin
+            float slide = car.GroundedWheels > 0 ? Mathf.InverseLerp(8f, 40f, Mathf.Abs(car.DriftAngle)) * Mathf.InverseLerp(4f, 18f, car.SpeedMs) : 0f;
+            float low = slide * 0.32f;
+            float high = (car.OnLimiter ? 0.18f : 0f) + (car.input.handbrake && car.SpeedMs > 3f ? 0.1f : 0f);
+            GameInput.SetEngineRumble(low, high);
         }
     }
 }

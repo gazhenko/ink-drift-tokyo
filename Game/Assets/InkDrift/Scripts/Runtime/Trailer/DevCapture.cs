@@ -1,6 +1,9 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.XInput;
 using UnityEngine.SceneManagement;
 
 namespace InkDrift
@@ -12,6 +15,7 @@ namespace InkDrift
     ///   -autopilot             AI drives the player car
     ///   -shots dir -shotTimes 4,8,12  write screenshots at those seconds then quit
     ///   -telemetry file.csv    log player telemetry each physics step
+    ///   -fakePad [-padLabels 0..3]  add a simulated Xbox pad and switch prompts to it (UI screenshots without hardware)
     /// </summary>
     public class DevCapture : MonoBehaviour
     {
@@ -22,11 +26,27 @@ namespace InkDrift
         static void Boot()
         {
             if (_i != null) return;
-            bool any = CommandLine.Has("-shots") || CommandLine.Has("-scene") || CommandLine.Has("-autopilot") || CommandLine.Has("-telemetry") || CommandLine.Has("-record");
+            bool any = CommandLine.Has("-shots") || CommandLine.Has("-scene") || CommandLine.Has("-autopilot") || CommandLine.Has("-telemetry") || CommandLine.Has("-record") || CommandLine.Has("-fakePad");
             if (!any) return;
             var g = new GameObject("DevCapture");
             DontDestroyOnLoad(g);
             _i = g.AddComponent<DevCapture>();
+        }
+
+        /// <summary>Adds a simulated pad and taps R3 so menus switch to controller prompts.</summary>
+        static IEnumerator FakePad()
+        {
+            var pad = InputSystem.AddDevice<XInputController>("FakePad");
+            yield return new WaitForSecondsRealtime(0.5f);
+            InputSystem.QueueStateEvent(pad, new GamepadState().WithButton(GamepadButton.RightStick));
+            yield return null; yield return null;
+            InputSystem.QueueStateEvent(pad, new GamepadState());
+        }
+
+        static IEnumerator DevPause(float at)
+        {
+            yield return new WaitForSeconds(at);
+            RaceManager.I?.DevPause(CommandLine.Has("-pauseControls"));
         }
 
         IEnumerator Start()
@@ -38,6 +58,8 @@ namespace InkDrift
             string mode = CommandLine.Get("-mode");
             if (mode != null) GameSession.Mode = mode == "battle" ? GameMode.Battle : mode == "free" ? GameMode.FreeRun : GameMode.DriftAttack;
             GameSession.PaintIndex = (int)CommandLine.GetFloat("-paint", GameSession.PaintIndex);
+            if (CommandLine.Has("-padLabels")) GameSession.PadLabels = (int)CommandLine.GetFloat("-padLabels", 0);
+            if (CommandLine.Has("-fakePad")) StartCoroutine(FakePad());
             string scene = CommandLine.Get("-scene");
             if (scene != null && SceneManager.GetActiveScene().name != scene)
             {
@@ -58,6 +80,7 @@ namespace InkDrift
                     rb.Player.assistLevel = 0;
                 }
             }
+            if (CommandLine.Has("-pause")) StartCoroutine(DevPause(CommandLine.GetFloat("-pause", 6f)));
             string tel = CommandLine.Get("-telemetry");
             if (tel != null)
             {
@@ -91,19 +114,19 @@ namespace InkDrift
             {
                 Directory.CreateDirectory(dir);
                 string times = CommandLine.Get("-shotTimes", "3,6,9");
-                float start = Time.time;
+                float start = Time.unscaledTime;   // real time: shots also work while paused
                 int n = 0;
                 foreach (var s in times.Split(','))
                 {
                     float t = float.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
-                    while (Time.time - start < t) yield return null;
+                    while (Time.unscaledTime - start < t) yield return null;
                     yield return new WaitForEndOfFrame();
                     var cam = Camera.main;
                     string path = Path.Combine(dir, $"shot_{n++:00}_{SceneManager.GetActiveScene().name}.png");
                     ScreenCapture.CaptureScreenshot(path);
                     yield return null;
                 }
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSecondsRealtime(0.5f);
                 telemetry?.Close();
                 Application.Quit();
             }

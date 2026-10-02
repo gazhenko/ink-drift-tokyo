@@ -203,7 +203,11 @@ namespace InkDrift
             sparks.transform.position = p;
             sparks.transform.rotation = Quaternion.LookRotation(c.contactCount > 0 ? c.GetContact(0).normal : Vector3.up);
             sparks.Emit(Mathf.RoundToInt(Mathf.Clamp(dv * 12f, 8, 90)));
-            if (ChaseCamera.Main != null && GetComponent<PlayerDriver>() != null) ChaseCamera.Main.AddShake(Mathf.Clamp(dv * 0.12f, 0.1f, 1f));
+            if (GetComponent<PlayerDriver>() != null)
+            {
+                if (ChaseCamera.Main != null) ChaseCamera.Main.AddShake(Mathf.Clamp(dv * 0.12f, 0.1f, 1f));
+                GameInput.Impulse(Mathf.Clamp01(dv / 7f), Mathf.Clamp01(dv / 5f), Mathf.Lerp(0.12f, 0.35f, Mathf.Clamp01(dv / 10f)));
+            }
             var clip = Resources.Load<AudioClip>("Audio/impact");
             if (clip != null) impactSrc.PlayOneShot(clip, Mathf.Clamp01(dv / 8f));
         }

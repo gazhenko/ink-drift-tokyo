@@ -34,6 +34,7 @@ namespace InkDrift
         bool paused;
         GameObject pauseRoot, resultsRoot;
         Canvas menuCanvas;
+        string pauseNote;
         float sessionBest;
 
         void Awake() { I = this; }
@@ -42,12 +43,14 @@ namespace InkDrift
         {
             PlayerDriver.PausePressed += TogglePause;
             PlayerDriver.ResetPressed += ResetPlayer;
+            GameInput.PadDisconnected += OnPadLost;
         }
 
         void OnDisable()
         {
             PlayerDriver.PausePressed -= TogglePause;
             PlayerDriver.ResetPressed -= ResetPlayer;
+            GameInput.PadDisconnected -= OnPadLost;
             Time.timeScale = 1f;
         }
 
@@ -79,6 +82,9 @@ namespace InkDrift
 
         void Update()
         {
+            // B / Circle backs out of the pause menu (Esc and Start are the Pause binding itself)
+            if (paused && !ControlsScreen.IsOpen && !GameInput.Capturing && GameInput.Back.WasPressedThisFrame() && !GameInput.Pause.WasPressedThisFrame())
+                TogglePause();
             if (state != State.Racing || player == null) return;
             var path = TrackPath.Active;
             if (path == null) return;
@@ -175,11 +181,7 @@ namespace InkDrift
             if (menuCanvas == null)
             {
                 menuCanvas = UIKit.MakeCanvas("RaceMenus", 80, transform);
-                if (FindAnyObjectByType<EventSystem>() == null)
-                {
-                    var es = new GameObject("EventSystem", typeof(EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
-                    es.transform.SetParent(transform);
-                }
+                GameInput.EnsureEventSystem(transform);
             }
             return menuCanvas;
         }
@@ -247,9 +249,35 @@ namespace InkDrift
             return $"{m}:{s:00.000}";
         }
 
+        void OnPadLost(UnityEngine.InputSystem.InputDevice pad)
+        {
+            if (paused || state == State.Finished) return;
+            pauseNote = "CONTROLLER DISCONNECTED · コントローラーが切断されました";
+            TogglePause();
+        }
+
+        /// <summary>Dev captures: open the pause menu (and optionally its Controls screen).</summary>
+        public void DevPause(bool controls)
+        {
+            if (!paused) TogglePause();
+            if (controls) OpenControls();
+        }
+
+        void OpenControls()
+        {
+            if (pauseRoot) pauseRoot.SetActive(false);
+            ControlsScreen.Open(EnsureCanvas().transform, () =>
+            {
+                if (!pauseRoot) return;
+                pauseRoot.SetActive(true);
+                var b = pauseRoot.transform.Find("Controls");
+                if (b) EventSystem.current?.SetSelectedGameObject(b.gameObject);
+            });
+        }
+
         void TogglePause()
         {
-            if (state == State.Finished) return;
+            if (state == State.Finished || ControlsScreen.IsOpen || GameInput.Capturing) return;
             paused = !paused;
             Time.timeScale = paused ? 0f : 1f;
             AudioListener.pause = paused;
@@ -263,7 +291,14 @@ namespace InkDrift
                 UIKit.Inked(t, 0.25f, Palette.Ink, new Vector2(1.2f, -1.2f));
                 var resume = UIKit.Button("Resume", pauseRoot.transform, "RESUME", "再開", new Vector2(0.5f, 0.5f), new Vector2(0, 80), new Vector2(420, 100), TogglePause, Palette.Yellow);
                 UIKit.Button("Restart", pauseRoot.transform, "RESTART", "リスタート", new Vector2(0.5f, 0.5f), new Vector2(0, -50), new Vector2(420, 100), Restart, Palette.Paper);
-                UIKit.Button("Quit", pauseRoot.transform, "QUIT TO MENU", "メニューへ", new Vector2(0.5f, 0.5f), new Vector2(0, -180), new Vector2(420, 100), QuitToMenu, Palette.Cyan);
+                UIKit.Button("Controls", pauseRoot.transform, "CONTROLS", "操作設定", new Vector2(0.5f, 0.5f), new Vector2(0, -180), new Vector2(420, 100), OpenControls, Palette.Lime);
+                UIKit.Button("Quit", pauseRoot.transform, "QUIT TO MENU", "メニューへ", new Vector2(0.5f, 0.5f), new Vector2(0, -310), new Vector2(420, 100), QuitToMenu, Palette.Cyan);
+                if (pauseNote != null)
+                {
+                    var n = UIKit.Text("Note", pauseRoot.transform, pauseNote, fs ? fs.jpHeavy : null, 34, Palette.Red, TextAlignmentOptions.Center, new Vector2(0.5f, 0.5f), new Vector2(0, 175), new Vector2(1400, 50));
+                    UIKit.Inked(n, 0.25f);
+                    pauseNote = null;
+                }
                 EventSystem.current?.SetSelectedGameObject(resume.gameObject);
             }
             else if (pauseRoot != null) Destroy(pauseRoot);

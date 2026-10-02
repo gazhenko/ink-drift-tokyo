@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,7 +15,7 @@ namespace InkDrift
         public Camera cam;
         public Light[] accentLights = new Light[0];
 
-        enum Screen { Title, Main, Car, Track, Settings, Loading }
+        enum Screen { Title, Main, Car, Track, Settings, Controls, Loading }
         Screen screen;
         Canvas canvas;
         RectTransform root;
@@ -25,8 +23,10 @@ namespace InkDrift
         GameObject displayCar;
         int carIndex, paintIndex, trackIndex;
         GameMode pendingMode = GameMode.DriftAttack;
-        InputAction left, right, up, down, back, any;
         float camT;
+        int screenFrame;
+        TextMeshProUGUI hintText;
+        System.Func<string> hintBuild;
         TextMeshProUGUI carName, carJp, carTag, carSpecs, paintLabel;
         Image[] statFill;
         readonly List<Image> swatches = new List<Image>();
@@ -39,21 +39,15 @@ namespace InkDrift
             QualitySettings.SetQualityLevel(GameSession.Quality, true);
             canvas = UIKit.MakeCanvas("Menu", 10, transform);
             root = UIKit.Stretch("Root", canvas.transform);
-            if (FindAnyObjectByType<EventSystem>() == null)
-                new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
-            left = Act("<Keyboard>/leftArrow", "<Keyboard>/a", "<Gamepad>/dpad/left", "<Gamepad>/leftStick/left");
-            right = Act("<Keyboard>/rightArrow", "<Keyboard>/d", "<Gamepad>/dpad/right", "<Gamepad>/leftStick/right");
-            up = Act("<Keyboard>/upArrow", "<Keyboard>/w", "<Gamepad>/dpad/up");
-            down = Act("<Keyboard>/downArrow", "<Keyboard>/s", "<Gamepad>/dpad/down");
-            back = Act("<Keyboard>/escape", "<Keyboard>/backspace", "<Gamepad>/buttonEast");
-            any = Act("<Keyboard>/anyKey", "<Gamepad>/start", "<Gamepad>/buttonSouth", "<Mouse>/leftButton");
+            GameInput.EnsureEventSystem();
+            GameInput.DeviceChanged += RefreshHint;
             carIndex = Mathf.Max(0, IndexOfCar(GameSession.CarId));
             if (CommandLine.Has("-menuCar")) carIndex = Mathf.Clamp((int)CommandLine.GetFloat("-menuCar", 0), 0, CarCatalog.All.Count - 1);
             paintIndex = GameSession.PaintIndex;
             MusicPlayer.Ensure().PlayMenuMusic();
             ShowDisplayCar();
             string dbg = CommandLine.Get("-menuScreen");
-            Go(dbg == "main" ? Screen.Main : dbg == "car" ? Screen.Car : dbg == "track" ? Screen.Track : dbg == "settings" ? Screen.Settings : Screen.Title);
+            Go(dbg == "main" ? Screen.Main : dbg == "car" ? Screen.Car : dbg == "track" ? Screen.Track : dbg == "settings" ? Screen.Settings : dbg == "controls" ? Screen.Controls : Screen.Title);
             if (CommandLine.Has("-autoFlow")) StartCoroutine(AutoFlow());
         }
 
@@ -69,15 +63,7 @@ namespace InkDrift
             StartRace();
         }
 
-        void OnDestroy() { foreach (var a in new[] { left, right, up, down, back, any }) { a?.Disable(); a?.Dispose(); } }
-
-        static InputAction Act(params string[] b)
-        {
-            var a = new InputAction(type: InputActionType.Button);
-            foreach (var x in b) a.AddBinding(x);
-            a.Enable();
-            return a;
-        }
+        void OnDestroy() { GameInput.DeviceChanged -= RefreshHint; }
 
         static int IndexOfCar(string id)
         {
@@ -101,33 +87,38 @@ namespace InkDrift
             }
             foreach (var l in accentLights) if (l && l.type == LightType.Spot) l.intensity = 30f + Mathf.Sin(Time.time * 2.3f + l.GetInstanceID()) * 6f;
 
+            // one screen change per frame: a press that closed one screen must not also act on the next
+            if (Time.frameCount == screenFrame || GameInput.Capturing) return;
             switch (screen)
             {
                 case Screen.Title:
-                    if (any.WasPressedThisFrame()) { UISfx.Play("ui_confirm"); Go(Screen.Main); }
+                    if (GameInput.Any.WasPressedThisFrame()) { UISfx.Play("ui_confirm"); Go(Screen.Main); }
                     break;
                 case Screen.Car:
-                    if (left.WasPressedThisFrame()) ChangeCar(-1);
-                    if (right.WasPressedThisFrame()) ChangeCar(1);
-                    if (up.WasPressedThisFrame()) ChangePaint(-1);
-                    if (down.WasPressedThisFrame()) ChangePaint(1);
-                    if (back.WasPressedThisFrame()) Go(Screen.Main);
+                    if (GameInput.NavLeft.WasPressedThisFrame()) ChangeCar(-1);
+                    else if (GameInput.NavRight.WasPressedThisFrame()) ChangeCar(1);
+                    else if (GameInput.NavUp.WasPressedThisFrame()) ChangePaint(-1);
+                    else if (GameInput.NavDown.WasPressedThisFrame()) ChangePaint(1);
+                    else if (GameInput.Back.WasPressedThisFrame()) Go(Screen.Main);
                     break;
                 case Screen.Track:
-                    if (left.WasPressedThisFrame()) { trackIndex = (trackIndex + TrackCatalog.All.Length - 1) % TrackCatalog.All.Length; Go(Screen.Track); }
-                    if (right.WasPressedThisFrame()) { trackIndex = (trackIndex + 1) % TrackCatalog.All.Length; Go(Screen.Track); }
-                    if (back.WasPressedThisFrame()) Go(Screen.Car);
+                    if (GameInput.NavLeft.WasPressedThisFrame()) { trackIndex = (trackIndex + TrackCatalog.All.Length - 1) % TrackCatalog.All.Length; Go(Screen.Track); }
+                    else if (GameInput.NavRight.WasPressedThisFrame()) { trackIndex = (trackIndex + 1) % TrackCatalog.All.Length; Go(Screen.Track); }
+                    else if (GameInput.Back.WasPressedThisFrame()) Go(Screen.Car);
                     break;
                 case Screen.Settings:
                 case Screen.Main:
-                    if (back.WasPressedThisFrame()) Go(screen == Screen.Settings ? Screen.Main : Screen.Title);
+                    if (GameInput.Back.WasPressedThisFrame()) Go(screen == Screen.Settings ? Screen.Main : Screen.Title);
                     break;
             }
         }
 
         void Go(Screen s)
         {
+            var from = screen;
             screen = s;
+            screenFrame = Time.frameCount;
+            hintText = null; hintBuild = null;
             if (current) Destroy(current);
             current = UIKit.Stretch(s.ToString(), root).gameObject;
             statFill = null; swatches.Clear();
@@ -137,7 +128,8 @@ namespace InkDrift
                 case Screen.Main: BuildMain(); break;
                 case Screen.Car: BuildCar(); break;
                 case Screen.Track: BuildTrack(); break;
-                case Screen.Settings: BuildSettings(); break;
+                case Screen.Settings: BuildSettings(from == Screen.Controls); break;
+                case Screen.Controls: ControlsScreen.Open(C, () => Go(Screen.Settings)); break;
             }
             StartCoroutine(PopIn(current.transform as RectTransform));
         }
@@ -167,11 +159,20 @@ namespace InkDrift
             UIKit.Inked(j, 0.25f);
         }
 
-        void Hint(string text)
+        /// <summary>Footer hint that re-labels itself when the player switches between keyboard and controller.</summary>
+        void Hint(System.Func<string> build)
         {
-            var t = UIKit.Text("Hint", C, text, F ? F.comic : null, 30, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(0, 40), new Vector2(1600, 50));
-            UIKit.Inked(t, 0.3f);
+            hintBuild = build;
+            hintText = UIKit.Text("Hint", C, build(), F ? F.comic : null, 30, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(0, 40), new Vector2(1600, 50));
+            hintText.richText = true;
+            UIKit.Inked(hintText, 0.3f);
         }
+
+        void RefreshHint() { if (hintText && hintBuild != null) hintText.text = hintBuild(); }
+
+        static string Pick => GameInput.UsingGamepad ? "D-PAD" : "↑↓";
+        static string Ok => GameInput.ConfirmLabel;
+        static string No => GameInput.BackLabel;
 
         void BuildTitle()
         {
@@ -206,7 +207,7 @@ namespace InkDrift
             var desc = UIKit.Text("Desc", C, "Chain drifts for points. Angle × speed × combo.\nClip the walls. Don't touch them.", F ? F.comic : null, 34, Palette.Paper, TextAlignmentOptions.Left, new Vector2(0, 0), new Vector2(560, 150), new Vector2(900, 100));
             UIKit.Inked(desc, 0.3f);
             EventSystem.current.SetSelectedGameObject(first.gameObject);
-            Hint("↑↓ SELECT   ·   ENTER / A  CONFIRM   ·   ESC / B  BACK");
+            Hint(() => $"{Pick}  SELECT   ·   {Ok}  CONFIRM   ·   {No}  BACK");
         }
 
         void MainPick(int k)
@@ -251,10 +252,12 @@ namespace InkDrift
                 swatches.Add(s);
             }
             var go = UIKit.Button("Go", C, "SELECT", "決定", new Vector2(1, 0), new Vector2(-300, 90), new Vector2(380, 104), () => { UISfx.Play("ui_confirm"); GameSession.CarId = CarCatalog.All[carIndex].id; GameSession.PaintIndex = paintIndex; Go(Screen.Track); }, Palette.Yellow);
-            UIKit.Button("Prev", C, "◀", null, new Vector2(0, 0.5f), new Vector2(110, -40), new Vector2(110, 110), () => ChangeCar(-1), Palette.Paper);
-            UIKit.Button("Next", C, "▶", null, new Vector2(0.5f, 0.5f), new Vector2(60, -40), new Vector2(110, 110), () => ChangeCar(1), Palette.Paper);
+            var prev = UIKit.Button("Prev", C, "◀", null, new Vector2(0, 0.5f), new Vector2(110, -40), new Vector2(110, 110), () => ChangeCar(-1), Palette.Paper);
+            var next = UIKit.Button("Next", C, "▶", null, new Vector2(0.5f, 0.5f), new Vector2(60, -40), new Vector2(110, 110), () => ChangeCar(1), Palette.Paper);
+            // directions change car/paint here, so keep the selection on SELECT (arrows are for the mouse)
+            foreach (var b in new[] { go, prev, next }) b.navigation = new Navigation { mode = Navigation.Mode.None };
             EventSystem.current.SetSelectedGameObject(go.gameObject);
-            Hint("◀ ▶ CAR   ·   ↑↓ PAINT   ·   ENTER / A  SELECT   ·   ESC / B  BACK");
+            Hint(() => $"◀ ▶  CAR   ·   {(GameInput.UsingGamepad ? "▲▼" : "↑↓")}  PAINT   ·   {Ok}  SELECT   ·   {No}  BACK");
             RefreshCarInfo();
         }
 
@@ -336,37 +339,34 @@ namespace InkDrift
             }
             sel = UIKit.Button("Race", C, "RACE!", "スタート", new Vector2(0.5f, 0), new Vector2(0, 120), new Vector2(420, 110), StartRace, Palette.Yellow);
             EventSystem.current.SetSelectedGameObject(sel.gameObject);
-            Hint("◀ ▶ TRACK   ·   ENTER / A  RACE   ·   ESC / B  BACK");
+            Hint(() => $"◀ ▶  TRACK   ·   {Ok}  RACE   ·   {No}  BACK");
         }
 
-        void BuildSettings()
+        void BuildSettings(bool fromControls = false)
         {
             Header("SETTINGS", "設定", Palette.Lime);
-            float y = 250;
+            float y = 260;
             UnityEngine.UI.Button first = null;
             UnityEngine.UI.Button Row(string label, System.Func<string> value, System.Action cycle)
             {
                 var b = UIKit.Button(label, C, label, null, new Vector2(0.5f, 0.5f), new Vector2(-260, y), new Vector2(520, 88), null, Palette.Paper);
                 var v = UIKit.Text("Val", C, value(), F ? F.comic : null, 46, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0.5f, 0.5f), new Vector2(380, y), new Vector2(700, 80));
                 UIKit.Inked(v, 0.3f);
-                b.onClick.AddListener(() => { cycle(); v.text = value(); UISfx.Play("ui_move"); });
-                y -= 110;
+                b.onClick.AddListener(() => { cycle(); if (v) v.text = value(); UISfx.Play("ui_move"); });
+                y -= 100;
                 first ??= b;
                 return b;
             }
+            var controlsRow = Row("CONTROLS", () => "KEYS · CONTROLLER  ▶", () => Go(Screen.Controls));
             string[] assist = { "PRO (no assists)", "STANDARD (counter-steer)", "EASY (counter-steer + stability)" };
             Row("ASSIST", () => assist[GameSession.AssistLevel], () => GameSession.AssistLevel = (GameSession.AssistLevel + 1) % 3);
-            Row("GEARBOX", () => GameSession.Gearbox == Transmission.Automatic ? "AUTOMATIC" : "MANUAL (E/Q · RB/LB)", () => GameSession.Gearbox = GameSession.Gearbox == Transmission.Automatic ? Transmission.Manual : Transmission.Automatic);
+            Row("GEARBOX", () => GameSession.Gearbox == Transmission.Automatic ? "AUTOMATIC" : $"MANUAL ({GameInput.Label(Bind.ShiftUp)} / {GameInput.Label(Bind.ShiftDown)})", () => GameSession.Gearbox = GameSession.Gearbox == Transmission.Automatic ? Transmission.Manual : Transmission.Automatic);
             Row("QUALITY", () => QualitySettings.names[Mathf.Clamp(GameSession.Quality, 0, QualitySettings.names.Length - 1)].ToUpperInvariant(), () => GameSession.Quality = (GameSession.Quality + 1) % QualitySettings.names.Length);
             Row("MUSIC", () => Mathf.RoundToInt(GameSession.MusicVolume * 10) + " / 10", () => GameSession.MusicVolume = Mathf.Repeat(GameSession.MusicVolume + 0.1f, 1.05f));
             Row("VOICE", () => Mathf.RoundToInt(GameSession.VoiceVolume * 10) + " / 10", () => GameSession.VoiceVolume = Mathf.Repeat(GameSession.VoiceVolume + 0.1f, 1.05f));
             Row("FULLSCREEN", () => UnityEngine.Screen.fullScreen ? "ON" : "OFF", () => UnityEngine.Screen.fullScreen = !UnityEngine.Screen.fullScreen);
-            var controls = UIKit.Text("Controls", C,
-                "KEYBOARD  W/S throttle·brake  A/D steer  SPACE handbrake  SHIFT clutch  E/Q shift  C camera  R reset\nGAMEPAD  RT/LT throttle·brake  L-stick steer  A handbrake  X clutch  RB/LB shift  Y camera  View reset",
-                F ? F.hudRegular : null, 24, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(0, 120), new Vector2(1700, 80));
-            controls.textWrappingMode = TextWrappingModes.Normal;
-            EventSystem.current.SetSelectedGameObject(first.gameObject);
-            Hint("ENTER / A  CHANGE   ·   ESC / B  BACK");
+            EventSystem.current.SetSelectedGameObject((fromControls ? controlsRow : first).gameObject);
+            Hint(() => $"{Ok}  CHANGE   ·   {No}  BACK");
         }
 
         void StartRace()
@@ -383,7 +383,7 @@ namespace InkDrift
 
         static readonly string[] Tips =
         {
-            "CLUTCH KICK: hold SHIFT/X, rev it, release mid-corner to snap the rear loose.",
+            "CLUTCH KICK: hold {clutch}, rev it, release mid-corner to snap the rear loose.",
             "Switching drift direction (manji / feint) bumps your multiplier.",
             "Within ~2 m of a wall while sliding = CLOSE! ×1.6. Touching it = 失敗.",
             "Lift the throttle to reduce angle, feed it to add angle. Steer where you want to GO.",
@@ -397,7 +397,9 @@ namespace InkDrift
             var title = UIKit.Text("T", current.transform, t.name, F ? F.comic : null, 140, t.accent, TextAlignmentOptions.Center, new Vector2(0.5f, 0.62f), Vector2.zero, new Vector2(1700, 170));
             UIKit.Inked(title, 0.25f, Palette.Paper, new Vector2(1.5f, -1.5f));
             var jp = UIKit.Text("J", current.transform, t.jp, F ? F.jpHeavy : null, 80, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0.48f), Vector2.zero, new Vector2(1600, 110));
-            var tip = UIKit.Text("Tip", current.transform, "TIP · " + Tips[Random.Range(0, Tips.Length)], F ? F.comic : null, 38, Palette.Yellow, TextAlignmentOptions.Center, new Vector2(0.5f, 0.25f), Vector2.zero, new Vector2(1600, 120));
+            string tipText = Tips[Random.Range(0, Tips.Length)].Replace("{clutch}", GameInput.Label(Bind.Clutch)).Replace("{handbrake}", GameInput.Label(Bind.Handbrake));
+            var tip = UIKit.Text("Tip", current.transform, "TIP · " + tipText, F ? F.comic : null, 38, Palette.Yellow, TextAlignmentOptions.Center, new Vector2(0.5f, 0.25f), Vector2.zero, new Vector2(1600, 120));
+            tip.richText = true;
             tip.textWrappingMode = TextWrappingModes.Normal;
             var bar = UIKit.Img("Bar", current.transform, null, t.accent, new Vector2(0.5f, 0.15f), new Vector2(-600, 0), new Vector2(0, 20));
             bar.rectTransform.pivot = new Vector2(0, 0.5f);

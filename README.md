@@ -43,25 +43,45 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
 - **Procedural engine audio** per car (boxer rumble, inline-six scream, V6 growl), turbo whistle, blow-off flutter, pops & bangs;
   original synthesized eurobeat/city-pop soundtrack. The announcer is Japanese TTS (regenerate with ElevenLabs via
   `Tools/audio/elevenlabs_voices.py`).
-- Keyboard and gamepad.
+- Keyboard and controller (Xbox, PlayStation, Switch Pro, generic pads and wheels), fully remappable.
 
 ## Controls
 
-| | Keyboard | Gamepad |
-|---|---|---|
-| Throttle / Brake | W / S (or ↑ / ↓) | RT / LT |
-| Steer | A / D (or ← / →) | Left stick |
-| Handbrake | Space | A / Cross |
-| Clutch (kick!) | Left Shift | X / Square |
-| Shift up / down (manual) | E / Q | RB / LB |
-| Camera | C | Y / Triangle |
-| Look back | B | R-stick click |
-| Reset car | R | View / Select |
-| Pause | Esc | Start |
+Every control can be remapped in **Settings ▸ Controls**, or from the pause menu during a race. Each control gets two
+keys and one controller input. On-screen prompts follow the device you're using and show your controller's own button
+names (A/B/X/Y, ×/○/□/△ or B/A/Y/X).
+
+| | Keyboard | Xbox | PlayStation | Switch Pro |
+|---|---|---|---|---|
+| Throttle / Brake | W / S (or ↑ / ↓) | RT / LT | R2 / L2 | ZR / ZL |
+| Steer | A / D (or ← / →) | Left stick | Left stick | Left stick |
+| Handbrake | Space | A | × | B |
+| Clutch (kick!) | Left Shift | X | □ | Y |
+| Shift up / down (manual) | E / Q | RB / LB | R1 / L1 | R / L |
+| Camera | C | Y | △ | X |
+| Look back | B | RS click | R3 | RS click |
+| Reset car | R | View | Create / Share | − |
+| Pause | Esc / P | Menu | Options | + |
+
+### Controllers
+
+- **Recognised directly:** Xbox 360 / One / Series and any XInput pad, DualShock 4, DualSense and Switch Pro, over USB or Bluetooth.
+- **Everything else:** generic USB/Bluetooth pads that Unity only sees as a joystick (DirectInput-mode pads,
+  unrecognised Linux pads, cheap Xbox-style clones) are turned into a standard gamepad automatically, using the common
+  button layout. If any buttons come out wrong, open **Settings ▸ Controls ▸ Set up controller**. It asks you to press
+  each button and move each stick once, then remembers that controller. Racing wheels work the same way: map the wheel
+  to *left stick right* and the pedals to the triggers.
+- **Options:** stick dead zone, steering response (linear / smooth / soft), vibration, and button labels (auto,
+  Xbox, PlayStation, Nintendo). The **Input test** panel in the Controls screen shows live steering, pedal and button
+  input.
+- Pulling the controller during a race pauses the game.
+- If a controller still isn't detected, look for the `[Input]` lines in `Player.log`. They list every controller the
+  game saw and how it was mapped. `Player.log` is in `~/Library/Logs/Gazhenko/INK DRIFT TOKYO/` on macOS,
+  `%USERPROFILE%\AppData\LocalLow\Gazhenko\INK DRIFT TOKYO\` on Windows and `~/.config/unity3d/Gazhenko/INK DRIFT TOKYO/` on Linux.
 
 **Drifting 101:** brake into the corner to load the nose → flick or tap the handbrake → throttle to keep the rear
 spinning → counter-steer and *steer where you want the car to go* → modulate throttle to hold the angle.
-Clutch-kick (hold Shift with throttle, release) to snap the rear loose mid-corner.
+Clutch-kick (hold the clutch with throttle, release) to snap the rear loose mid-corner.
 
 ## Installation
 
@@ -70,13 +90,13 @@ Clutch-kick (hold Shift with throttle, release) to snap the rear loose mid-corne
 Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
 
 ```text
-Install INK DRIFT: TOKYO v1.0.0 on this computer from its official GitHub release, then tell me how to start it.
+Install INK DRIFT: TOKYO v1.1.0 on this computer from its official GitHub release, then tell me how to start it.
 
-Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.0.0
-Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/<file>
-  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.0.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
-  Windows 10/11, x64             InkDriftTokyo-v1.0.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
-  Linux, x64                     InkDriftTokyo-v1.0.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.1.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.1.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.1.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v1.1.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v1.1.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
   Checksums                      SHA256SUMS.txt
 
 1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
@@ -97,7 +117,7 @@ Download the archive for your computer from the [latest release](../../releases/
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
 - **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
-- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.0.0-Linux-x64.tar.gz`, then
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.1.0-Linux-x64.tar.gz`, then
   `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
 
 The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.
