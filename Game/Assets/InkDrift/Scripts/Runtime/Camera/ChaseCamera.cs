@@ -182,6 +182,7 @@ namespace InkDrift
             float pitch = 6.5f + Mathf.Clamp(-smoothAcc.z * 0.15f, -2.5f, 2.5f);
             float roll = Mathf.Clamp(smoothAcc.x * 0.10f, -2.5f, 2.5f);
             Vector3 eye = rig.EyeLocal + head;
+            rig.HeadOffset = head;
             Quaternion look = Quaternion.Euler(pitch, lookYaw, roll);
             if (PlayerDriver.LookBackHeld || (CommandLine.Has("-dbgLookBack") && Mathf.Repeat(Time.time, 10f) > 8f))
             {

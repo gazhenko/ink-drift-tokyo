@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.20.0: embroidered sleeves
+# INK DRIFT: TOKYO — v1.21.0: the body moves with the car
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.20.0
+## What's new in 1.21.0
+- **Shoulders that sway.** Under braking, acceleration and cornering, the driver's shoulders now move with the head instead of staying fixed in the car. The hands stay on the wheel and the elbows take up the motion, as they would for a real driver held in a seat.
+- **Embroidered glove straps.** The INK RACEWEAR wordmark is now also stitched along each glove's wrist strap, matching the sleeves.
+
+## 1.20.0: embroidered sleeves
 - **Embroidered sleeves.** "INK RACEWEAR" is now satin-stitched in white thread along the top of each forearm, just above the glove. It sits where you see it from the driver's seat, with raised thread relief that catches the light as real embroidery does, and the sleeve's folds stop where the stitching stiffens the cloth.
 - **Fixed: the sleeve patch read backwards on one arm.** Suit and glove decals are now turned round rather than mirrored when they're placed, so the INK DRIFT patch reads correctly on both sleeves.
 

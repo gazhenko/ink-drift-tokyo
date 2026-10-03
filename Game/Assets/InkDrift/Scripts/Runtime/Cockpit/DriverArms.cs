@@ -14,6 +14,7 @@ namespace InkDrift
         public void Pose(int i, Vector3 gripPos, Quaternion gripRot, Grip grip, float open) => Pose(i, gripPos, gripRot);
         public void SetThumbTarget(int i, Vector3? carLocal) { }
         public void SetEffort(int i, float effort) { }
+        public void SetBodyOffset(Vector3 carLocal) { }
 
         public const float UpperLen = 0.30f, ForeLen = 0.285f;
         /// <summary>Wrist point in glove space (the glove origin is the centre of whatever it grips).</summary>

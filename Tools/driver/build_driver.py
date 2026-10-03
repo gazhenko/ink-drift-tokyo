@@ -1024,6 +1024,10 @@ def decals(glove, sleeve, fr, side_of, t_of):
     fore_mid = lambda s: fr[s]["el"] + (fr[s]["wr"] - fr[s]["el"]) * 0.45
     patch(sleeve, lambda s: (fore_mid(s) + nrm(fr[s]["outer"] + np.array([0, 0, 0.7])) * 0.05, nrm(fr[s]["outer"] + np.array([0, 0, 0.7]))),
           PINK, 0.075, 0.0375, lambda s: fr[s]["fore"], lambda s: np.array([0, 0, 1.0]))
+    # the same wordmark embroidered on each glove's wrist strap, on the side the driver sees
+    # (reading round the wrist, along the strap, so it stays within the strap's 22 mm width)
+    patch(glove, lambda s: (fr[s]["wr"] + fr[s]["fore"] * (sum(STRAP_T) / 2) + emb_dir(fr[s]) * 0.05, emb_dir(fr[s])), EMBROID,
+          0.036, 0.036 * EMB_H / EMB_W, lambda s: -nrm(np.cross(fr[s]["fore"], emb_dir(fr[s]))), lambda s: fr[s]["fore"])
     # embroidered wordmark along the top of each forearm, reading toward the hand
     patch(sleeve, lambda s: (fr[s]["wr"] + fr[s]["fore"] * EMB_T + emb_dir(fr[s]) * 0.06, emb_dir(fr[s])), EMBROID, EMB_W, EMB_H,
           lambda s: fr[s]["fore"], lambda s: fr[s]["outer"])

@@ -20,6 +20,9 @@ namespace InkDrift
 
         /// <summary>How hard this hand is working the wheel (0 = cruising, 1 = fast steering).</summary>
         void SetEffort(int i, float effort);
+
+        /// <summary>Where the torso has swayed to under g-forces (car space); the shoulders go with it.</summary>
+        void SetBodyOffset(Vector3 carLocal);
     }
 
     /// <summary>
@@ -59,6 +62,10 @@ namespace InkDrift
 
         readonly Arm[] arms = new Arm[2];
         Transform root;
+        Transform body;          // the rig's root: shoulders sway with the torso, hands stay on the controls
+        Vector3 bodyRest;
+
+        public void SetBodyOffset(Vector3 carLocal) { if (body) body.localPosition = bodyRest + carLocal; }
         readonly Vector3?[] thumbTarget = new Vector3?[2];
         readonly float[] thumbHook = new float[2];
         // a hooked thumb lies almost straight along the spoke
@@ -98,6 +105,8 @@ namespace InkDrift
             // shoulders under the driver's eye point
             Vector3 mid = (cockpitRoot.InverseTransformPoint(m.arms[0].up1.position) + cockpitRoot.InverseTransformPoint(m.arms[1].up1.position)) * 0.5f;
             go.transform.localPosition += eye + new Vector3(0f, -0.25f, -0.06f) - mid;
+            m.body = go.transform;
+            m.bodyRest = go.transform.localPosition;
             foreach (var r in go.GetComponentsInChildren<SkinnedMeshRenderer>())
             {
                 r.updateWhenOffscreen = true;            // bones move far from the bind pose

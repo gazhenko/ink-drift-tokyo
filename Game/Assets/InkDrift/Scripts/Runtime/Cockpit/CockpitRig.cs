@@ -66,6 +66,8 @@ namespace InkDrift
         RenderTexture mirrorRT;
 
         public Vector3 EyeLocal => dims.Eye;
+        /// <summary>The driver's head offset from the eye point this frame (car space), set by the in-car camera.</summary>
+        public Vector3 HeadOffset { get; set; }
 
         /// <summary>The cockpit for a car (built on first use).</summary>
         public static CockpitRig For(CarController car)
@@ -190,6 +192,8 @@ namespace InkDrift
             handbrake.localRotation = hbBase * Quaternion.Euler(-HbPullDeg * Smooth(hbT), 0f, 0f);
 
             // ---------------------------------------------------------------- hands
+            // the torso sways with the head under g-forces; the arms take it up at the elbows, the grip stays put
+            arms.SetBodyOffset(HeadOffset * 0.75f);
             bool oneHanded = taskBlend > 0.5f;
             for (int i = 0; i < 2; i++)
             {
