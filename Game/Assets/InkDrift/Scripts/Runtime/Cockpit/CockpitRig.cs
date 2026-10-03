@@ -104,7 +104,13 @@ namespace InkDrift
             SetCockpitAO(on);
             Shader.SetGlobalFloat(SmokeNearFadeId, on ? SmokeNearFade : 0f);
             SetDoorMirrors(on);
+            Shader.SetGlobalFloat(CabinSkyOcclusionId, on ? CabinSkyOcclusion : 0f);
         }
+
+        // how much of the sky's ambient light the roof takes from an upward-facing surface in the cabin (InkRealistic)
+        const float CabinSkyOcclusion = 0.6f;
+        static readonly int CabinSkyOcclusionId = Shader.PropertyToID("_CabinSkyOcclusion");
+        static readonly int CabinUpId = Shader.PropertyToID("_CabinUp");
 
         // ---------------------------------------------------------------- door mirrors
         // The car's chrome (M_Chrome) is a flat, bright toon material: from the seat the door mirror glass read as a
@@ -278,6 +284,7 @@ namespace InkDrift
 
             UpdateGauges(dt);
             UpdateMirror();
+            Shader.SetGlobalVector(CabinUpId, car.transform.up);   // the roof tilts with the car
         }
 
         // ---------------------------------------------------------------- wheel grips

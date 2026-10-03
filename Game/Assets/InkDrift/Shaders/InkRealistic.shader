@@ -152,6 +152,9 @@ Shader "InkDrift/Realistic"
                 return o;
             }
 
+            half _CabinSkyOcclusion;    // global: 0 outside the in-car view
+            half4 _CabinUp;             // global: the car's up axis (the roof), world space
+
             // scan albedo tinted to _BaseColor while keeping the scan's own variation
             half3 Tint(half3 tex)
             {
@@ -236,7 +239,11 @@ Shader "InkDrift/Realistic"
                 input.viewDirectionWS = GetWorldSpaceNormalizeViewDir(i.positionWS);
                 input.shadowCoord = TransformWorldToShadowCoord(i.positionWS);
                 input.fogCoord = i.fogFactor;
-                input.bakedGI = SampleSH(normalWS) * _AmbientBoost;
+                // cabin sky occlusion (in-car view only): the roof hides the sky from anything inside the car, so a
+                // surface facing up sees the dark headliner and the light arrives through the windows from the sides
+                // and front. Without it the driver's sleeves and the dash top were lit as if under open sky.
+                half skyVis = 1.0h - _CabinSkyOcclusion * saturate(dot(normalWS, _CabinUp.xyz));
+                input.bakedGI = SampleSH(normalWS) * _AmbientBoost * skyVis;
                 input.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(i.positionCS);
                 input.shadowMask = half4(1, 1, 1, 1);
 

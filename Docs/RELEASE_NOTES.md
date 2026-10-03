@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.27.0: door mirrors that reflect
+# INK DRIFT: TOKYO — v1.28.0: a roof over the driver
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.27.0
+## What's new in 1.28.0
+- **The roof shades the cabin.** The driver and cockpit were lit by the whole sky as if the car had no roof, so the race suit's sleeves were often the brightest thing in the cabin. Upward-facing surfaces inside the car now get less sky light, since they face the headliner. Light comes in mainly through the windows, so the tops of the arms and the dash are shaded and the cabin has more depth. It applies only in the in-car view.
+
+## 1.27.0: door mirrors that reflect
 - **Door mirrors made of glass.** Seen from the driver's seat, the door mirrors were flat white cards: the car's chrome is a bright comic material that looks right from outside but not up close. In the in-car view they're now polished mirror glass reflecting their surroundings, the neon of Shibuya at night or the sky and trees in the mountains. From the chase cameras the cars look the same as before.
 
 ## 1.26.0: true colours in the gauges and mirror
