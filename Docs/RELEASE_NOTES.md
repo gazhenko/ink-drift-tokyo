@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.24.0: a cleaner glove surface
+# INK DRIFT: TOKYO — v1.25.0: no smoke in the cabin
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.24.0
+## What's new in 1.25.0
+- **Fixed: tire smoke inside the car.** In a big slide the car drives into its own smoke, and in the in-car view the puffs closest to the camera were drawn inside the cabin, as big white clouds over the dashboard and the driver's hands. Smoke inside the cabin now fades out, while smoke outside still shows through the windows. The chase cameras are unchanged.
+
+## 1.24.0: a cleaner glove surface
 - **Fixed: a black speck on the back of each glove.** The planes that cut the glove into panels left needle-thin slivers where they passed right next to a vertex. The later shaping turned some of them inside out, and one by each wrist showed as a dark pit. About 500 such slivers are now cleaned out of the gloves and 110 out of the sleeves, which also removes smaller shading glitches along the panel seams.
 
 ## 1.23.0: sharper baked shading

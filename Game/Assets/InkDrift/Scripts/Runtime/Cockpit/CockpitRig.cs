@@ -102,7 +102,12 @@ namespace InkDrift
             if (on) { EnsureMirror(); Snap(); }
             else if (mirrorCam != null) mirrorCam.enabled = false;
             SetCockpitAO(on);
+            Shader.SetGlobalFloat(SmokeNearFadeId, on ? SmokeNearFade : 0f);
         }
+
+        // tyre smoke closer than this (view depth, metres) is inside the cabin: InkParticles fades it out
+        const float SmokeNearFade = 1.4f;
+        static readonly int SmokeNearFadeId = Shader.PropertyToID("_SmokeNearFade");
 
         /// <summary>Contact SSAO (ProjectSetup.EnsureCockpitAO) runs only while the interior is on screen.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

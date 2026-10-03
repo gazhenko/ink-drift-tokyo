@@ -29,6 +29,7 @@ Shader "InkDrift/ToonSmoke"
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
             half4 _LitColor, _ShadeColor, _InkColor;
             half _InkEdge, _Softness;
+            float _SmokeNearFade;      // global, metres of view depth (0 = off): set while the in-car view is active
 
             struct Attributes { float4 positionOS : POSITION; half4 color : COLOR; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; half4 color : COLOR; float2 uv : TEXCOORD0; float3 positionWS : TEXCOORD1; half fog : TEXCOORD2; };
@@ -63,6 +64,10 @@ Shader "InkDrift/ToonSmoke"
                 half3 col = lerp(_ShadeColor.rgb * (amb * 0.8 + 0.42), _LitColor.rgb * (sun.color * 0.7 + amb * 0.5 + 0.3), lit) * i.color.rgb;
                 col = lerp(col, col * 0.55, saturate(edge) * 0.7);
                 col = MixFog(col, i.fog);
+                // in-car view: a puff whose billboard lies inside the cabin would draw over the dash and the driver's
+                // hands (nothing in the cabin is closer to the camera), so it fades out by view depth
+                if (_SmokeNearFade > 0.0)
+                    a *= smoothstep(_SmokeNearFade, _SmokeNearFade + 0.8, -TransformWorldToView(i.positionWS).z);
                 return half4(col, a);
             }
             ENDHLSL
