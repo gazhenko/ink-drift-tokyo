@@ -99,13 +99,13 @@ Clutch-kick (hold the clutch with throttle, release) to snap the rear loose mid-
 Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
 
 ```text
-Install INK DRIFT: TOKYO v1.23.0 on this computer from its official GitHub release, then tell me how to start it.
+Install INK DRIFT: TOKYO v1.24.0 on this computer from its official GitHub release, then tell me how to start it.
 
-Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.23.0
-Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.23.0/<file>
-  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.23.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
-  Windows 10/11, x64             InkDriftTokyo-v1.23.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
-  Linux, x64                     InkDriftTokyo-v1.23.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.24.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.24.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.24.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v1.24.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v1.24.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
   Checksums                      SHA256SUMS.txt
 
 1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
@@ -126,7 +126,7 @@ Download the archive for your computer from the [latest release](../../releases/
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
 - **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
-- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.23.0-Linux-x64.tar.gz`, then
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.24.0-Linux-x64.tar.gz`, then
   `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
 
 The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.

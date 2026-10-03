@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.23.0: sharper baked shading
+# INK DRIFT: TOKYO — v1.24.0: a cleaner glove surface
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.23.0
+## What's new in 1.24.0
+- **Fixed: a black speck on the back of each glove.** The planes that cut the glove into panels left needle-thin slivers where they passed right next to a vertex. The later shaping turned some of them inside out, and one by each wrist showed as a dark pit. About 500 such slivers are now cleaned out of the gloves and 110 out of the sleeves, which also removes smaller shading glitches along the panel seams.
+
+## 1.23.0: sharper baked shading
 - **Sharper shading on the gloves and sleeves.** The driver's baked ambient occlusion (the soft darkening in creases, between fingers and under the gauntlet) was squeezed into a seventh of its texture, because every one of the thousands of stitch beads and vent holes had its own patch. Stitches, vents and decals are now left out of the bake, so the gloves and sleeves get the whole texture at about seven times the resolution.
 - **No false shadow under the decals.** The glove logo and suit patches float a fraction of a millimetre above the surface, and the bake treated them as solid, so the leather showing through the clear parts of a logo was darkened. It no longer is.
 

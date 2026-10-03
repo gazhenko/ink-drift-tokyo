@@ -284,6 +284,8 @@ def main():
     fingertip_smooth(glove)
     slim_fingers(glove, bones, fr)
     cut_panels(glove, sleeve, fr, side_of, t_of)
+    for obj in (glove, sleeve):
+        clean_slivers(obj)
 
     detail_sleeve(sleeve, fr, side_of, t_of)
     for sd in SIDES:   # finger joints (knuckle, middle, end) for the glove creases
@@ -799,6 +801,18 @@ def slim_fingers(obj, bones, fr, k=0.14):
     me.vertices.foreach_set("co", (P + delta).ravel())
     me.update()
     log("fingers flattened", f"{k:.0%}", "max shift", f"{np.abs(delta).max() * 1000:.1f} mm")
+
+
+def clean_slivers(obj, dist=0.00015):
+    """collapse the needle-thin edges and faces a cutting plane leaves where it passes right next to a vertex:
+    the later offsets turn them inside out, and one inverted face darkens the smooth shading around it"""
+    bm = bmesh.new(); bm.from_mesh(obj.data)
+    n0 = len(bm.faces)
+    bmesh.ops.dissolve_degenerate(bm, dist=dist, edges=bm.edges[:])
+    n1 = len(bm.faces)
+    bm.to_mesh(obj.data); bm.free()
+    obj.data.update()
+    log(obj.name, "slivers removed:", n0 - n1, "faces")
 
 
 def vert_arrays(me):
