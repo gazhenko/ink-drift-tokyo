@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.18.0: multisampled edges
+# INK DRIFT: TOKYO — v1.19.0: anatomical fingers
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.18.0
+## What's new in 1.19.0
+- **Fingers with real proportions.** Real fingers are wider than they are deep, roughly 20 mm across by 17 mm from nail to pad. The base model's were almost round, which made the gloved hand look swollen. Each finger and the thumb is now flattened about 14% along the nail-to-pad axis, following each finger's own direction and blending smoothly over the joints.
+
+## 1.18.0: multisampled edges
 - **Multisample anti-aliasing.** The finest geometry in the car is narrower than a pixel at 1080p: glove and wheel stitching, the rim's edges, the shift lever. It used to break up into jagged dashes and crawl as the view moved. High quality now renders with 4x MSAA and Medium with 2x, on top of the existing SMAA, so the stitches read as clean, steady lines. Low quality is unchanged.
 
 ## 1.17.0: a sleeve that bunches

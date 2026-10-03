@@ -266,6 +266,7 @@ def main():
     pre_smooth(sleeve, 8, 0.5)
     pre_smooth(glove, 2, 0.35)
     fingertip_smooth(glove)
+    slim_fingers(glove, bones, fr)
     cut_panels(glove, sleeve, fr, side_of, t_of)
 
     detail_sleeve(sleeve, fr, side_of, t_of)
@@ -700,6 +701,41 @@ def pre_smooth(obj, iters, k):
     P = smooth(P.reshape(-1, 3), neighbours(me), boundary_verts(me), iters, k)
     me.vertices.foreach_set("co", P.ravel())
     me.update()
+
+
+def slim_fingers(obj, bones, fr, k=0.14):
+    """real fingers are wider than they are deep (~20 x 17 mm): flatten each finger's section by k across the
+    nail-to-pad axis, blended by the skin weights so the joints stay smooth (the base mesh's are nearly round)"""
+    me = obj.data
+    P, _ = vert_arrays(me)
+    gidx = {g.name: g.index for g in obj.vertex_groups}
+    wanted = {gidx[f"finger{i}-{j}.{sd}"]: (i, j, sd) for sd in SIDES for i in range(1, 6) for j in range(1, 4)
+              if f"finger{i}-{j}.{sd}" in gidx and not (i == 1 and j == 1)}     # the thumb's first bone is palm
+    W = {g: np.zeros(len(P)) for g in wanted}
+    for v in me.vertices:
+        for ge in v.groups:
+            if ge.group in W:
+                W[ge.group][v.index] = ge.weight
+    delta = np.zeros_like(P)
+    for g, (i, j, sd) in wanted.items():
+        w = W[g]
+        m = w > 0.01
+        if not m.any():
+            continue
+        h, t = bones[f"finger{i}-{j}.{sd}"][0], bones[f"finger{i}-{j}.{sd}"][1]
+        a = nrm(t - h)
+        back = fr[sd]["back"]
+        if i == 1:
+            # the thumb's nail faces half-way between the back of the hand and its outer side (as in finger_details)
+            out = bones[f"finger1-2.{sd}"][0] - bones[f"finger2-1.{sd}"][0]
+            back = nrm(back + nrm(out - back * np.dot(out, back)))
+        dorsal = nrm(back - a * np.dot(back, a))
+        d = P[m] - h
+        radial = d - np.outer(d @ a, a)
+        delta[m] -= (w[m] * k * (radial @ dorsal))[:, None] * dorsal
+    me.vertices.foreach_set("co", (P + delta).ravel())
+    me.update()
+    log("fingers flattened", f"{k:.0%}", "max shift", f"{np.abs(delta).max() * 1000:.1f} mm")
 
 
 def vert_arrays(me):
