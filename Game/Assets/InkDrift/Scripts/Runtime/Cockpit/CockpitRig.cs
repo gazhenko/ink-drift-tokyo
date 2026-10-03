@@ -399,7 +399,8 @@ namespace InkDrift
         void EnsureMirror()
         {
             if (mirrorCam != null || mirrorRenderer == null) return;
-            mirrorRT = new RenderTexture(384, 128, 16, RenderTextureFormat.ARGB32) { name = "RearMirror", antiAliasing = 1 };
+            // 768 x 256: the mirror is 21 cm wide and half a metre from the eye, so lower resolutions read as blurry
+            mirrorRT = new RenderTexture(768, 256, 16, RenderTextureFormat.ARGB32) { name = "RearMirror", antiAliasing = 1 };
             var go = new GameObject("MirrorCamera");
             go.transform.SetParent(car.transform, false);
             // just behind the rear bumper: our own car stays out of shot while rivals and traffic behind still show
@@ -416,7 +417,7 @@ namespace InkDrift
             mirrorCam.allowHDR = false;
             var data = mirrorCam.GetUniversalAdditionalCameraData();
             data.renderShadows = false;
-            data.renderPostProcessing = false;
+            data.renderPostProcessing = true;      // same grading as the windscreen view
             data.requiresDepthTexture = false;
             data.requiresColorTexture = false;
             data.antialiasing = AntialiasingMode.None;

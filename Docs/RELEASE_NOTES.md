@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.25.0: no smoke in the cabin
+# INK DRIFT: TOKYO — v1.26.0: true colours in the gauges and mirror
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.25.0
+## What's new in 1.26.0
+- **Fixed: magenta gauges.** The tachometer, boost and water gauges have white numbers and ticks, but they've always shown up magenta and dim in the car. The cockpit's procedural meshes carry colour masks for the comic shaders, and the gauge faces were picking those up as a tint. They now read white on black, as designed.
+- **Fixed: a pink rear-view mirror.** For the same reason, everything in the mirror was tinted red-magenta, even the green forest and the sky. The mirror now shows true colours with the same grading as the view ahead, at twice the resolution, so cars behind you are sharp.
+
+## 1.25.0: no smoke in the cabin
 - **Fixed: tire smoke inside the car.** In a big slide the car drives into its own smoke, and in the in-car view the puffs closest to the camera were drawn inside the cabin, as big white clouds over the dashboard and the driver's hands. Smoke inside the cabin now fades out, while smoke outside still shows through the windows. The chase cameras are unchanged.
 
 ## 1.24.0: a cleaner glove surface

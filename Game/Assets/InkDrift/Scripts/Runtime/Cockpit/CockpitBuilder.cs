@@ -315,7 +315,7 @@ namespace InkDrift
             dark.Tube(new Vector3(0.02f, hy - 0.05f, hz - 0.04f), mc + new Vector3(0f, 0.02f, 0.01f), 0.008f, 0.006f, 8);
             Quaternion mRot = Quaternion.LookRotation(e - mc + new Vector3(0f, 0f, -0.0f), Vector3.up);   // +z faces the driver
             dark.RoundBox(mc, new Vector3(0.23f, 0.066f, 0.03f), mRot, 0.25f, 8);
-            var mirrorFace = new ProcMesh();
+            var mirrorFace = new ProcMesh { VertexColor = Color.white };   // UI/Default tints by vertex colour
             Vector3 mr = mRot * Vector3.right, mu = mRot * Vector3.up, mf = mRot * Vector3.forward;
             Vector3 fc = mc + mf * 0.0155f;
             mirrorFace.Quad(fc - mr * 0.105f - mu * 0.027f, fc + mr * 0.105f - mu * 0.027f, fc + mr * 0.105f + mu * 0.027f, fc - mr * 0.105f + mu * 0.027f, mf);
@@ -530,7 +530,7 @@ namespace InkDrift
         static Transform Gauge(Transform parent, string name, Texture2D face, Vector3 c, Vector3 n, float r, Mats mats, ProcMesh bezel, float needleLen)
         {
             Quaternion rot = Quaternion.LookRotation(-n, Vector3.up);
-            var faceMesh = new ProcMesh();
+            var faceMesh = new ProcMesh { VertexColor = Color.white };     // UI/Default tints by vertex colour
             faceMesh.Disc(c, n, r, 40, rot * Vector3.right);
             Part(parent, name + "Face", faceMesh, face != null ? mats.gaugeFace(face) : mats.dark);
             bezel.Torus(c + n * 0.002f, n, rot * Vector3.right, r + 0.003f, 0.0035f, 0f, 360f, 40, 8);

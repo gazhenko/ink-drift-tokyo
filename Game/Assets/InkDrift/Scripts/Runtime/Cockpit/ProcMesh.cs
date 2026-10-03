@@ -15,6 +15,11 @@ namespace InkDrift
         readonly List<Vector2> uv = new List<Vector2>();
         readonly List<int> t = new List<int>();
         public Matrix4x4 M = Matrix4x4.identity;
+        /// <summary>
+        /// Vertex colour of the built mesh. The toon shaders read it as masks (R AO, G wind, B hue variation); shaders
+        /// that tint by vertex colour (UI/Default: gauge faces, the mirror) need white.
+        /// </summary>
+        public Color VertexColor = new Color(1f, 0f, 0.5f, 1f);
 
         public int VertexCount => v.Count;
 
@@ -359,7 +364,7 @@ namespace InkDrift
             mesh.SetUVs(0, uv);
             mesh.SetTriangles(t, 0);
             var colors = new Color[v.Count];
-            for (int i = 0; i < colors.Length; i++) colors[i] = new Color(1f, 0f, 0.5f, 1f);   // toon shader: R AO = 1, G wind = 0, B hue variation neutral
+            for (int i = 0; i < colors.Length; i++) colors[i] = VertexColor;
             mesh.colors = colors;
             mesh.RecalculateBounds();
             return mesh;
