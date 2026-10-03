@@ -26,6 +26,8 @@ Shader "InkDrift/Realistic"
         _Metallic ("Metallic", Range(0, 1)) = 0
         _Sheen ("Fabric Sheen", Range(0, 1)) = 0
         _SheenColor ("Sheen Color", Color) = (1, 1, 1, 1)
+        _Coat ("Finish Coat (leather)", Range(0, 1)) = 0
+        _CoatSmoothness ("Finish Coat Smoothness", Range(0, 1)) = 0.7
         _Wear ("Edge Wear", Range(0, 1)) = 0
         _WearColor ("Wear Color", Color) = (0.45, 0.45, 0.47, 1)
         _AmbientBoost ("Ambient Boost", Range(0, 4)) = 1
@@ -58,6 +60,8 @@ Shader "InkDrift/Realistic"
             half _Metallic;
             half _Sheen;
             half4 _SheenColor;
+            half _Coat;
+            half _CoatSmoothness;
             half _Wear;
             half4 _WearColor;
             half _AmbientBoost;
@@ -154,6 +158,19 @@ Shader "InkDrift/Realistic"
                 half3 t = lerp(tex, Luminance(tex).xxx, _Desaturate);
                 half3 m = lerp(_TexMean.rgb, Luminance(_TexMean.rgb).xxx, _Desaturate);
                 return _BaseColor.rgb * t / max(m, 0.02h);
+            }
+
+            // light-dependent layers over the base BRDF: a finished leather's coat (a tighter, fainter highlight over the
+            // hide's own broad one) and the fabric sheen (grazing retro-reflection of the weave)
+            half3 LayerLight(Light l, half3 nCoat, half3 n, half3 V, BRDFData coat, half sheenF)
+            {
+                half3 rad = l.color * (l.distanceAttenuation * l.shadowAttenuation);
+                half3 c = half3(0, 0, 0);
+                if (_Coat > 0.001h)
+                    c += DirectBRDFSpecular(coat, nCoat, l.direction, V) * coat.specular * rad * saturate(dot(nCoat, l.direction)) * _Coat;
+                if (_Sheen > 0.001h)
+                    c += _SheenColor.rgb * (_Sheen * sheenF) * rad * saturate(dot(n, l.direction) * 0.5h + 0.5h);
+                return c;
             }
 
             half4 frag(Varyings i) : SV_Target
@@ -259,17 +276,41 @@ Shader "InkDrift/Realistic"
                     color.rgb += env * EnvironmentBRDFSpecular(brdf, fresnel) * ao * _EnvSpecular * horizon * horizon;
                 }
 
-                // fabric sheen: grazing-angle retro-reflection of the weave
-                if (_Sheen > 0.001h)
+                // finish coat and sheen, from the main light and every cabin and street light
+                if (_Coat > 0.001h || _Sheen > 0.001h)
                 {
-                    Light ml = GetMainLight(input.shadowCoord, input.positionWS, input.shadowMask);
+                    half3 V = input.viewDirectionWS;
+                    half3 nCoat = normalize(lerp(nWS0, normalWS, 0.85h));  // the finish follows the grain, which breaks up its highlight
+                    half coatAlpha = 1.0h;
+                    BRDFData coat;
+                    InitializeBRDFData(half3(0, 0, 0), 0.0h, half3(0, 0, 0), _CoatSmoothness, coatAlpha, coat);
                     // grazing factor from the smooth surface normal: with the bumpy detail normal it spikes to 1 on
                     // every fibre that tips past the silhouette, sparkling with the ambient colour
-                    half NdotV = saturate(dot(nWS0, input.viewDirectionWS));
-                    half f = pow(1.0h - NdotV, 4.0h) * lerp(0.7h, 1.0h, saturate(dot(normalWS, input.viewDirectionWS) * 4.0h));
-                    half wrap = saturate(dot(normalWS, ml.direction) * 0.5h + 0.5h);
-                    half3 light = ml.color * ml.shadowAttenuation * ml.distanceAttenuation * wrap + input.bakedGI;
-                    color.rgb += _SheenColor.rgb * _Sheen * f * light * ao;
+                    half NdotV = saturate(dot(nWS0, V));
+                    half sheenF = pow(1.0h - NdotV, 4.0h) * lerp(0.7h, 1.0h, saturate(dot(normalWS, V) * 4.0h));
+
+                    half3 direct = LayerLight(GetMainLight(input.shadowCoord, input.positionWS, input.shadowMask), nCoat, normalWS, V, coat, sheenF);
+                #if defined(_ADDITIONAL_LIGHTS)
+                    InputData inputData = input;            // the cluster loop macro reads it by this name
+                    uint lightCount = GetAdditionalLightsCount();
+                    #if USE_CLUSTER_LIGHT_LOOP
+                    [loop] for (uint li = 0; li < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); li++)
+                        direct += LayerLight(GetAdditionalLight(li, input.positionWS, input.shadowMask), nCoat, normalWS, V, coat, sheenF);
+                    #endif
+                    LIGHT_LOOP_BEGIN(lightCount)
+                        direct += LayerLight(GetAdditionalLight(lightIndex, input.positionWS, input.shadowMask), nCoat, normalWS, V, coat, sheenF);
+                    LIGHT_LOOP_END
+                #endif
+                    // ambient: sheen from the fill light, coat from the environment (occluded like the base reflection)
+                    half3 ambient = _SheenColor.rgb * (_Sheen * sheenF) * input.bakedGI;
+                    if (_Coat > 0.001h)
+                    {
+                        half3 Rc = reflect(-V, nCoat);
+                        half hz = saturate(1.0h + 1.3h * dot(Rc, nWS0));
+                        half3 envc = min(GlossyEnvironmentReflection(Rc, input.positionWS, coat.perceptualRoughness, 1.0h, input.normalizedScreenSpaceUV), 4.0h);
+                        ambient += envc * EnvironmentBRDFSpecular(coat, Pow4(1.0h - NdotV)) * (_EnvSpecular * hz * hz * _Coat);
+                    }
+                    color.rgb += direct * lerp(1.0h, ao, 0.35h) + ambient * ao;
                 }
                 color.rgb = MixFog(color.rgb, input.fogCoord);
                 // a mirror-smooth part catching the sun in its GGX peak reaches thousands, which the bloom spreads over

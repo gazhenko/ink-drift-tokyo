@@ -126,6 +126,7 @@ namespace InkDrift
         {
             public Color color; public string scan; public float desat, unit, bump, smooth, sheen, wear; public Color sheenColor, wearColor;
             public string normal, decal; public float quilt;
+            public float coat, coatSmooth;      // finished leather: strength and smoothness of the coat's highlight
         }
 
         // sRGB target colours; scans are tinted to them at real-world scale (UV0: glove 4 cm, suit 8 cm, trim 4 cm per unit)
@@ -138,8 +139,8 @@ namespace InkDrift
             { "M_DrvKnit", new Look { color = new Color(0.075f, 0.075f, 0.085f), scan = "knit", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.09f, sheen = 0.1f, sheenColor = new Color(0.5f, 0.5f, 0.55f) } },
             // scanned full-grain leather: black, satin, scuffed lighter on the knuckles and edges. The scan is upholstery
             // hide, so its grain is scaled 2.5x finer and softened toward the thin nappa of a driving glove
-            { "M_DrvGloveBack", new Look { color = new Color(0.075f, 0.075f, 0.08f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.21f, wear = 0.45f, wearColor = new Color(0.22f, 0.22f, 0.24f) } },
-            { "M_DrvKnuckle", new Look { color = new Color(0.5f, 0.05f, 0.075f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.2f, wear = 0.35f, wearColor = new Color(0.66f, 0.28f, 0.3f) } },
+            { "M_DrvGloveBack", new Look { color = new Color(0.075f, 0.075f, 0.08f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.21f, wear = 0.45f, wearColor = new Color(0.22f, 0.22f, 0.24f), coat = 0.22f, coatSmooth = 0.58f } },
+            { "M_DrvKnuckle", new Look { color = new Color(0.5f, 0.05f, 0.075f), scan = "leather_grain", desat = 1f, unit = 0.1f, bump = 0.5f, smooth = 0.2f, wear = 0.35f, wearColor = new Color(0.66f, 0.28f, 0.3f), coat = 0.2f, coatSmooth = 0.56f } },
             // scanned suede palm (grip print from the procedural map rides on top as the macro layer)
             { "M_DrvGlovePalm", new Look { color = new Color(0.12f, 0.12f, 0.13f), scan = "suede", desat = 1f, unit = 0.04f, bump = 1.0f, smooth = 0.14f, normal = "suede_n", quilt = 0.5f, sheen = 0.1f, sheenColor = new Color(0.6f, 0.6f, 0.65f) } },
             { "M_DrvStrap", new Look { color = new Color(0.1f, 0.1f, 0.11f), normal = "velcro_n", bump = 0.9f, smooth = 0.1f, sheen = 0.08f, sheenColor = new Color(0.5f, 0.5f, 0.5f) } },
@@ -185,6 +186,8 @@ namespace InkDrift
                 if (bake != null) m.SetTexture("_BakeMap", bake);
                 m.SetFloat("_Sheen", l.sheen);
                 m.SetColor("_SheenColor", l.sheenColor);
+                m.SetFloat("_Coat", l.coat);
+                m.SetFloat("_CoatSmoothness", l.coatSmooth > 0f ? l.coatSmooth : 0.7f);
                 m.SetFloat("_Wear", l.wear);
                 m.SetColor("_WearColor", l.wearColor);
                 m.SetFloat("_AOStrength", 1f);

@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.21.0: the body moves with the car
+# INK DRIFT: TOKYO — v1.22.0: leather that reads as leather
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.21.0
+## What's new in 1.22.0
+- **Finished leather.** Real glove leather has two highlights: a broad, soft one from the hide and a tighter, fainter one from its finish, broken up by the grain. The gloves had only the first and looked like matte rubber. They now have both, so the gauntlets and knuckle guards show a satin sheen as they turn under the cabin and street lights.
+- **Every light counts.** The leather's finish and the suit's fabric sheen now respond to every cabin and street light, not just the sun, so neon at night shows on the gloves and sleeves too.
+
+## 1.21.0: the body moves with the car
 - **Shoulders that sway.** Under braking, acceleration and cornering, the driver's shoulders now move with the head instead of staying fixed in the car. The hands stay on the wheel and the elbows take up the motion, as they would for a real driver held in a seat.
 - **Embroidered glove straps.** The INK RACEWEAR wordmark is now also stitched along each glove's wrist strap, matching the sleeves.
 
