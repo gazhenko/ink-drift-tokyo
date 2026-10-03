@@ -1,8 +1,12 @@
-# INK DRIFT: TOKYO — v1.19.0: anatomical fingers
+# INK DRIFT: TOKYO — v1.20.0: embroidered sleeves
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.19.0
+## What's new in 1.20.0
+- **Embroidered sleeves.** "INK RACEWEAR" is now satin-stitched in white thread along the top of each forearm, just above the glove. It sits where you see it from the driver's seat, with raised thread relief that catches the light as real embroidery does, and the sleeve's folds stop where the stitching stiffens the cloth.
+- **Fixed: the sleeve patch read backwards on one arm.** Suit and glove decals are now turned round rather than mirrored when they're placed, so the INK DRIFT patch reads correctly on both sleeves.
+
+## 1.19.0: anatomical fingers
 - **Fingers with real proportions.** Real fingers are wider than they are deep, roughly 20 mm across by 17 mm from nail to pad. The base model's were almost round, which made the gloved hand look swollen. Each finger and the thumb is now flattened about 14% along the nail-to-pad axis, following each finger's own direction and blending smoothly over the joints.
 
 ## 1.18.0: multisampled edges

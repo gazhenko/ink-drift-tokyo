@@ -9,7 +9,7 @@ Normal maps (OpenGL convention, *_n.png so Unity imports them as normal maps):
   suede_n     palm: brushed suede with a low printed silicone grip pattern                            (tile = 4 cm)
   knit_n      ribbed knit cuff                                                                         (tile = 4 cm)
   velcro_n    hook-and-loop strap                                                                      (tile = 4 cm)
-Decals (RGBA, alpha-clipped): glove_logo, patch_ink, patch_flag, patch_fia.
+Decals (RGBA, alpha-clipped): glove_logo, patch_ink, patch_flag, patch_class, patch_embroid (+ embroid_n).
 """
 import math
 import os
@@ -217,6 +217,27 @@ def patch_class():
     save(im, "patch_class.png")
 
 
+def embroidery():
+    """'INK RACEWEAR' satin-stitched in white thread on top of each forearm (64 x 13.5 mm): colour/alpha decal plus
+    a normal map of raised letters filled with diagonal thread runs (~0.4 mm per thread)"""
+    W, H = 1024, 216
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.polygon([(28, 168), (118, 48), (150, 48), (60, 168)], fill=(255, 45, 122, 255))           # magenta slash
+    f = font("ChakraPetch-Bold.ttf", 132)
+    x0, _, x1, _ = d.textbbox((0, 0), "INK RACEWEAR", font=f, anchor="lm")
+    if x1 - x0 > W - 200:                                       # fit between the slash and the right edge
+        f = font("ChakraPetch-Bold.ttf", int(132 * (W - 200) / (x1 - x0)))
+    d.text((175, H // 2 + 4), "INK RACEWEAR", font=f, fill=(240, 240, 240, 255), anchor="lm")
+    save(im, "patch_embroid.png")
+    a = np.asarray(im)[..., 3].astype(np.float64) / 255.0
+    y, x = np.mgrid[0:H, 0:W].astype(np.float64)
+    threads = 0.5 + 0.5 * np.sin(2 * np.pi * (x * 0.5 + y * 0.866) / 6.4)
+    soft = np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.5)), np.float64) / 255.0
+    h = soft * 0.7 + a * threads * 0.3
+    save(height_to_normal(h, 6.0), "embroid_n.png")
+
+
 if __name__ == "__main__":
     suit(); twill_panel(); leather(); suede(); knit(); velcro(); perforated()
-    glove_logo(); patch_ink(); patch_flag(); patch_class()
+    glove_logo(); patch_ink(); patch_flag(); patch_class(); embroidery()

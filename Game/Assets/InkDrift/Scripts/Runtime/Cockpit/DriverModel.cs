@@ -138,6 +138,8 @@ namespace InkDrift
             { "M_DrvPatchInk", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_ink" } },
             { "M_DrvPatchFlag", new Look { color = Color.white, smooth = 0.3f, sheen = 0.08f, sheenColor = Color.white, decal = "patch_flag" } },
             { "M_DrvPatchClass", new Look { color = Color.white, smooth = 0.3f, decal = "patch_class" } },
+            // satin-stitched wordmark on top of each forearm: glossy thread with its stitch relief
+            { "M_DrvPatchEmbroid", new Look { color = new Color(0.9f, 0.9f, 0.9f), smooth = 0.42f, decal = "patch_embroid", normal = "embroid_n", bump = 1f, sheen = 0.15f, sheenColor = Color.white } },
             // thread beads: glove contrast stitching (red) and suit stitching (light grey)
             { "M_DrvGusset", new Look { color = new Color(0.015f, 0.015f, 0.017f), smooth = 0.05f } },   // vent holes
             { "M_DrvStitchSuit", new Look { color = new Color(0.78f, 0.78f, 0.8f), smooth = 0.3f, sheen = 0.1f, sheenColor = Color.white } },

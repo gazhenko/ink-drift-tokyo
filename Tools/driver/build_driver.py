@@ -41,9 +41,24 @@ CHAIN = ["clavicle", "shoulder01"] + ARM
 # material slots (names are read by Unity's AssetPipeline: /Models/Driver/ -> DriverMaterial)
 MATS = ["M_DrvSuit", "M_DrvStripe", "M_DrvStretch", "M_DrvKnit", "M_DrvGloveBack", "M_DrvGlovePalm", "M_DrvKnuckle",
         "M_DrvStrap", "M_DrvLogo", "M_DrvPatchInk", "M_DrvPatchFlag", "M_DrvPatchClass",
-        "M_DrvGusset", "M_DrvStitch", "M_DrvStitchSuit"]
-SUIT, STRIPE, STRETCH, KNIT, BACK, PALM, KNUCKLE, STRAP, LOGO, PINK, PFLAG, PCLASS, GUSSET, STITCH, STITCH_SUIT = range(len(MATS))
-NO_TILE_UV = (LOGO, PINK, PFLAG, PCLASS, STITCH, STITCH_SUIT)
+        "M_DrvGusset", "M_DrvStitch", "M_DrvStitchSuit", "M_DrvPatchEmbroid"]
+SUIT, STRIPE, STRETCH, KNIT, BACK, PALM, KNUCKLE, STRAP, LOGO, PINK, PFLAG, PCLASS, GUSSET, STITCH, STITCH_SUIT, EMBROID = range(len(MATS))
+NO_TILE_UV = (LOGO, PINK, PFLAG, PCLASS, STITCH, STITCH_SUIT, EMBROID)
+# embroidered wordmark on top of each forearm, just above the gauntlet (centre, length, height in metres)
+EMB_T, EMB_W, EMB_H = -0.118, 0.064, 0.0135
+
+
+def emb_dir(F):
+    """the forearm's top as the driver sees it at the wheel: 80 degrees round the forearm from the INK DRIFT patch
+    (which faces outward in the driving pose) toward the inside of the arm"""
+    a = F["fore"]
+    pn = nrm(F["outer"] + np.array([0, 0, 0.7]))
+    pn = nrm(pn - a * np.dot(pn, a))
+    q = nrm(np.cross(a, pn))
+    if np.dot(q, -F["outer"]) < 0:
+        q = -q
+    ang = math.radians(80)
+    return nrm(pn * math.cos(ang) + q * math.sin(ang))
 LOOK = {   # linear base colour, roughness, normal tile, decal image
     "M_DrvSuit": ((0.045, 0.11, 0.38), 0.8, "suit_n.png", None),
     "M_DrvStripe": ((0.78, 0.78, 0.8), 0.75, "twill_n.png", None),
@@ -60,6 +75,7 @@ LOOK = {   # linear base colour, roughness, normal tile, decal image
     "M_DrvGusset": ((0.03, 0.03, 0.033), 0.7, "perf_n.png", None),
     "M_DrvStitch": ((0.45, 0.03, 0.04), 0.6, None, None),
     "M_DrvStitchSuit": ((0.7, 0.7, 0.72), 0.6, None, None),
+    "M_DrvPatchEmbroid": ((1, 1, 1), 0.55, None, "patch_embroid.png"),
 }
 
 
@@ -827,7 +843,15 @@ def detail_sleeve(obj, fr, side_of, t_of):
         across = np.linalg.norm(across - np.outer(across @ pn, pn), axis=1)
         under = np.clip(1 - np.maximum(np.abs(along_p) - 0.04, 0) / 0.012, 0, 1) * \
             np.clip(1 - np.maximum(across - 0.022, 0) / 0.01, 0, 1) * np.clip((N[m] @ pn - 0.1) / 0.3, 0, 1)
-        env = env * (1 - under)
+        # and under the embroidered wordmark on top of the forearm
+        en = emb_dir(F)
+        de = Q - (F["wr"] + F["fore"] * EMB_T)
+        along_e = de @ F["fore"]
+        side_e = de - np.outer(along_e, F["fore"])
+        side_e = np.linalg.norm(side_e - np.outer(side_e @ en, en), axis=1)
+        under_e = np.clip(1 - np.maximum(np.abs(along_e) - EMB_W / 2, 0) / 0.01, 0, 1) * \
+            np.clip(1 - np.maximum(side_e - EMB_H / 2 - 0.004, 0) / 0.008, 0, 1) * np.clip((N[m] @ en - 0.2) / 0.3, 0, 1)
+        env = env * (1 - under) * (1 - under_e)
         off[m] += 0.002 * env
         fold[m] += np.maximum(np.sin(ph), 0) ** 1.3 * 0.0048 * env
     newP = P + N * (off + fold)[:, None]
@@ -973,7 +997,7 @@ def decals(glove, sleeve, fr, side_of, t_of):
             c = np.array(v0.co); n = nrm(np.array(v0.normal))
             U = nrm(side_axis(s) - n * np.dot(side_axis(s), n)); Vv = nrm(np.cross(n, U))
             if np.dot(Vv, up_axis(s)) < 0:
-                Vv = -Vv
+                U, Vv = -U, -Vv          # turn the decal round (flipping V alone would mirror its text)
             r = 0.5 * math.hypot(w, h) + 0.006
             faces = [f for f in bm.faces if f.material_index not in NO_TILE_UV
                      and np.linalg.norm(np.array(f.calc_center_median()) - c) < r and np.dot(np.array(f.normal), n) > 0.5]
@@ -1000,6 +1024,9 @@ def decals(glove, sleeve, fr, side_of, t_of):
     fore_mid = lambda s: fr[s]["el"] + (fr[s]["wr"] - fr[s]["el"]) * 0.45
     patch(sleeve, lambda s: (fore_mid(s) + nrm(fr[s]["outer"] + np.array([0, 0, 0.7])) * 0.05, nrm(fr[s]["outer"] + np.array([0, 0, 0.7]))),
           PINK, 0.075, 0.0375, lambda s: fr[s]["fore"], lambda s: np.array([0, 0, 1.0]))
+    # embroidered wordmark along the top of each forearm, reading toward the hand
+    patch(sleeve, lambda s: (fr[s]["wr"] + fr[s]["fore"] * EMB_T + emb_dir(fr[s]) * 0.06, emb_dir(fr[s])), EMBROID, EMB_W, EMB_H,
+          lambda s: fr[s]["fore"], lambda s: fr[s]["outer"])
     up_mid = lambda s: fr[s]["sh"] + (fr[s]["el"] - fr[s]["sh"]) * 0.42
     patch(sleeve, lambda s: (up_mid(s) + fr[s]["outer"] * 0.06, fr[s]["outer"]), PFLAG, 0.06, 0.04,
           lambda s: -fr[s]["upper"] if s == "R" else fr[s]["upper"], lambda s: np.array([0, 0, 1.0]))
