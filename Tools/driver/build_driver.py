@@ -475,6 +475,35 @@ def fingertip_smooth(obj, iters=12):
     log("fingertips smoothed:", int((w[:, 0] > 0.2).sum()), "verts")
 
 
+# parts kept out of the bake: thousands of stitch and vent beads would each take an island of the atlas (they did: the
+# glove surface was left a seventh of it), and a decal floating 0.4 mm over the leather 'occludes' what shows through
+# its clipped-out parts. They sample one neutral texel instead.
+BAKE_SKIP = (LOGO, PINK, PFLAG, PCLASS, EMBROID, STITCH, STITCH_SUIT, GUSSET)
+BAKE_FILL = 0.975          # the baked surface fills [0, BAKE_FILL]^2; the neutral texel sits beyond it
+BAKE_NEUTRAL = (0.99, 0.99)
+
+
+def split_faces(obj, mats):
+    """separate the faces with these materials into a new object (None if there are none)"""
+    activate(obj)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bm = bmesh.from_edit_mesh(obj.data)
+    for f in bm.faces:
+        f.select_set(False)
+    n = 0
+    for f in bm.faces:
+        if f.material_index in mats:
+            f.select_set(True)
+            n += 1
+    bmesh.update_edit_mesh(obj.data)
+    if n:
+        bpy.ops.mesh.separate(type="SELECTED")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    if not n:
+        return None
+    return next(o for o in bpy.context.selected_objects if o != obj)
+
+
 def bake(glove, sleeve, size=2048):
     """unique UV1 + Cycles bakes -> <obj>_bake_mask.png: R ambient occlusion, G convexity, B cavity"""
     scene = bpy.context.scene
@@ -497,11 +526,20 @@ def bake(glove, sleeve, size=2048):
         tiling = me.uv_layers[0]
         bake_uv = me.uv_layers.new(name="Bake")
         me.uv_layers.active = bake_uv
+        extra = split_faces(obj, BAKE_SKIP)
+        me = obj.data
         activate(obj)
         bpy.ops.object.mode_set(mode="EDIT")
         bpy.ops.mesh.select_all(action="SELECT")
         bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004, area_weight=0.0, scale_to_bounds=True)
         bpy.ops.object.mode_set(mode="OBJECT")
+        for d in me.uv_layers["Bake"].data:
+            d.uv = d.uv * BAKE_FILL
+        if extra is not None:
+            for d in extra.data.uv_layers["Bake"].data:
+                d.uv = BAKE_NEUTRAL
+            extra.hide_render = True
+        tiling = me.uv_layers[0]
         out = {}
         for kind in ("AO", "POINT"):
             img = bpy.data.images.new(f"{obj.name}_{kind}", size, size, alpha=False, float_buffer=True)
@@ -538,6 +576,15 @@ def bake(glove, sleeve, size=2048):
         conv = np.clip((pt - 0.5) * 5.0 + 0.5, 0, 1)
         cav = np.clip((0.5 - pt) * 6.0, 0, 1)
         rgba = np.stack([np.clip(out["AO"], 0, 1), conv, cav, np.ones_like(conv)], -1).astype(np.float32)
+        k = int(size * (BAKE_FILL + 0.004))
+        rgba[k:, k:] = (1.0, 0.5, 0.0, 1.0)                     # neutral texel: no occlusion, wear or cavity
+        if extra is not None:                                    # the skipped parts go back into the mesh
+            extra.hide_render = False
+            activate(obj)
+            extra.select_set(True)
+            bpy.ops.object.join()
+            me = obj.data
+            tiling = me.uv_layers[0]
         res = bpy.data.images.new(f"{obj.name}_bake", size, size, alpha=False, float_buffer=False)
         res.colorspace_settings.name = "Non-Color"
         res.pixels.foreach_set(rgba.ravel())

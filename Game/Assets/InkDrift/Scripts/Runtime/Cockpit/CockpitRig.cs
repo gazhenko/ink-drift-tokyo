@@ -115,6 +115,7 @@ namespace InkDrift
 
         static void SetCockpitAO(bool on)
         {
+            if (CommandLine.Has("-dbgNoSSAO")) on = false;      // dev: isolate SSAO artefacts
             if (!(GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset urp)) return;
             foreach (var d in urp.rendererDataList)
                 if (d != null)

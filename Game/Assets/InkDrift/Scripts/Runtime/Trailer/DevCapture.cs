@@ -142,6 +142,8 @@ namespace InkDrift
                     if (v.sharedProfile != null && v.sharedProfile.TryGet<UnityEngine.Rendering.Universal.Bloom>(out var b)) b.active = false;
             if (CommandLine.Has("-dbgNoLights"))
                 foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None)) if (l.type != LightType.Directional) l.enabled = false;
+            if (CommandLine.Has("-dbgNoSunShadow"))       // dev: isolate main-light shadow artefacts
+                foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None)) if (l.type == LightType.Directional) l.shadows = LightShadows.None;
             if (CommandLine.Has("-dbgNoReflect"))
                 foreach (var p in FindObjectsByType<PlanarReflection>(FindObjectsSortMode.None)) p.enabled = false;
             if (CommandLine.Has("-dbgNoInk")) Shader.SetGlobalColor("_InkColor", new Color(0, 0, 0, 0));
