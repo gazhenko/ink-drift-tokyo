@@ -1,8 +1,11 @@
-# INK DRIFT: TOKYO — v1.26.0: true colours in the gauges and mirror
+# INK DRIFT: TOKYO — v1.27.0: door mirrors that reflect
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.26.0
+## What's new in 1.27.0
+- **Door mirrors made of glass.** Seen from the driver's seat, the door mirrors were flat white cards: the car's chrome is a bright comic material that looks right from outside but not up close. In the in-car view they're now polished mirror glass reflecting their surroundings, the neon of Shibuya at night or the sky and trees in the mountains. From the chase cameras the cars look the same as before.
+
+## 1.26.0: true colours in the gauges and mirror
 - **Fixed: magenta gauges.** The tachometer, boost and water gauges have white numbers and ticks, but they've always shown up magenta and dim in the car. The cockpit's procedural meshes carry colour masks for the comic shaders, and the gauge faces were picking those up as a tint. They now read white on black, as designed.
 - **Fixed: a pink rear-view mirror.** For the same reason, everything in the mirror was tinted red-magenta, even the green forest and the sky. The mirror now shows true colours with the same grading as the view ahead, at twice the resolution, so cars behind you are sharp.
 

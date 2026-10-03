@@ -103,6 +103,57 @@ namespace InkDrift
             else if (mirrorCam != null) mirrorCam.enabled = false;
             SetCockpitAO(on);
             Shader.SetGlobalFloat(SmokeNearFadeId, on ? SmokeNearFade : 0f);
+            SetDoorMirrors(on);
+        }
+
+        // ---------------------------------------------------------------- door mirrors
+        // The car's chrome (M_Chrome) is a flat, bright toon material: from the seat the door mirror glass read as a
+        // white card. Seen from inside, the only chrome in view is the door mirrors (the rest is at the wheels and the
+        // exhaust), so while the interior is shown it becomes polished mirror glass reflecting the surroundings.
+        Renderer[] chromeRenderers;
+        Material[][] chromeOriginal;
+        ReflectionProbeUsage[] chromeProbeUsage;
+        static Material doorMirrorGlass;
+
+        void SetDoorMirrors(bool interior)
+        {
+            if (chromeRenderers == null)
+            {
+                var found = new List<Renderer>();
+                foreach (var r in car.GetComponentsInChildren<Renderer>(true))
+                {
+                    if (r.transform.IsChildOf(transform) || r is ParticleSystemRenderer || r is TrailRenderer || r is LineRenderer) continue;
+                    foreach (var m in r.sharedMaterials)
+                        if (m != null && m.name.StartsWith("M_Chrome")) { found.Add(r); break; }
+                }
+                chromeRenderers = found.ToArray();
+                chromeOriginal = new Material[chromeRenderers.Length][];
+                chromeProbeUsage = new ReflectionProbeUsage[chromeRenderers.Length];
+                for (int k = 0; k < chromeRenderers.Length; k++)
+                {
+                    chromeOriginal[k] = chromeRenderers[k].sharedMaterials;
+                    chromeProbeUsage[k] = chromeRenderers[k].reflectionProbeUsage;
+                }
+            }
+            if (doorMirrorGlass == null)
+            {
+                doorMirrorGlass = ScanLibrary.Create("DoorMirror", null, new Color(0.78f, 0.79f, 0.81f), 0f, 0.97f, 0f, 1f);
+                if (doorMirrorGlass == null) return;
+                doorMirrorGlass.SetFloat("_EnvSpecular", 1f);      // outside the cabin: nothing occludes its reflections
+            }
+            for (int k = 0; k < chromeRenderers.Length; k++)
+            {
+                var r = chromeRenderers[k];
+                if (r == null) continue;
+                if (!interior) { r.sharedMaterials = chromeOriginal[k]; r.reflectionProbeUsage = chromeProbeUsage[k]; continue; }
+                // the tracks' probes aren't baked (black); the sky's environment reflection is what the cockpit's own
+                // metal uses
+                r.reflectionProbeUsage = ReflectionProbeUsage.Off;
+                var ms = (Material[])chromeOriginal[k].Clone();
+                for (int j = 0; j < ms.Length; j++)
+                    if (ms[j] != null && ms[j].name.StartsWith("M_Chrome")) ms[j] = doorMirrorGlass;
+                r.sharedMaterials = ms;
+            }
         }
 
         // tyre smoke closer than this (view depth, metres) is inside the cabin: InkParticles fades it out
