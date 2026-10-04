@@ -8,6 +8,8 @@ namespace InkDrift
     {
         public string id, name, jp, scene, timeOfDay, blurb;
         public int laps;
+        public bool wet;      // wet tarmac (lower grip; the AI plans its corner speeds for it)
+        public bool rain;     // it's raining (RainWeather)
         public float lengthKm;
         public Color accent;
     }
@@ -16,8 +18,9 @@ namespace InkDrift
     {
         public static readonly TrackInfo[] All =
         {
-            new TrackInfo { id = "shibuya", name = "SHIBUYA NEON", jp = "渋谷ネオン", scene = "Track_shibuya", timeOfDay = "NIGHT · WET",
-                blurb = "Rain-slick neon canyons, tight 90s and a sakura-lined canal. Clip the walls, chase the glow.", laps = 3, accent = Palette.Magenta },
+            new TrackInfo { id = "shibuya", name = "SHIBUYA NEON", jp = "渋谷ネオン", scene = "Track_shibuya", timeOfDay = "NIGHT · RAIN",
+                blurb = "Pouring rain over neon canyons, tight 90s and a sakura-lined canal. Clip the walls, chase the glow.", laps = 3, accent = Palette.Magenta,
+                wet = true, rain = true },
             new TrackInfo { id = "shuto", name = "SHUTO C1 LOOP", jp = "首都高C1", scene = "Track_shuto", timeOfDay = "SUNSET",
                 blurb = "Elevated expressway sweepers at 200 km/h between towers, tunnels and late-shift traffic.", laps = 2, accent = Palette.Yellow },
             new TrackInfo { id = "okutama", name = "OKUTAMA TOUGE", jp = "奥多摩峠", scene = "Track_okutama", timeOfDay = "AUTUMN · GOLDEN HOUR",
@@ -40,6 +43,14 @@ namespace InkDrift
         public static GameMode Mode = GameMode.DriftAttack;
         public static int Rivals = 5;
         public static bool Traffic = true;
+
+        /// <summary>CPU rivals: 0 EASY, 1 NORMAL, 2 HARD, 3 EXPERT.</summary>
+        public static int Difficulty
+        {
+            get => PlayerPrefs.GetInt("ai_difficulty", 2);
+            set => PlayerPrefs.SetInt("ai_difficulty", Mathf.Clamp(value, 0, 3));
+        }
+        public static readonly string[] DifficultyNames = { "EASY", "NORMAL", "HARD", "EXPERT" };
 
         public static int AssistLevel
         {

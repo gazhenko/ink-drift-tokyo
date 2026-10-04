@@ -124,6 +124,37 @@ Shader "InkDrift/Toon"
                 return o;
             }
 
+        #if defined(_WET)
+            float _RainIntensity;   // global (RainWeather): 0 dry .. 1 pouring
+
+            float2 InkHash2(float2 p)
+            {
+                p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)));
+                return frac(sin(p) * 43758.5453);
+            }
+
+            // raindrop rings on standing water: one drop per ~0.5 m cell, expanding and fading on its own clock;
+            // returns the slope (xz) of the ripple height field
+            float2 RainRipples(float2 p)
+            {
+                float2 grad = 0;
+                [unroll] for (int layer = 0; layer < 2; layer++)
+                {
+                    float2 q = p * (layer == 0 ? 2.1 : 2.9) + layer * 17.3;
+                    float2 cell = floor(q), f = frac(q);
+                    float2 h = InkHash2(cell);
+                    float t = frac(_Time.y * (1.1 + h.y * 0.6) + h.x);
+                    float2 d = f - (0.25 + h * 0.5);
+                    float r = length(d);
+                    float rr = t * 0.45;
+                    float band = saturate(1.0 - abs(r - rr) * 14.0);
+                    float wave = sin((r - rr) * 60.0) * band * (1.0 - t) * (1.0 - t);
+                    grad += d / max(r, 1e-3) * wave;
+                }
+                return grad;
+            }
+        #endif
+
             half4 frag(Varyings i, bool isFrontFace : SV_IsFrontFace) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
@@ -172,6 +203,12 @@ Shader "InkDrift/Toon"
                 half puddle = lerp(1.0h, smoothstep(0.55h, 0.35h, height), _MaskHeightPuddles);
                 s.wet = _WetAmount * puddle;
                 s.smoothness = lerp(s.smoothness, 0.92h, s.wet);
+                if (_RainIntensity > 0.001 && normalWS.y > 0.7h)
+                {
+                    // rain on the water: ripples tilt the normal, which ripples the reflections too
+                    float2 g = RainRipples(i.positionWS.xz) * (_RainIntensity * 0.35 * s.wet);
+                    s.normalWS = normalize(normalWS + half3(g.x, 0, g.y));
+                }
             #endif
                 half3 c = InkShade(s);
                 c = MixFog(c, i.fogFactor);

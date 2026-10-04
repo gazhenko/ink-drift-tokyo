@@ -71,7 +71,7 @@ namespace InkDrift
             {
                 yield return new WaitForSeconds(0.2f);
                 var rb = RaceBootstrap.I;
-                if (rb != null && rb.Player != null)
+                if (rb != null && rb.Player != null && rb.Player.GetComponent<AIDriver>() == null)
                 {
                     var pd = rb.Player.GetComponent<PlayerDriver>();
                     if (pd) Destroy(pd);

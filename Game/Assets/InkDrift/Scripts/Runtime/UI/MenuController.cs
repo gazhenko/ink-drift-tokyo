@@ -15,13 +15,19 @@ namespace InkDrift
         public Camera cam;
         public Light[] accentLights = new Light[0];
 
-        enum Screen { Title, Main, Car, Track, Settings, Controls, Loading }
+        enum Screen { Title, Main, Car, Track, Settings, Controls, Loading, Online, Lobby }
         Screen screen;
         Canvas canvas;
         RectTransform root;
         GameObject current;
         GameObject displayCar;
         int carIndex, paintIndex, trackIndex;
+        bool carForLobby;                      // the car screen was opened from the online lobby
+        Net.LanDiscovery discovery;
+        string onlineMessage;
+        TMP_InputField joinField, nameField;
+        float lanRefresh;
+        int lanShown = -1;
         GameMode pendingMode = GameMode.DriftAttack;
         float camT;
         int screenFrame;
@@ -47,7 +53,11 @@ namespace InkDrift
             MusicPlayer.Ensure().PlayMenuMusic();
             ShowDisplayCar();
             string dbg = CommandLine.Get("-menuScreen");
-            Go(dbg == "main" ? Screen.Main : dbg == "car" ? Screen.Car : dbg == "track" ? Screen.Track : dbg == "settings" ? Screen.Settings : dbg == "controls" ? Screen.Controls : Screen.Title);
+            // back from an online race: straight to the lobby; dropped from a session: the online screen with the reason
+            if (Net.NetSession.Online) { Hook(); Go(Screen.Lobby); }
+            else if (Net.NetSession.LastDisconnectReason != null) { onlineMessage = Net.NetSession.LastDisconnectReason; Net.NetSession.LastDisconnectReason = null; Go(Screen.Online); }
+            else Go(dbg == "main" ? Screen.Main : dbg == "car" ? Screen.Car : dbg == "track" ? Screen.Track : dbg == "settings" ? Screen.Settings : dbg == "controls" ? Screen.Controls
+                : dbg == "online" ? Screen.Online : dbg == "lobby" ? Screen.Lobby : Screen.Title);
             if (CommandLine.Has("-autoFlow")) StartCoroutine(AutoFlow());
         }
 
@@ -63,7 +73,12 @@ namespace InkDrift
             StartRace();
         }
 
-        void OnDestroy() { GameInput.DeviceChanged -= RefreshHint; }
+        void OnDestroy()
+        {
+            GameInput.DeviceChanged -= RefreshHint;
+            Unhook();
+            discovery?.Dispose();
+        }
 
         static int IndexOfCar(string id)
         {
@@ -87,6 +102,10 @@ namespace InkDrift
             }
             foreach (var l in accentLights) if (l && l.type == LightType.Spot) l.intensity = 30f + Mathf.Sin(Time.time * 2.3f + l.GetInstanceID()) * 6f;
 
+            // a session that started without this menu (or came back connected): show its lobby
+            if (Net.NetSession.Online && (screen == Screen.Title || screen == Screen.Main || screen == Screen.Online) && Time.frameCount != screenFrame)
+            { Hook(); Go(Screen.Lobby); return; }
+
             // one screen change per frame: a press that closed one screen must not also act on the next
             if (Time.frameCount == screenFrame || GameInput.Capturing) return;
             switch (screen)
@@ -99,7 +118,7 @@ namespace InkDrift
                     else if (GameInput.NavRight.WasPressedThisFrame()) ChangeCar(1);
                     else if (GameInput.NavUp.WasPressedThisFrame()) ChangePaint(-1);
                     else if (GameInput.NavDown.WasPressedThisFrame()) ChangePaint(1);
-                    else if (GameInput.Back.WasPressedThisFrame()) Go(Screen.Main);
+                    else if (GameInput.Back.WasPressedThisFrame()) Go(carForLobby && Net.NetSession.Online ? Screen.Lobby : Screen.Main);
                     break;
                 case Screen.Track:
                     if (GameInput.NavLeft.WasPressedThisFrame()) { trackIndex = (trackIndex + TrackCatalog.All.Length - 1) % TrackCatalog.All.Length; Go(Screen.Track); }
@@ -109,6 +128,15 @@ namespace InkDrift
                 case Screen.Settings:
                 case Screen.Main:
                     if (GameInput.Back.WasPressedThisFrame()) Go(screen == Screen.Settings ? Screen.Main : Screen.Title);
+                    break;
+                case Screen.Online:
+                    discovery?.Poll();
+                    lanRefresh -= Time.unscaledDeltaTime;
+                    if (lanRefresh <= 0f && discovery != null && discovery.Games.Count != lanShown && !Typing()) { lanRefresh = 0.5f; Go(Screen.Online); }
+                    if (GameInput.Back.WasPressedThisFrame() && !Typing()) Go(Screen.Main);
+                    break;
+                case Screen.Lobby:
+                    if (GameInput.Back.WasPressedThisFrame() && !Typing()) LeaveSession();
                     break;
             }
         }
@@ -130,7 +158,11 @@ namespace InkDrift
                 case Screen.Track: BuildTrack(); break;
                 case Screen.Settings: BuildSettings(from == Screen.Controls); break;
                 case Screen.Controls: ControlsScreen.Open(C, () => Go(Screen.Settings)); break;
+                case Screen.Online: BuildOnline(); break;
+                case Screen.Lobby: BuildLobby(); break;
             }
+            if (s != Screen.Online && s != Screen.Lobby && s != Screen.Car) { discovery?.Dispose(); discovery = null; }
+            if (s != Screen.Car && s != Screen.Lobby) carForLobby = false;
             StartCoroutine(PopIn(current.transform as RectTransform));
         }
 
@@ -194,14 +226,14 @@ namespace InkDrift
         void BuildMain()
         {
             Header("MAIN MENU", "メインメニュー", Palette.Yellow);
-            string[] en = { "DRIFT ATTACK", "RIVAL BATTLE", "FREE RUN", "SETTINGS", "QUIT" };
-            string[] jp = { "ドリフトアタック", "ライバルバトル", "フリーラン", "設定", "終了" };
-            Color[] cols = { Palette.Magenta, Palette.Cyan, Palette.Lime, Palette.Paper, Palette.Paper };
+            string[] en = { "DRIFT ATTACK", "RIVAL BATTLE", "FREE RUN", "ONLINE", "SETTINGS", "QUIT" };
+            string[] jp = { "ドリフトアタック", "ライバルバトル", "フリーラン", "オンライン", "設定", "終了" };
+            Color[] cols = { Palette.Magenta, Palette.Cyan, Palette.Lime, Palette.Yellow, Palette.Paper, Palette.Paper };
             UnityEngine.UI.Button first = null;
             for (int i = 0; i < en.Length; i++)
             {
                 int k = i;
-                var b = UIKit.Button(en[i], C, en[i], jp[i], new Vector2(0, 0.5f), new Vector2(330 + i * 18, 230 - i * 125), new Vector2(560, 104), () => MainPick(k), cols[i]);
+                var b = UIKit.Button(en[i], C, en[i], jp[i], new Vector2(0, 0.5f), new Vector2(330 + i * 16, 280 - i * 108), new Vector2(560, 96), () => MainPick(k), cols[i]);
                 if (i == 0) first = b;
             }
             var desc = UIKit.Text("Desc", C, "Chain drifts for points. Angle × speed × combo.\nClip the walls. Don't touch them.", F ? F.comic : null, 34, Palette.Paper, TextAlignmentOptions.Left, new Vector2(0, 0), new Vector2(560, 150), new Vector2(900, 100));
@@ -218,8 +250,9 @@ namespace InkDrift
                 case 0: pendingMode = GameMode.DriftAttack; Go(Screen.Car); break;
                 case 1: pendingMode = GameMode.Battle; Go(Screen.Car); break;
                 case 2: pendingMode = GameMode.FreeRun; Go(Screen.Car); break;
-                case 3: Go(Screen.Settings); break;
-                case 4: Application.Quit(); break;
+                case 3: Go(Screen.Online); break;
+                case 4: Go(Screen.Settings); break;
+                case 5: Application.Quit(); break;
             }
         }
 
@@ -251,7 +284,13 @@ namespace InkDrift
                 var s = UIKit.Img("Sw" + i, panel, null, spec.paints[i], new Vector2(0, 0), new Vector2(300 + i * 52, 120), new Vector2(40, 40));
                 swatches.Add(s);
             }
-            var go = UIKit.Button("Go", C, "SELECT", "決定", new Vector2(1, 0), new Vector2(-300, 90), new Vector2(380, 104), () => { UISfx.Play("ui_confirm"); GameSession.CarId = CarCatalog.All[carIndex].id; GameSession.PaintIndex = paintIndex; Go(Screen.Track); }, Palette.Yellow);
+            var go = UIKit.Button("Go", C, "SELECT", "決定", new Vector2(1, 0), new Vector2(-300, 90), new Vector2(380, 104), () =>
+            {
+                UISfx.Play("ui_confirm");
+                GameSession.CarId = CarCatalog.All[carIndex].id; GameSession.PaintIndex = paintIndex;
+                if (carForLobby && Net.NetSession.Online) { PlayerPrefs.Save(); Net.NetSession.I.SendLobbyUpdate(); Go(Screen.Lobby); }
+                else Go(Screen.Track);
+            }, Palette.Yellow);
             var prev = UIKit.Button("Prev", C, "◀", null, new Vector2(0, 0.5f), new Vector2(110, -40), new Vector2(110, 110), () => ChangeCar(-1), Palette.Paper);
             var next = UIKit.Button("Next", C, "▶", null, new Vector2(0.5f, 0.5f), new Vector2(60, -40), new Vector2(110, 110), () => ChangeCar(1), Palette.Paper);
             // directions change car/paint here, so keep the selection on SELECT (arrows are for the mouse)
@@ -345,7 +384,7 @@ namespace InkDrift
         void BuildSettings(bool fromControls = false)
         {
             Header("SETTINGS", "設定", Palette.Lime);
-            float y = 260;
+            float y = 300;
             UnityEngine.UI.Button first = null;
             UnityEngine.UI.Button Row(string label, System.Func<string> value, System.Action cycle)
             {
@@ -353,13 +392,14 @@ namespace InkDrift
                 var v = UIKit.Text("Val", C, value(), F ? F.comic : null, 46, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0.5f, 0.5f), new Vector2(380, y), new Vector2(700, 80));
                 UIKit.Inked(v, 0.3f);
                 b.onClick.AddListener(() => { cycle(); if (v) v.text = value(); UISfx.Play("ui_move"); });
-                y -= 100;
+                y -= 92;
                 first ??= b;
                 return b;
             }
             var controlsRow = Row("CONTROLS", () => "KEYS · CONTROLLER  ▶", () => Go(Screen.Controls));
             string[] assist = { "PRO (no assists)", "STANDARD (counter-steer)", "EASY (counter-steer + stability)" };
             Row("ASSIST", () => assist[GameSession.AssistLevel], () => GameSession.AssistLevel = (GameSession.AssistLevel + 1) % 3);
+            Row("CPU RIVALS", () => GameSession.DifficultyNames[GameSession.Difficulty], () => GameSession.Difficulty = (GameSession.Difficulty + 1) % 4);
             Row("GEARBOX", () => GameSession.Gearbox == Transmission.Automatic ? "AUTOMATIC" : $"MANUAL ({GameInput.Label(Bind.ShiftUp)} / {GameInput.Label(Bind.ShiftDown)})", () => GameSession.Gearbox = GameSession.Gearbox == Transmission.Automatic ? Transmission.Manual : Transmission.Automatic);
             Row("QUALITY", () => QualitySettings.names[Mathf.Clamp(GameSession.Quality, 0, QualitySettings.names.Length - 1)].ToUpperInvariant(), () => GameSession.Quality = (GameSession.Quality + 1) % QualitySettings.names.Length);
             Row("MUSIC", () => Mathf.RoundToInt(GameSession.MusicVolume * 10) + " / 10", () => GameSession.MusicVolume = Mathf.Repeat(GameSession.MusicVolume + 0.1f, 1.05f));
@@ -367,6 +407,206 @@ namespace InkDrift
             Row("FULLSCREEN", () => UnityEngine.Screen.fullScreen ? "ON" : "OFF", () => UnityEngine.Screen.fullScreen = !UnityEngine.Screen.fullScreen);
             EventSystem.current.SetSelectedGameObject((fromControls ? controlsRow : first).gameObject);
             Hint(() => $"{Ok}  CHANGE   ·   {No}  BACK");
+        }
+
+        // ---------------------------------------------------------------- online
+        bool Typing() => (joinField && joinField.isFocused) || (nameField && nameField.isFocused);
+
+        void Hook()
+        {
+            var ns = Net.NetSession.I;
+            if (ns == null) return;
+            ns.Changed -= OnNetChanged; ns.Changed += OnNetChanged;
+            ns.Disconnected -= OnNetDisconnected; ns.Disconnected += OnNetDisconnected;
+        }
+
+        void Unhook()
+        {
+            var ns = Net.NetSession.I;
+            if (ns == null) return;
+            ns.Changed -= OnNetChanged; ns.Disconnected -= OnNetDisconnected;
+        }
+
+        void OnNetChanged()
+        {
+            var ns = Net.NetSession.I;
+            if (ns == null) return;
+            if (ns.phase == Net.NetSession.Phase.Loading) { ShowLoadingFor(ns.TrackId); return; }
+            if (screen == Screen.Online && ns.Connected) { Go(Screen.Lobby); return; }
+            if (screen == Screen.Lobby && !Typing()) Go(Screen.Lobby);
+        }
+
+        void OnNetDisconnected(string reason)
+        {
+            onlineMessage = reason;
+            if (screen == Screen.Lobby || screen == Screen.Online || screen == Screen.Car) Go(Screen.Online);
+        }
+
+        void LeaveSession()
+        {
+            Unhook();
+            Net.NetSession.I?.Leave();
+            onlineMessage = null;
+            Go(Screen.Online);
+        }
+
+        void HostGame()
+        {
+            UISfx.Play("ui_confirm");
+            SaveName();
+            var ns = Net.NetSession.Host();
+            if (ns == null || !ns.Connected) { onlineMessage = Net.NetSession.LastDisconnectReason ?? "Couldn't host a game."; Go(Screen.Online); return; }
+            Hook();
+            Go(Screen.Lobby);
+        }
+
+        void JoinGame(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) { onlineMessage = "Type an invite code or address first."; Go(Screen.Online); return; }
+            UISfx.Play("ui_confirm");
+            SaveName();
+            PlayerPrefs.SetString("mp_last_join", address.Trim());
+            var ns = Net.NetSession.Join(address);
+            if (ns != null && ns) { Hook(); onlineMessage = null; }
+            else onlineMessage = Net.NetSession.LastDisconnectReason;
+            Go(Screen.Online);
+        }
+
+        void SaveName() { if (nameField) Net.NetSession.PlayerName = nameField.text; PlayerPrefs.Save(); }
+
+        void BuildOnline()
+        {
+            Header("ONLINE", "オンライン · 友達とレース", Palette.Yellow);
+            discovery ??= new Net.LanDiscovery();
+            var ns = Net.NetSession.I;
+            bool connecting = ns != null && !ns.Connected && !ns.IsHost;
+
+            UIKit.Text("NameL", C, "YOUR NAME", F ? F.comic : null, 36, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 0.5f), new Vector2(330, 250), new Vector2(560, 50));
+            nameField = UIKit.InputField("Name", C, Net.NetSession.PlayerName, "DRIVER", new Vector2(0, 0.5f), new Vector2(390, 190), new Vector2(620, 80), 16);
+            nameField.onEndEdit.AddListener(v => { Net.NetSession.PlayerName = v; PlayerPrefs.Save(); });
+
+            var host = UIKit.Button("Host", C, "HOST GAME", "ホスト", new Vector2(0, 0.5f), new Vector2(390, 60), new Vector2(620, 104), HostGame, Palette.Magenta);
+
+            UIKit.Text("JoinL", C, "JOIN A FRIEND · invite code or address", F ? F.comic : null, 32, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 0.5f), new Vector2(430, -60), new Vector2(640, 50));
+            joinField = UIKit.InputField("JoinCode", C, PlayerPrefs.GetString("mp_last_join", ""), "INK-XXXX-XXXX  or  192.168.1.20", new Vector2(0, 0.5f), new Vector2(390, -125), new Vector2(620, 80), 64);
+            joinField.onSubmit.AddListener(JoinGame);
+            UIKit.Button("Paste", C, "PASTE", null, new Vector2(0, 0.5f), new Vector2(235, -230), new Vector2(300, 84), () => { joinField.text = GUIUtility.systemCopyBuffer?.Trim() ?? ""; }, Palette.Paper);
+            UIKit.Button("Join", C, connecting ? "JOINING…" : "JOIN", "参加", new Vector2(0, 0.5f), new Vector2(550, -230), new Vector2(300, 84), () => JoinGame(joinField.text), Palette.Cyan);
+            UIKit.Button("Back", C, "BACK", "戻る", new Vector2(0, 0.5f), new Vector2(390, -340), new Vector2(620, 84), () => { if (connecting) Net.NetSession.I?.Leave(); Go(Screen.Main); }, Palette.Paper);
+
+            // games on this network
+            var panel = UIKit.Rect("Lan", C, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-60, 20), new Vector2(760, 640));
+            var sp = panel.gameObject.AddComponent<SlantPanel>(); sp.color = Palette.Ink.WithA(0.88f); sp.borderColor = Palette.Paper; sp.border = 5; sp.slant = 20; sp.raycastTarget = false;
+            UIKit.Text("LanT", panel, "GAMES ON YOUR NETWORK", F ? F.comic : null, 44, Palette.Yellow, TextAlignmentOptions.Center, new Vector2(0.5f, 1), new Vector2(0, -55), new Vector2(720, 60));
+            var games = discovery.Games;
+            lanShown = games.Count;
+            UnityEngine.UI.Button firstGame = null;
+            if (games.Count == 0)
+                UIKit.Text("None", panel, "Looking for games…\nWhen a friend on the same Wi-Fi hosts, it shows up here.", F ? F.comic : null, 30, Palette.Paper.WithA(0.75f), TextAlignmentOptions.Center, new Vector2(0.5f, 0.5f), new Vector2(0, 20), new Vector2(680, 200)).textWrappingMode = TextWrappingModes.Normal;
+            for (int i = 0; i < games.Count && i < 4; i++)
+            {
+                var g = games[i];
+                string addr = g.ep.Address.Equals(System.Net.IPAddress.Loopback) ? "this computer" : g.ep.Address.ToString();
+                string label = $"{g.host}  ·  {g.players}/{g.max}";
+                var ep = g.ep;
+                var b = UIKit.Button("Game" + i, panel, label, $"{TrackCatalog.Get(g.track).name}  ·  {(g.phase > 1 ? "racing now" : addr)}", new Vector2(0.5f, 1), new Vector2(0, -160 - i * 112), new Vector2(680, 100), () => JoinGame(ep.Address + ":" + ep.Port), Palette.Lime);
+                firstGame ??= b;
+            }
+            if (!string.IsNullOrEmpty(onlineMessage) || connecting)
+            {
+                var msg = UIKit.Text("Msg", C, connecting ? ns.Status : onlineMessage, F ? F.comic : null, 32, connecting ? Palette.Cyan : Palette.Red, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(0, 120), new Vector2(1700, 90));
+                msg.textWrappingMode = TextWrappingModes.Normal;
+                UIKit.Inked(msg, 0.3f);
+            }
+            var cur = EventSystem.current.currentSelectedGameObject;
+            if (cur == null || !cur.activeInHierarchy) EventSystem.current.SetSelectedGameObject((firstGame ? firstGame : host).gameObject);
+            Hint(() => $"{Ok}  SELECT   ·   {No}  BACK   ·   type a code with the keyboard");
+        }
+
+        void BuildLobby()
+        {
+            var ns = Net.NetSession.I;
+            if (ns == null || !ns.Connected) { onlineMessage = Net.NetSession.LastDisconnectReason; BuildOnline(); screen = Screen.Online; return; }
+            Hook();
+            Header("LOBBY", ns.IsHost ? "ロビー · あなたがホスト" : "ロビー", Palette.Cyan);
+
+            // players
+            var list = UIKit.Rect("Players", C, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(60, 40), new Vector2(820, 600));
+            var sp = list.gameObject.AddComponent<SlantPanel>(); sp.color = Palette.Ink.WithA(0.88f); sp.borderColor = Palette.Paper; sp.border = 5; sp.slant = 20; sp.raycastTarget = false;
+            UIKit.Text("PT", list, $"DRIVERS  {ns.Players.Count}/{Net.NetSession.MaxPlayers}", F ? F.comic : null, 44, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(330, -55), new Vector2(560, 60));
+            for (int i = 0; i < ns.Players.Count; i++)
+            {
+                var p = ns.Players[i];
+                bool me = p.id == ns.LocalId;
+                string status = p.id == 0 ? "HOST" : !p.inLobby ? "RESULTS" : p.ready ? "READY" : "…";
+                UIKit.Text("P" + i, list, $"{p.name}{(me ? "  (YOU)" : "")}", F ? F.hud : null, 36, me ? Palette.Magenta : Palette.Paper, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(330, -125 - i * 60), new Vector2(560, 50));
+                UIKit.Text("C" + i, list, CarCatalog.Get(p.carId).displayName, F ? F.hudRegular : null, 26, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(690, -125 - i * 60), new Vector2(300, 50));
+                UIKit.Text("S" + i, list, me || p.id == 0 ? status : $"{status}  {p.ping}ms", F ? F.hudRegular : null, 26, p.ready || p.id == 0 ? Palette.Lime : Palette.Paper.WithA(0.6f), TextAlignmentOptions.Right, new Vector2(1, 1), new Vector2(-150, -125 - i * 60), new Vector2(260, 50));
+            }
+
+            // race settings + invite
+            var info = UIKit.Rect("Info", C, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-60, 40), new Vector2(880, 600));
+            var ip = info.gameObject.AddComponent<SlantPanel>(); ip.color = Palette.Ink.WithA(0.88f); ip.borderColor = Palette.Paper; ip.border = 5; ip.slant = 20; ip.raycastTarget = false;
+            var track = TrackCatalog.Get(ns.TrackId);
+            UIKit.Text("TrackL", info, "TRACK", F ? F.comic : null, 30, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(330, -50), new Vector2(560, 44));
+            var tn = UIKit.Text("Track", info, $"{track.name}  {track.jp}", F ? F.comic : null, 46, track.accent, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -100), new Vector2(680, 60));
+            UIKit.Inked(tn, 0.25f);
+            UIKit.Text("Laps", info, $"{ns.Laps} LAPS  ·  {track.timeOfDay}", F ? F.hud : null, 30, Palette.Paper, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -150), new Vector2(680, 44));
+            if (ns.IsHost)
+            {
+                int ti = System.Array.FindIndex(TrackCatalog.All, t => t.id == ns.TrackId);
+                UIKit.Button("TrackPrev", info, "◀", null, new Vector2(1, 1), new Vector2(-170, -100), new Vector2(80, 70), () => ns.SetTrack(TrackCatalog.All[(ti + TrackCatalog.All.Length - 1) % TrackCatalog.All.Length].id), Palette.Paper);
+                UIKit.Button("TrackNext", info, "▶", null, new Vector2(1, 1), new Vector2(-80, -100), new Vector2(80, 70), () => ns.SetTrack(TrackCatalog.All[(ti + 1) % TrackCatalog.All.Length].id), Palette.Paper);
+                UIKit.Button("LapsDown", info, "−", null, new Vector2(1, 1), new Vector2(-170, -175), new Vector2(80, 60), () => ns.SetLaps(ns.Laps - 1), Palette.Paper);
+                UIKit.Button("LapsUp", info, "+", null, new Vector2(1, 1), new Vector2(-80, -175), new Vector2(80, 60), () => ns.SetLaps(ns.Laps + 1), Palette.Paper);
+
+                UIKit.Text("InvL", info, "INVITE CODE · send it to your friends", F ? F.comic : null, 28, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -240), new Vector2(680, 44));
+                var code = UIKit.Text("Code", info, ns.InviteCode ?? "…", F ? F.hud : null, 64, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -305), new Vector2(680, 80));
+                UIKit.Inked(code, 0.25f);
+                UIKit.Button("Copy", info, "COPY", null, new Vector2(1, 1), new Vector2(-125, -305), new Vector2(170, 70), () => { GUIUtility.systemCopyBuffer = ns.InviteCode ?? ""; UISfx.Play("ui_confirm"); }, Palette.Yellow);
+                string lan = ns.LanAddresses.Count > 0 ? string.Join("  ", ns.LanAddresses) : "-";
+                var det = UIKit.Text("Det", info, $"Same network: {lan}  ·  port {ns.Port}\n{ns.PortStatus}", F ? F.hudRegular : null, 24, Palette.Paper.WithA(0.85f), TextAlignmentOptions.TopLeft, new Vector2(0, 1), new Vector2(430, -420), new Vector2(780, 150));
+                det.textWrappingMode = TextWrappingModes.Normal;
+            }
+            else
+            {
+                var w = UIKit.Text("Wait", info, "The host picks the track and starts the race.\nPick your car and press READY.", F ? F.comic : null, 32, Palette.Paper.WithA(0.85f), TextAlignmentOptions.TopLeft, new Vector2(0, 1), new Vector2(430, -260), new Vector2(780, 160));
+                w.textWrappingMode = TextWrappingModes.Normal;
+            }
+
+            // actions
+            var me2 = ns.Local;
+            UnityEngine.UI.Button main;
+            if (ns.IsHost)
+            {
+                bool can = ns.CanStart(out string why);
+                main = UIKit.Button("Start", C, "START RACE", "スタート", new Vector2(0.5f, 0), new Vector2(330, 110), new Vector2(460, 110), () => { if (ns.CanStart(out _)) { UISfx.Play("ui_start"); ns.StartRace(); } }, can ? Palette.Yellow : Palette.Paper.WithA(0.5f));
+                if (!can) UIKit.Text("Why", C, why, F ? F.comic : null, 28, Palette.Red, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(330, 185), new Vector2(800, 40));
+            }
+            else
+            {
+                bool ready = me2 != null && me2.ready;
+                main = UIKit.Button("Ready", C, ready ? "READY ✓" : "READY", "準備OK", new Vector2(0.5f, 0), new Vector2(330, 110), new Vector2(460, 110), () => ns.SetReady(!(ns.Local != null && ns.Local.ready)), ready ? Palette.Lime : Palette.Yellow);
+            }
+            UIKit.Button("Car", C, "CHANGE CAR", "車を変更", new Vector2(0.5f, 0), new Vector2(-170, 110), new Vector2(460, 110), () => { carForLobby = true; carIndex = Mathf.Max(0, IndexOfCar(GameSession.CarId)); paintIndex = GameSession.PaintIndex; ShowDisplayCar(); Go(Screen.Car); }, Palette.Magenta);
+            UIKit.Button("LeaveL", C, "LEAVE", "退出", new Vector2(0.5f, 0), new Vector2(-620, 110), new Vector2(340, 110), LeaveSession, Palette.Paper);
+            if (!string.IsNullOrEmpty(ns.Status) && (ns.Status.Contains(" left") || ns.Status.Contains("timed out")))
+                UIKit.Text("Status", C, ns.Status, F ? F.comic : null, 28, Palette.Yellow, TextAlignmentOptions.Center, new Vector2(0.5f, 0), new Vector2(-400, 190), new Vector2(900, 40));
+            EventSystem.current.SetSelectedGameObject(main.gameObject);
+            Hint(() => $"{Ok}  SELECT   ·   {No}  LEAVE");
+        }
+
+        void ShowLoadingFor(string trackId)
+        {
+            if (screen == Screen.Loading) return;
+            screen = Screen.Loading;
+            if (current) Destroy(current);
+            current = UIKit.Stretch("Loading", root).gameObject;
+            var t = TrackCatalog.Get(trackId);
+            var dim = current.AddComponent<Image>(); dim.color = Palette.Ink;
+            var title = UIKit.Text("T", current.transform, t.name, F ? F.comic : null, 140, t.accent, TextAlignmentOptions.Center, new Vector2(0.5f, 0.6f), Vector2.zero, new Vector2(1700, 170));
+            UIKit.Inked(title, 0.25f, Palette.Paper, new Vector2(1.5f, -1.5f));
+            UIKit.Text("J", current.transform, "ONLINE RACE · " + t.jp, F ? F.jpHeavy : null, 64, Palette.Paper, TextAlignmentOptions.Center, new Vector2(0.5f, 0.46f), Vector2.zero, new Vector2(1600, 100));
         }
 
         void StartRace()

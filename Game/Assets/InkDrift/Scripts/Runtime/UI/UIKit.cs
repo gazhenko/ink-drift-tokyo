@@ -46,6 +46,44 @@ namespace InkDrift
             return rt;
         }
 
+        /// <summary>A single-line text box (TextMeshPro input field) on a paper panel.</summary>
+        public static TMP_InputField InputField(string name, Transform parent, string value, string placeholder, Vector2 anchor, Vector2 pos, Vector2 size, int maxChars = 64)
+        {
+            var rt = Rect(name, parent, anchor, anchor, new Vector2(0.5f, 0.5f), pos, size);
+            var panel = rt.gameObject.AddComponent<SlantPanel>();
+            panel.color = Palette.Paper; panel.slant = 12; panel.border = 4; panel.borderColor = Palette.Ink;
+            var area = Stretch("TextArea", rt);
+            area.offsetMin = new Vector2(28, 6); area.offsetMax = new Vector2(-28, -6);
+            area.gameObject.AddComponent<RectMask2D>();
+            var fs = FontSet.I;
+            TextMeshProUGUI Make(string n, string text, Color c)
+            {
+                var t = Stretch(n, area).gameObject.AddComponent<TextMeshProUGUI>();
+                if (fs && fs.hud) t.font = fs.hud;
+                t.text = text; t.fontSize = size.y * 0.46f; t.color = c;
+                t.alignment = TextAlignmentOptions.MidlineLeft;
+                t.textWrappingMode = TextWrappingModes.NoWrap;
+                t.raycastTarget = false;
+                return t;
+            }
+            var ph = Make("Placeholder", placeholder, Palette.Ink.WithA(0.4f));
+            var txt = Make("Text", "", Palette.Ink);
+            var field = rt.gameObject.AddComponent<TMP_InputField>();
+            field.targetGraphic = panel;
+            field.textViewport = area;
+            field.textComponent = txt;
+            field.placeholder = ph;
+            field.characterLimit = maxChars;
+            field.lineType = TMP_InputField.LineType.SingleLine;
+            field.caretColor = Palette.Magenta;
+            field.customCaretColor = true;
+            field.selectionColor = Palette.Cyan.WithA(0.5f);
+            if (fs && fs.hud) field.fontAsset = fs.hud;
+            field.pointSize = size.y * 0.46f;
+            field.text = value ?? "";
+            return field;
+        }
+
         public static RectTransform Stretch(string name, Transform parent)
         {
             var rt = Rect(name, parent, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);

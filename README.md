@@ -5,6 +5,7 @@ Neon canyons, elevated expressways and autumn mountain passes — rendered like 
 
 <p align="center">
 <a href="../../releases/latest"><b>⬇ Download for macOS · Windows · Linux</b></a> ·
+<a href="#easy-installers"><b>Easy installers</b></a> ·
 <a href="#give-this-to-your-agent"><b>Install with your agent</b></a> ·
 <a href="https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4"><b>▶ Watch the trailer</b></a>
 </p>
@@ -29,7 +30,7 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
 
 ### Features
 - **3 tracks**
-  - **SHIBUYA NEON 渋谷ネオン** — night, rain-soaked streets with real-time planar reflections of the neon, 90° intersections with side streets, a sakura-lined canal.
+  - **SHIBUYA NEON 渋谷ネオン** — night in pouring rain: falling streaks, splashes, spray off every car, ripples across the puddles and the odd flash of lightning, on streets with real-time planar reflections of the neon, 90° intersections with side streets and a sakura-lined canal.
   - **SHUTO C1 LOOP 首都高C1** — elevated expressway at sunset over a dense city, sweepers, a sodium-lit tunnel, live traffic for near-misses.
   - **OKUTAMA TOUGE 奥多摩峠** — western Tokyo's mountain pass in autumn: stacked switchback hairpins, cedar forest, burning momiji, a river gorge.
 - **5 cars** — fictional look-alikes of current Japanese sports cars with loud "ricer" kits (GT wings, splitters, canards, livery):
@@ -39,16 +40,13 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
   Three assist levels from PRO (none) to EASY.
 - **Drift scoring** — angle × speed × combo multiplier; multiplier grows with sustained drifts and direction switches;
   wall-proximity "CLOSE!" bonus; touch a wall and the chain is lost (失敗…).
-- **Modes** — Drift Attack (score), Rival Battle (5 AI rivals who drift too), Free Run.
-- **In-car view** — a right-hand-drive cockpit for every car, sized to that car's own windshield and roof: deep-dish
-  wheel, live tach / boost / water gauges, shift lights, H-pattern shifter, hydraulic handbrake, bucket seats, roll cage
-  and a working rear-view mirror. The driver is a fully rigged human model: anatomically correct arms and hands
-  (MakeHuman CC0 base) in a quilted race suit and leather gloves made from photo-scanned CC0 leather, suede and
-  fabric, with twin-needle stitching along every seam, holding a modelled deep-dish drift wheel. The whole cockpit is rendered with the same physically based shading, real shadows and baked ambient
-  occlusion, and the comic ink filter stays off everything inside the car. The hands hold a real
-  9-and-3 grip and steer hand over hand, and the left hand works the modelled H-pattern shifter (round knob, stitched
-  leather boot) and hydraulic handbrake.
-  The camera leans with g-forces and looks into the slide.
+- **Modes** — Drift Attack (score), Rival Battle (5 CPU rivals who drift too), Free Run, and **Online** races against friends.
+- **CPU rivals** — four difficulty levels (Settings ▸ CPU RIVALS: EASY · NORMAL · HARD · EXPERT, HARD by default). They
+  race for the win: they don't ease off when they're ahead of you, they pass on the side with room, keep a car's width
+  from anyone alongside and sit behind a car they can't pass instead of driving into it.
+- **Online multiplayer** — race up to 7 friends who have the game. No account or server: one of you hosts, the others
+  join from the list of games on your network, with an invite code, or with the host's address. See
+  [Racing friends online](#racing-friends-online).
 - **Procedural engine audio** per car (boxer rumble, inline-six scream, V6 growl), turbo whistle, blow-off flutter, pops & bangs;
   original synthesized eurobeat/city-pop soundtrack. The announcer is Japanese TTS (regenerate with ElevenLabs via
   `Tools/audio/elevenlabs_voices.py`).
@@ -67,7 +65,7 @@ names (A/B/X/Y, ×/○/□/△ or B/A/Y/X).
 | Handbrake | Space | A | × | B |
 | Clutch (kick!) | Left Shift | X | □ | Y |
 | Shift up / down (manual) | E / Q | RB / LB | R1 / L1 | R / L |
-| Camera (chase · near · in-car · roof · bumper) | C | Y | △ | X |
+| Camera (chase · near · roof · bumper) | C | Y | △ | X |
 | Look back | B | RS click | R3 | RS click |
 | Reset car | R | View | Create / Share | − |
 | Pause | Esc / P | Menu | Options | + |
@@ -92,20 +90,64 @@ names (A/B/X/Y, ×/○/□/△ or B/A/Y/X).
 spinning → counter-steer and *steer where you want the car to go* → modulate throttle to hold the angle.
 Clutch-kick (hold the clutch with throttle, release) to snap the rear loose mid-corner.
 
+## Racing friends online
+
+Everyone needs the same version of the game. Pick **ONLINE** on the main menu.
+
+- **Host:** press **HOST GAME**. You get a lobby with an **invite code** (`INK-XXXX-XXXX`, press **COPY** to put it on
+  the clipboard) and your address. Pick the track and the number of laps with the arrows, wait for your friends, then
+  press **START RACE**.
+- **Join:** a game hosted on the same Wi-Fi or network shows up under **GAMES ON YOUR NETWORK**. Click it to join.
+  For a game somewhere else, paste the host's invite code (or type their address, e.g. `203.0.113.7` or
+  `myhost.example.com:7777`) and press **JOIN**. Change your car in the lobby and press **READY**.
+- **During the race** every player drives their own car; the others' cars appear with their names above them,
+  positions and the finishing order are shared, and the results screen fills in as each player crosses the line.
+  **LOBBY** takes everyone back for the next race. The pause menu doesn't stop time online.
+
+**Over the internet** the host's router has to let the game in on **UDP port 7777**. When you host, the game asks the
+router to open it automatically (UPnP), and the lobby says whether that worked. If it didn't:
+
+- forward UDP port 7777 on the host's router to the host's computer, or
+- put everyone on a free virtual LAN such as [Tailscale](https://tailscale.com) or [ZeroTier](https://www.zerotier.com)
+  and join with the host's Tailscale/ZeroTier address (the game then works exactly as on a home network).
+
+The first time you host, macOS or Windows asks whether INK DRIFT TOKYO may accept incoming network connections:
+allow it, or friends can't connect.
+
+What the game sends over the network: only while you're hosting or in an online game. Your player name, car and the
+race itself go to the other players. To make the invite code, the host asks its router to open the port (UPnP) and asks
+a public STUN server (Google's or Cloudflare's) for its public address. Nothing else is sent anywhere, and there's no
+account or tracking.
+
 ## Installation
+
+### Easy installers
+
+You do not need a coding agent, Unity, or a terminal. Both installers contain the whole game and work offline.
+
+| Computer | Installer filename | How to install |
+| --- | --- | --- |
+| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** onto **Applications**, then open it from Applications. |
+| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-Windows-x64-Setup.exe) | Open Setup, choose **Next → Install → Finish**, then use the desktop or Start menu shortcut. No administrator password is needed. |
+
+Each installer includes a **START HERE** guide. You can also [read the guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) before downloading. Portable archives and Linux downloads are available on the release page.
+
+Quit the game before updating. Updates and removal keep your saved progress. On Windows, remove the game in **Settings → Apps**; on Mac, move it from Applications to the Trash.
+
+The Mac app is ad-hoc signed and has not been notarized by Apple. If blocked, try opening it from Applications, then use **System Settings → Privacy & Security → Open Anyway** for INK DRIFT TOKYO ([Apple's guide](https://support.apple.com/102445)). The Windows installer is unsigned; an unfamiliar-app prompt may offer **More info → Run anyway**. Approve only the copy from the official release. The Windows installer has been packaged and its contents checked, but has not been run on a Windows PC.
 
 ### Give this to your agent
 
 Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
 
 ```text
-Install INK DRIFT: TOKYO v1.28.0 on this computer from its official GitHub release, then tell me how to start it.
+Install INK DRIFT: TOKYO v2.0.0 on this computer from its official GitHub release, then tell me how to start it.
 
-Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v1.28.0
-Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.28.0/<file>
-  macOS, Apple Silicon or Intel  InkDriftTokyo-v1.28.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
-  Windows 10/11, x64             InkDriftTokyo-v1.28.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
-  Linux, x64                     InkDriftTokyo-v1.28.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v2.0.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v2.0.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v2.0.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v2.0.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
   Checksums                      SHA256SUMS.txt
 
 1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
@@ -126,7 +168,7 @@ Download the archive for your computer from the [latest release](../../releases/
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
 - **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
-- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v1.28.0-Linux-x64.tar.gz`, then
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v2.0.0-Linux-x64.tar.gz`, then
   `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
 
 The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.

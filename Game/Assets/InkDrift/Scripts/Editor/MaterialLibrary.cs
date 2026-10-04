@@ -128,7 +128,12 @@ namespace InkDrift.EditorTools
             var skid = R("Skidmark", Shader.Find("InkDrift/Skidmark"));
             var tread = Tex("Assets/InkDrift/Art/Generated/tread.png");
             if (tread) skid.SetTexture("_MainTex", tread);
-            foreach (var m in new[] { paint, trim, tire, traffic, smoke, spark, flame, skid }) { m.enableInstancing = true; EditorUtility.SetDirty(m); }
+            // rain on the wet tracks (RainWeather): streaks and splash rings
+            var rain = R("Rain", Shader.Find("InkDrift/Rain"));
+            rain.SetFloat("_Ring", 0f); rain.SetColor("_Tint", new Color(0.78f, 0.88f, 1f, 0.62f)); rain.SetFloat("_Glow", 2.2f);
+            var rainRing = R("RainRing", Shader.Find("InkDrift/Rain"));
+            rainRing.SetFloat("_Ring", 1f); rainRing.SetColor("_Tint", new Color(0.8f, 0.88f, 1f, 0.5f)); rainRing.SetFloat("_Glow", 1.4f);
+            foreach (var m in new[] { paint, trim, tire, traffic, smoke, spark, flame, skid, rain, rainRing }) { m.enableInstancing = true; EditorUtility.SetDirty(m); }
             AssetDatabase.SaveAssets();
         }
     }

@@ -1,8 +1,43 @@
-# INK DRIFT: TOKYO — v1.28.0: a roof over the driver
+# INK DRIFT: TOKYO — v2.0.0: race your friends online
+
+<!-- easy-installers:start -->
+## Easy installers — no coding tools needed
+
+| Computer | Download | Install |
+| --- | --- | --- |
+| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** to **Applications**, then open it from Applications. |
+| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-Windows-x64-Setup.exe) | Open Setup and choose **Next → Install → Finish**. Use the desktop or Start menu shortcut. |
+
+The installers include the whole game and work offline. No agent, Unity editor or terminal is needed; Windows installation needs no administrator password. Quit the game before updating. Your saved progress is kept during updates and removal.
+
+[Read the installation guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) for first-launch approval prompts and removal instructions. [Installer checksums](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/INSTALLER-SHA256SUMS.txt) · [Packaging validation](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/installer-validation.json).
+
+The Mac app is ad-hoc signed and not Apple-notarized; the Windows installer is unsigned. All packaged game files were checked against this release's source archives. The Windows installer has not been run on Windows hardware.
+<!-- easy-installers:end -->
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
 
-## What's new in 1.28.0
+## What's new in 2.0.0
+- **Online multiplayer.** Race up to 7 friends who have the game, with no account or server needed. Pick **ONLINE** on the main menu.
+  - **Hosting:** one of you hosts and gets a lobby with an invite code (`INK-XXXX-XXXX`). The host picks the track and laps and starts the race when everyone's ready.
+  - **Joining:** friends on the same network see the game in a list and click to join. Anyone else pastes the invite code or types the host's address.
+  - **In the race:** everyone drives their own car, and the others appear with their names above them. The countdown is synced across all players, positions are shared, and the results screen fills in as each player finishes. **LOBBY** takes everyone back for the next race.
+  - **Over the internet:** the host's router has to let UDP port 7777 in. The game asks the router to open it automatically (UPnP) and the lobby tells you whether that worked. If it didn't, forward the port by hand or use a virtual LAN such as Tailscale or ZeroTier. See *Racing friends online* in the README.
+- **Rain on Shibuya Neon.** The first track is now a downpour:
+  - streaks of rain falling through the neon
+  - splashes on the road
+  - spray thrown up by every car
+  - raindrop ripples running across the puddles and their reflections
+  - heavier haze, the sound of the rain, and now and then a flash of lightning and a roll of thunder
+- **Tougher CPU rivals.** The CPU drivers now race to win:
+  - **No more waiting for you.** They used to slow down by up to 12% whenever they led you; now they only push harder when they're behind.
+  - **Proper racing in the rear-drive cars.** They used to drift through every corner, which in a rear-drive car took them round Shuto at half the pace or had them spinning out. Now they race on the grip limit: they plan corner speeds from each car's own grip (less on Shibuya's wet roads), brake at the right point and steer to the tyres' limit, with traction control on the way out. In a 6-car race they now lap 25–35% faster, and every car finishes.
+  - **Driving style per car.** The all-wheel-drive car still drifts, because that's quickest in it.
+  - **Racecraft.** They pass slower cars on the side with room, keep a car's width from anyone alongside, and sit behind a car they can't pass instead of driving into it, so a race is no longer a pile-up at the first corner.
+  - **Four difficulties.** EASY, NORMAL, HARD (the default) and EXPERT, in **Settings ▸ CPU RIVALS**.
+- **The in-car view is gone.** The camera button now cycles chase, near chase, roof and bumper. If you had the in-car view selected, you start in the chase camera.
+
+## 1.28.0: a roof over the driver
 - **The roof shades the cabin.** The driver and cockpit were lit by the whole sky as if the car had no roof, so the race suit's sleeves were often the brightest thing in the cabin. Upward-facing surfaces inside the car now get less sky light, since they face the headliner. Light comes in mainly through the windows, so the tops of the arms and the dash are shaded and the cabin has more depth. It applies only in the in-car view.
 
 ## 1.27.0: door mirrors that reflect
@@ -167,9 +202,9 @@ A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-D
 ## Downloads
 | Platform | File | Notes |
 |---|---|---|
-| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.8.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
-| Windows 10/11 x64 | `InkDriftTokyo-v1.8.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
-| Linux x64 | `InkDriftTokyo-v1.8.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
+| macOS (Apple Silicon + Intel) | `InkDriftTokyo-v1.28.0-macOS-universal.zip` | Unsigned (ad-hoc). Right-click → Open, or run `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"` |
+| Windows 10/11 x64 | `InkDriftTokyo-v1.28.0-Windows-x64.zip` | Extract everything into a new folder, run `InkDriftTokyo.exe` (D3D11 default) |
+| Linux x64 | `InkDriftTokyo-v1.28.0-Linux-x64.tar.gz` | Extract into a new folder, then `./InkDriftTokyo.x86_64` (Vulkan, OpenGL fallback) |
 
 Checksums: `SHA256SUMS.txt`.
 

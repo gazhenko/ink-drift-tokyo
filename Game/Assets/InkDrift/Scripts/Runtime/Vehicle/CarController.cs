@@ -74,6 +74,11 @@ namespace InkDrift
         public float EngineLoad { get; private set; }
         public Rigidbody Body => rb;
 
+        /// <summary>Every active car (player, rivals, network cars): the AI's racecraft looks at these.</summary>
+        public static readonly System.Collections.Generic.List<CarController> All = new System.Collections.Generic.List<CarController>();
+        void OnEnable() { if (!All.Contains(this)) All.Add(this); }
+        void OnDisable() { All.Remove(this); }
+
         public event Action<int> OnGearChanged;
         public event Action OnBackfire;
         public event Action OnBlowOff;

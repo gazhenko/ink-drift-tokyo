@@ -21,6 +21,10 @@ namespace InkDrift
         public State state = State.Intro;
 
         public int PlayerLap { get; private set; } = 1;
+        /// <summary>Race distance covered (laps × length + distance past the line): positions and network sync.</summary>
+        public float PlayerProgress { get; private set; }
+        /// <summary>An online race (NetSession): synced start, no pausing time, shared results.</summary>
+        public bool Online;
         public int PlayerPosition { get; private set; } = 1;
         public float CurrentLapTime { get; private set; }
         public float BestLapTime { get; private set; }
@@ -56,6 +60,87 @@ namespace InkDrift
 
         public void Begin(float introSeconds = 0f) { StartCoroutine(Run(introSeconds)); }
 
+        /// <summary>Online: hold on the grid until the host's green light, then count down to it on the shared clock.</summary>
+        public void BeginOnline() { StartCoroutine(RunOnline()); }
+
+        IEnumerator RunOnline()
+        {
+            SetFrozen(true);
+            BestLapTime = GameSession.BestLap(GameSession.TrackId);
+            var ns = Net.NetSession.I;
+            ns.Disconnected += OnNetLost;
+            ns.PlayerLeft += OnNetPlayerLeft;
+            ShowBanner("WAITING FOR PLAYERS · 待機中", Palette.Cyan, 0f);
+            while (ns != null && ns.phase == Net.NetSession.Phase.Loading) yield return null;
+            if (ns == null) yield break;
+            float go = ns.LocalTimeOf(ns.GoTime);
+            state = State.Countdown;
+            if (banner) banner.gameObject.SetActive(false);
+            var cs = CalloutSystem.I;
+            var ids = new[] { CalloutId.Count3, CalloutId.Count2, CalloutId.Count1 };
+            for (int k = 0; k < 3; k++)
+            {
+                while (Time.realtimeSinceStartup < go - 3 + k) yield return null;
+                cs?.Show(ids[k]);
+            }
+            while (Time.realtimeSinceStartup < go) yield return null;
+            cs?.Show(CalloutId.Go);
+            SetFrozen(false);
+            state = State.Racing;
+            ns.RaceStarted();
+            var path = TrackPath.Active;
+            if (path != null) lastD = path.Project(player.transform.position, ref hint, out _);
+        }
+
+        // a line of text under the top of the screen (0 s = until the next banner or the green light)
+        TextMeshProUGUI banner;
+        float bannerUntil;
+
+        void ShowBanner(string text, Color col, float seconds)
+        {
+            var c = EnsureCanvas();
+            if (banner == null)
+            {
+                banner = UIKit.Text("Banner", c.transform, "", FontSet.I ? FontSet.I.jpHeavy : null, 46, col, TextAlignmentOptions.Center, new Vector2(0.5f, 0.78f), Vector2.zero, new Vector2(1600, 70));
+                UIKit.Inked(banner, 0.3f);
+            }
+            banner.text = text; banner.color = col; banner.gameObject.SetActive(true);
+            bannerUntil = seconds > 0f ? Time.realtimeSinceStartup + seconds : float.MaxValue;
+        }
+
+        void LateUpdate()
+        {
+            if (banner && banner.gameObject.activeSelf && (Time.realtimeSinceStartup > bannerUntil || (bannerUntil == float.MaxValue && state == State.Racing)))
+                banner.gameObject.SetActive(false);
+        }
+
+        void OnDestroy()
+        {
+            var ns = Net.NetSession.I;
+            if (ns != null) { ns.Disconnected -= OnNetLost; ns.PlayerLeft -= OnNetPlayerLeft; ns.Changed -= RefreshOnlineResults; }
+        }
+
+        void OnNetLost(string reason)
+        {
+            Time.timeScale = 1f; AudioListener.pause = false;
+            ShowBanner("DISCONNECTED · " + reason, Palette.Red, 3f);
+            Net.NetSession.LastDisconnectReason = reason;
+            StartCoroutine(ToMenuSoon());
+        }
+
+        IEnumerator ToMenuSoon() { yield return new WaitForSecondsRealtime(2.5f); SceneManager.LoadScene("MainMenu"); }
+
+        void OnNetPlayerLeft(Net.NetPlayer p)
+        {
+            for (int i = rivals.Count - 1; i >= 0; i--)
+            {
+                var nd = rivals[i] ? rivals[i].GetComponent<Net.NetCarDriver>() : null;
+                if (nd == null || nd.playerId != p.id) continue;
+                Destroy(rivals[i].gameObject);
+                rivals.RemoveAt(i);
+            }
+            ShowBanner(p.name + " LEFT THE RACE", Palette.Yellow, 3f);
+        }
         IEnumerator Run(float intro)
         {
             SetFrozen(true);
@@ -103,14 +188,18 @@ namespace InkDrift
                 CompleteLap();
             }
             lastD = d;
+            PlayerProgress = (PlayerLap - 1) * L + rel;
 
             if (Mode == GameMode.Battle && rivals.Count > 0)
             {
-                float myProg = (PlayerLap - 1) * L + rel;
+                float myProg = PlayerProgress;
                 int pos = 1;
                 foreach (var r in rivals)
                 {
-                    var ai = r ? r.GetComponent<AIDriver>() : null;
+                    if (r == null) continue;
+                    var nd = r.GetComponent<Net.NetCarDriver>();
+                    if (nd != null) { if (nd.Finished || nd.Progress > myProg) pos++; continue; }
+                    var ai = r.GetComponent<AIDriver>();
                     if (ai == null) continue;
                     float theirs = ai.Progress - path.startDistance;
                     if (theirs > myProg) pos++;
@@ -141,6 +230,7 @@ namespace InkDrift
         void Finish()
         {
             state = State.Finished;
+            if (Online) Net.NetSession.I?.LocalFinished(RaceTime);
             StartCoroutine(FinishRoutine());
         }
 
@@ -158,7 +248,7 @@ namespace InkDrift
         {
             CalloutSystem.I?.Show(CalloutId.Goal);
             // hand the car to the AI for a cool-down lap
-            var ai = player.gameObject.AddComponent<AIDriver>();
+            var ai = player.gameObject.GetComponent<AIDriver>() ?? player.gameObject.AddComponent<AIDriver>();
             ai.skill = 0.7f; ai.driftStyle = true; ai.rubberBand = false;
             var pd = player.GetComponent<PlayerDriver>();
             if (pd) pd.enabled = false;
@@ -173,7 +263,7 @@ namespace InkDrift
             if (rank == "S") CalloutSystem.I?.Show(CalloutId.DriftKing);
             else if (record) CalloutSystem.I?.Show(CalloutId.NewRecord);
             yield return new WaitForSeconds(1.0f);
-            ShowResults(score, rank, record);
+            if (Online) ShowOnlineResults(); else ShowResults(score, rank, record);
         }
 
         Canvas EnsureCanvas()
@@ -279,8 +369,8 @@ namespace InkDrift
         {
             if (state == State.Finished || ControlsScreen.IsOpen || GameInput.Capturing) return;
             paused = !paused;
-            Time.timeScale = paused ? 0f : 1f;
-            AudioListener.pause = paused;
+            // online the race goes on for everyone else: the menu opens over it, nothing stops
+            if (!Online) { Time.timeScale = paused ? 0f : 1f; AudioListener.pause = paused; }
             if (paused)
             {
                 var c = EnsureCanvas();
@@ -290,9 +380,10 @@ namespace InkDrift
                 var t = UIKit.Text("Title", pauseRoot.transform, "PAUSE · 一時停止", fs ? fs.jpHeavy : null, 96, Palette.Yellow, TextAlignmentOptions.Center, new Vector2(0.5f, 0.5f), new Vector2(0, 260), new Vector2(1200, 140));
                 UIKit.Inked(t, 0.25f, Palette.Ink, new Vector2(1.2f, -1.2f));
                 var resume = UIKit.Button("Resume", pauseRoot.transform, "RESUME", "再開", new Vector2(0.5f, 0.5f), new Vector2(0, 80), new Vector2(420, 100), TogglePause, Palette.Yellow);
-                UIKit.Button("Restart", pauseRoot.transform, "RESTART", "リスタート", new Vector2(0.5f, 0.5f), new Vector2(0, -50), new Vector2(420, 100), Restart, Palette.Paper);
+                if (Online) UIKit.Button("Leave", pauseRoot.transform, "LEAVE RACE", "退出", new Vector2(0.5f, 0.5f), new Vector2(0, -50), new Vector2(420, 100), LeaveOnline, Palette.Paper);
+                else UIKit.Button("Restart", pauseRoot.transform, "RESTART", "リスタート", new Vector2(0.5f, 0.5f), new Vector2(0, -50), new Vector2(420, 100), Restart, Palette.Paper);
                 UIKit.Button("Controls", pauseRoot.transform, "CONTROLS", "操作設定", new Vector2(0.5f, 0.5f), new Vector2(0, -180), new Vector2(420, 100), OpenControls, Palette.Lime);
-                UIKit.Button("Quit", pauseRoot.transform, "QUIT TO MENU", "メニューへ", new Vector2(0.5f, 0.5f), new Vector2(0, -310), new Vector2(420, 100), QuitToMenu, Palette.Cyan);
+                if (!Online) UIKit.Button("Quit", pauseRoot.transform, "QUIT TO MENU", "メニューへ", new Vector2(0.5f, 0.5f), new Vector2(0, -310), new Vector2(420, 100), QuitToMenu, Palette.Cyan);
                 if (pauseNote != null)
                 {
                     var n = UIKit.Text("Note", pauseRoot.transform, pauseNote, fs ? fs.jpHeavy : null, 34, Palette.Red, TextAlignmentOptions.Center, new Vector2(0.5f, 0.5f), new Vector2(0, 175), new Vector2(1400, 50));
@@ -310,6 +401,8 @@ namespace InkDrift
             int h = -1;
             var pose = TrackPath.Active.ResetPose(player.transform.position, ref h);
             player.ResetTo(pose.position, pose.rotation);
+            var sender = player.GetComponent<Net.NetCarSender>();
+            if (sender) sender.resetCount++;
             ChaseCamera.Main?.Snap();
         }
 
@@ -317,6 +410,59 @@ namespace InkDrift
         {
             Time.timeScale = 1f; AudioListener.pause = false;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        // ---------------------------------------------------------------- online results
+        GameObject onlineResults;
+
+        void ShowOnlineResults()
+        {
+            var ns = Net.NetSession.I;
+            if (ns != null) { ns.Changed -= RefreshOnlineResults; ns.Changed += RefreshOnlineResults; }
+            RefreshOnlineResults();
+        }
+
+        void RefreshOnlineResults()
+        {
+            var ns = Net.NetSession.I;
+            if (state != State.Finished || ns == null) return;
+            var c = EnsureCanvas();
+            var fs = FontSet.I;
+            GameObject selected = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
+            string selectedName = selected ? selected.name : null;
+            if (onlineResults) Destroy(onlineResults);
+            onlineResults = UIKit.Stretch("OnlineResults", c.transform).gameObject;
+            var dim = onlineResults.AddComponent<Image>(); dim.color = Palette.Indigo.WithA(0.72f);
+            var panel = UIKit.Rect("Panel", onlineResults.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 30), new Vector2(1100, 700));
+            var sp = panel.gameObject.AddComponent<SlantPanel>(); sp.color = Palette.Paper; sp.slant = 40; sp.border = 10; sp.shadowOffset = new Vector2(22, -22);
+            var title = UIKit.Text("Title", panel, ns.ResultsFinal ? "RESULTS · リザルト" : "FINISH! · 他の選手を待っています…", fs ? fs.jpHeavy : null, ns.ResultsFinal ? 64 : 48, Palette.Magenta, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(470, -70), new Vector2(860, 90));
+            UIKit.Inked(title, 0.25f, Palette.Ink, new Vector2(1, -1));
+            var track = TrackCatalog.Get(GameSession.TrackId);
+            UIKit.Text("Track", panel, $"{track.name}  {track.jp}  ·  {ns.Laps} LAPS  ·  ONLINE", fs ? fs.comic : null, 32, Palette.Ink, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(470, -130), new Vector2(860, 50));
+            int row = 0;
+            foreach (var (id, time) in ns.Standings)
+            {
+                var p = ns.Find(id);
+                string name = p != null ? p.name : "PLAYER " + id;
+                string t = time >= 0f ? FormatTime(time) : ns.ResultsFinal ? "DNF" : "RACING…";
+                bool me = id == ns.LocalId;
+                var txt = UIKit.Text("Row" + row, panel, $"{row + 1}.  {name}", fs ? fs.hud : null, 42, me ? Palette.Magenta : Palette.Ink, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(380, -215 - row * 56), new Vector2(560, 56));
+                UIKit.Text("Time" + row, panel, t, fs ? fs.hud : null, 42, me ? Palette.Magenta : Palette.Ink, TextAlignmentOptions.Right, new Vector2(1, 1), new Vector2(-260, -215 - row * 56), new Vector2(360, 56));
+                if (++row >= 8) break;
+            }
+            Button first = null;
+            if (ns.IsHost || ns.phase == Net.NetSession.Phase.Results || ns.ResultsFinal)
+                first = UIKit.Button("Lobby", onlineResults.transform, "LOBBY", "ロビー", new Vector2(0.5f, 0.5f), new Vector2(-170, -400), new Vector2(300, 100), () => ns.ReturnToLobby(), Palette.Yellow);
+            var leave = UIKit.Button("LeaveBtn", onlineResults.transform, "LEAVE", "退出", new Vector2(0.5f, 0.5f), new Vector2(first ? 170 : 0, -400), new Vector2(300, 100), LeaveOnline, Palette.Cyan);
+            var sel = selectedName != null ? onlineResults.transform.Find(selectedName) : null;
+            EventSystem.current?.SetSelectedGameObject(sel ? sel.gameObject : (first ? first.gameObject : leave.gameObject));
+        }
+
+        void LeaveOnline()
+        {
+            Time.timeScale = 1f; AudioListener.pause = false;
+            Net.NetSession.I?.Leave();
+            SceneManager.LoadScene("MainMenu");
         }
 
         public void QuitToMenu()

@@ -11,6 +11,24 @@ namespace InkDrift
     {
         public enum Mode { Chase, ChaseNear, Cockpit, Hood, Bumper }
 
+        /// <summary>
+        /// The in-car view is disabled: it isn't in the camera cycle and a saved choice of it falls back to the chase
+        /// camera. The cockpit code stays in the project (CockpitRig is only built when this mode is entered).
+        /// </summary>
+        public const bool CockpitEnabled = false;
+
+        /// <summary>Camera modes the player cycles through, in order.</summary>
+        static readonly Mode[] CycleOrder = CockpitEnabled
+            ? new[] { Mode.Chase, Mode.ChaseNear, Mode.Cockpit, Mode.Hood, Mode.Bumper }
+            : new[] { Mode.Chase, Mode.ChaseNear, Mode.Hood, Mode.Bumper };
+
+        /// <summary>A saved or requested mode, made valid (the in-car view maps to the chase camera while disabled).</summary>
+        public static Mode Sanitize(int m)
+        {
+            var mode = (Mode)Mathf.Clamp(m, 0, 4);
+            return !CockpitEnabled && mode == Mode.Cockpit ? Mode.Chase : mode;
+        }
+
         public CarController target;
         public Mode mode = Mode.Chase;
         public float distance = 5.6f;
@@ -51,7 +69,8 @@ namespace InkDrift
 
         void Cycle()
         {
-            mode = (Mode)(((int)mode + 1) % 5);
+            int i = System.Array.IndexOf(CycleOrder, mode);
+            mode = CycleOrder[(i + 1) % CycleOrder.Length];
             GameSession.CameraMode = (int)mode;
         }
 
@@ -94,6 +113,7 @@ namespace InkDrift
             // the interior only exists while we're sitting in it
             if (rig != null && (mode != Mode.Cockpit || rig.car != target)) { rig.SetActive(false); rig = null; }
             SetMotionBlur(mode != Mode.Cockpit);
+            if (!CockpitEnabled && mode == Mode.Cockpit) mode = Mode.Chase;
             if (mode == Mode.Cockpit && CockpitView(t, speed, dt)) return;
             cam.nearClipPlane = baseNear;
 
