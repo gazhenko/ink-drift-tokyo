@@ -10,7 +10,7 @@
 
 The installers include the whole game and work offline. No agent, Unity editor or terminal is needed; Windows installation needs no administrator password. Quit the game before updating. Your saved progress is kept during updates and removal.
 
-[Read the installation guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) for first-launch approval prompts and removal instructions. [Installer checksums](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/INSTALLER-SHA256SUMS.txt) · [Packaging validation](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/installer-validation.json).
+[Read the installation guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) for first-launch approval prompts and removal instructions. [Installer checksums](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/INSTALLER-SHA256SUMS.txt) · [Packaging validation](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/installer-manifest.json).
 
 The Mac app is ad-hoc signed and not Apple-notarized; the Windows installer is unsigned. All packaged game files were checked against this release's source archives. The Windows installer has not been run on Windows hardware.
 <!-- easy-installers:end -->
