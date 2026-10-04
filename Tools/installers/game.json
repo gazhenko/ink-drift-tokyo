@@ -1,0 +1,12 @@
+{
+  "name": "INK DRIFT TOKYO",
+  "repo": "ink-drift-tokyo",
+  "id": "InkDriftTokyo",
+  "prefix": "InkDriftTokyo",
+  "version": "v1.28.0",
+  "app": "INK DRIFT TOKYO.app",
+  "exe": "InkDriftTokyo.exe",
+  "mac_root": ".",
+  "windows_root": ".",
+  "checksums": "SHA256SUMS.txt"
+}

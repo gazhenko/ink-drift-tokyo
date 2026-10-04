@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Package Builds/{mac,win,linux} + trailer and publish a GitHub release.
-# Usage: Tools/release.sh v1.0.0 [--draft]
+# Usage: Tools/release.sh v1.0.0 [--draft] (INK_NO_PUBLISH=1 packages locally)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TAG=${1:?tag like v1.0.0}; shift || true
@@ -12,6 +12,10 @@ cd "$ROOT/Builds"
 [ -d linux ] && (cd linux && tar --exclude="*_BurstDebugInformation_DoNotShip" --exclude="*_BackUpThisFolder_ButDontShipItWithYourGame" -czf "$OUT/InkDriftTokyo-$TAG-Linux-x64.tar.gz" .)
 [ -f "$ROOT/Trailer/ink_drift_tokyo_trailer.mp4" ] && cp "$ROOT/Trailer/ink_drift_tokyo_trailer.mp4" "$OUT/INK-DRIFT-TOKYO-trailer.mp4"
 (cd "$OUT" && shasum -a 256 * > SHA256SUMS.txt)
+# Include offline Mac and Windows installers alongside the portable archives.
+python3 "$ROOT/Tools/installers/package.py" "$TAG" --release-dir "$OUT" --output "$OUT"
+(cd "$OUT" && files=(); for file in *; do [[ "$file" != SHA256SUMS.txt ]] && files+=("$file"); done; shasum -a 256 "${files[@]}" > SHA256SUMS.txt)
 ls -lh "$OUT"
+[[ "${INK_NO_PUBLISH:-}" == 1 ]] && exit 0
 NOTES="$ROOT/Docs/RELEASE_NOTES.md"
 gh release create "$TAG" $DRAFT --title "INK DRIFT: TOKYO $TAG" --notes-file "$NOTES" "$OUT"/*
