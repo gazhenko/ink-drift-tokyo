@@ -175,6 +175,10 @@ namespace InkDrift
             if (path == null) return;
             float dt = Time.deltaTime;
             RaceTime += dt;
+            // online, the race clock is the shared one: a game that stutters (a slow PC, a window in the background)
+            // would otherwise lose time off its clock, since a single frame's deltaTime is capped
+            var ns = Online ? Net.NetSession.I : null;
+            if (ns != null) RaceTime = Mathf.Max(0f, (float)(ns.HostTime - ns.GoTime));
             CurrentLapTime += dt;
 
             float d = path.Project(player.transform.position, ref hint, out _);

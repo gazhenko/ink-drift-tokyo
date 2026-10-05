@@ -26,8 +26,9 @@ namespace InkDrift.Net
     /// <summary>
     /// A multiplayer session (survives scene loads). One player hosts: the host keeps the lobby, starts races, syncs the
     /// green light and collects finishing times; every game simulates its own car and sends its state to the host,
-    /// which relays it to the others. No server: friends join by LAN discovery, an invite code or an address
-    /// (the host's router port is opened with UPnP where the router allows it).
+    /// which relays it to the others. Friends join with the host's room code (through the online relay, so no router
+    /// setup), by LAN discovery, or by address; if the relay can't be reached the host falls back to a direct invite
+    /// code and opens its router port with UPnP where the router allows it.
     /// </summary>
     public class NetSession : MonoBehaviour
     {
@@ -54,6 +55,12 @@ namespace InkDrift.Net
         public readonly List<int> Grid = new List<int>();
         public string Status = "";
         public string InviteCode, PublicAddress, PortStatus;
+        /// <summary>Host: the online room code ("K7Q-4MZ") once the relay has given one; RelayStatus says why not.</summary>
+        public string RoomCode, RelayStatus;
+        /// <summary>Client: connected through the online relay rather than directly.</summary>
+        public bool ViaRelay { get; private set; }
+        /// <summary>Host: still waiting for the relay's room code.</summary>
+        public bool RelayPending => IsHost && net != null && net.Relay != null && !net.Relay.IsOpen;
         public List<string> LanAddresses = new List<string>();
         public int Port => net != null ? net.LocalPort : 0;
         /// <summary>Host clock time of the green light (Countdown/Racing).</summary>
@@ -72,6 +79,9 @@ namespace InkDrift.Net
         float helloTimer, helloDeadline, pingTimer, lobbyTimer;
         double clockOffset;
         float bestRtt = 999f;
+        float relayRetryAt = -1f;
+        int relayRetries, hellosSent;
+        bool fallbackStarted;
         float firstFinish = -1f;
         float loadDeadline = -1f;
         LanDiscovery discovery;
@@ -127,29 +137,41 @@ namespace InkDrift.Net
             s.LanAddresses = NetTransport.LocalAddresses();
             if (s.LanAddresses.Count > 0 && IPAddress.TryParse(s.LanAddresses[0], out var lan)) s.InviteCode = InviteCodec.Encode(lan, s.Port);
             s.Status = "Hosting on port " + s.Port;
-            s.PortStatus = "Opening the port on your router…";
-            s.OpenInternetAccess();
             Debug.Log("[Net] hosting on port " + s.Port);
+            if (CommandLine.Has("-noRelay")) s.StartFallback();
+            else s.StartRelay();
             return s;
         }
 
-        /// <summary>Join a host by invite code, address, host name or ip:port.</summary>
+        /// <summary>Join a host by room code, invite code, address, host name or ip:port.</summary>
         public static NetSession Join(string address)
         {
             var s = Create();
             IPEndPoint ep = null;
-            try { if (!InviteCodec.TryDecode(address, out ep)) ep = NetTransport.Parse(address, DefaultPort); }
-            catch (Exception e) { Debug.Log("[Net] parse: " + e.Message); }
-            if (ep == null) { s.Fail("Couldn't find \"" + address + "\". Check the code or address."); return s; }
+            bool viaRelay = RelayLink.TryParseCode(address, out string room);
+            if (!viaRelay)
+            {
+                try { if (!InviteCodec.TryDecode(address, out ep)) ep = NetTransport.Parse(address, DefaultPort); }
+                catch (Exception e) { Debug.Log("[Net] parse: " + e.Message); }
+                if (ep == null) { s.Fail("Couldn't find \"" + address + "\". Check the code or address."); return s; }
+            }
             try { s.net = new NetTransport(0, true); }
             catch (Exception e) { s.Fail("Couldn't open a network port: " + e.Message); return s; }
             s.Hook();
+            if (viaRelay)
+            {
+                try { s.net.AttachRelay(RelayLink.Join(room)); }
+                catch (Exception e) { s.Fail("Couldn't reach the online service: " + e.Message); return s; }
+                s.ViaRelay = true;
+                ep = NetTransport.RelayEndpoint(0);
+            }
             s.hostEp = ep;
+            s.net.GetPeer(ep);          // keep-alives to the host start now, so a stalled frame here doesn't look like we left
             s.token = (uint)UnityEngine.Random.Range(1, int.MaxValue);
             s.phase = Phase.Connecting;
-            s.helloDeadline = Time.realtimeSinceStartup + 25f;
-            s.Status = "Connecting to " + ep + "…";
-            Debug.Log("[Net] joining " + ep);
+            s.helloDeadline = Time.realtimeSinceStartup + 60f;      // until the first hello goes out; then 25 s from it
+            s.Status = viaRelay ? "Joining room " + RelayLink.Format(room) + "…" : "Connecting to " + ep + "…";
+            Debug.Log("[Net] joining " + (viaRelay ? "room " + room : ep.ToString()));
             return s;
         }
 
@@ -191,6 +213,71 @@ namespace InkDrift.Net
         bool upnpMapped;
         int upnpPort;
 
+        /// <summary>Ask the relay for a room code (friends anywhere join with it; nobody touches their router).</summary>
+        void StartRelay()
+        {
+            RelayStatus = "Getting a room code…";
+            try { net.AttachRelay(RelayLink.Host()); }
+            catch (Exception e) { HostRelayLost("Couldn't reach the online service: " + e.Message); }
+        }
+
+        /// <summary>The relay is unreachable or dropped: retry in the background, and offer a direct invite code meanwhile.</summary>
+        void HostRelayLost(string why)
+        {
+            bool hadRoom = RoomCode != null;
+            net.DetachRelay();
+            RoomCode = null;
+            for (int i = Players.Count - 1; i >= 0; i--)
+                if (NetTransport.IsRelay(Players[i].ep)) DropPlayer(Players[i], "lost the connection");
+            relayRetries++;
+            relayRetryAt = Time.realtimeSinceStartup + Mathf.Min(60f, 5f * relayRetries);
+            RelayStatus = hadRoom ? "Lost the connection to the online service. Getting a new room code…"
+                : (why ?? "Couldn't reach the online service.") + " Trying again…";
+            Debug.Log("[Net] relay lost: " + (why ?? "closed"));
+            StartFallback();
+            Changed?.Invoke();
+        }
+
+        /// <summary>Direct connections: open the router port (UPnP) or find the public address (STUN) for an invite code.</summary>
+        void StartFallback()
+        {
+            if (fallbackStarted) return;
+            fallbackStarted = true;
+            PortStatus = "Opening the port on your router…";
+            OpenInternetAccess();
+        }
+
+        void PollRelay()
+        {
+            var link = net?.Relay;
+            if (link == null) return;
+            while (link.Events.TryDequeue(out var e))
+            {
+                if (netLog) Debug.Log($"[Net] relay {e.kind} {e.id} {e.text}");
+                switch (e.kind)
+                {
+                    case RelayLink.EventKind.Open:
+                        if (IsHost)
+                        {
+                            RoomCode = RelayLink.Format(e.text); RelayStatus = null; relayRetries = 0;
+                            Debug.Log("[Net] online room " + RoomCode);
+                            if (CommandLine.Has("-mpCodeFile")) try { System.IO.File.WriteAllText(CommandLine.Get("-mpCodeFile"), RoomCode); } catch { }
+                            Changed?.Invoke();
+                        }
+                        else { Status = "In the room, waiting for the host…"; Changed?.Invoke(); }
+                        break;
+                    case RelayLink.EventKind.Left:
+                        if (IsHost) { var p = ByEndpoint(NetTransport.RelayEndpoint(e.id)); if (p != null) DropPlayer(p, "left"); }
+                        break;
+                    case RelayLink.EventKind.Error:
+                    case RelayLink.EventKind.Closed:
+                        if (!IsHost) Fail(e.text ?? (Connected ? "Lost the connection to the online room." : "Couldn't join the room."));
+                        else HostRelayLost(e.text);
+                        return;
+                }
+            }
+        }
+
         async void OpenInternetAccess()
         {
             int port = Port;
@@ -227,6 +314,8 @@ namespace InkDrift.Net
             if (net == null) return;
             net.Poll();
             if (net == null) return;
+            PollRelay();
+            if (net == null) return;
             float now = Time.realtimeSinceStartup;
             if (IsHost) HostUpdate(now); else ClientUpdate(now);
         }
@@ -241,6 +330,7 @@ namespace InkDrift.Net
                 float heard = Mathf.Max(p.lastHeard, peer != null ? peer.lastHeard : 0f);
                 if (now - heard > Timeout) { Debug.Log($"[Net] {p.name} timed out"); DropPlayer(p, "timed out"); }
             }
+            if (relayRetryAt > 0f && now > relayRetryAt && net.Relay == null) { relayRetryAt = -1f; StartRelay(); }
             lobbyTimer -= Time.unscaledDeltaTime;
             if (lobbyTimer <= 0f) { lobbyTimer = 1f; BroadcastLobby(false); }   // keeps pings shown and peers warm
             if (phase == Phase.Loading && (AllLoaded() || (loadDeadline > 0f && now > loadDeadline))) SendGo();
@@ -257,14 +347,21 @@ namespace InkDrift.Net
             if (!Connected)
             {
                 helloTimer -= Time.unscaledDeltaTime;
-                if (helloTimer <= 0f)
+                bool canSend = !ViaRelay || (net.Relay != null && net.Relay.IsOpen);
+                if (helloTimer <= 0f && canSend)
                 {
                     helloTimer = 0.3f;
                     var w = new NetWriter(Msg.Hello).U32(token).U16(NetTransport.Protocol).Str(Application.version)
                         .Str(PlayerName).Str(GameSession.CarId).U8(GameSession.PaintIndex);
                     var b = w.Bytes; net.SendUnreliable(hostEp, b, b.Length);
+                    // the wait counts from the first hello actually sent and needs several unanswered ones: a game that
+                    // stalls for seconds (loading, compiling shaders on a slow GPU) mustn't give up before it has asked
+                    if (hellosSent++ == 0) helloDeadline = now + 25f;
                 }
-                if (now > helloDeadline) Fail("No answer from the host. Check the code or address, and that the host's port is open.");
+                if (now > helloDeadline && (hellosSent == 0 || hellosSent >= 8))
+                    Fail(!ViaRelay ? "No answer from the host. Check the code or address, and that the host's port is open."
+                        : net.Relay != null && net.Relay.IsOpen ? "The host didn't answer. Ask them to check their game is still in the lobby."
+                        : "The online service didn't answer. Check your internet connection and try again.");
                 return;
             }
             var host = net.GetPeer(hostEp, false);
@@ -323,7 +420,7 @@ namespace InkDrift.Net
                     while (Find(id) != null) id++;
                     p = new NetPlayer { id = id, name = Unique(name), carId = CarCatalog.Get(car).id, paint = paint, ep = from, lastHeard = now };
                     Players.Add(p);
-                    Debug.Log($"[Net] {p.name} joined from {from}");
+                    Debug.Log($"[Net] {p.name} joined from {(NetTransport.IsRelay(from) ? "the online room" : from.ToString())}");
                     SendWelcome(p);
                     BroadcastLobby(true);
                     break;
@@ -666,7 +763,10 @@ namespace InkDrift.Net
         }
 
         // ---------------------------------------------------------------- dev automation
-        /// <summary>-mpHost / -mpJoin addr [-mpName n] [-mpAutoStart players] [-mpTrack id] [-mpLaps n]: scripted sessions for tests.</summary>
+        /// <summary>
+        /// -mpHost / -mpJoin addr|code|@file [-mpName n] [-mpAutoStart players] [-mpTrack id] [-mpLaps n] [-mpCodeFile path]:
+        /// scripted sessions for tests (-relay url picks the relay, -noRelay hosts without it).
+        /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void DevAuto()
         {
@@ -696,7 +796,20 @@ namespace InkDrift.Net
                         I?.StartRace();
                     }
                 }
-                else Join(CommandLine.Get("-mpJoin"));
+                else
+                {
+                    // -mpJoin @file: wait for the host's -mpCodeFile and join that room
+                    string target = CommandLine.Get("-mpJoin");
+                    if (target.StartsWith("@"))
+                    {
+                        string path = target.Substring(1);
+                        float deadline = Time.realtimeSinceStartup + 120f;
+                        while (!System.IO.File.Exists(path) && Time.realtimeSinceStartup < deadline) yield return new WaitForSecondsRealtime(0.5f);
+                        target = System.IO.File.Exists(path) ? System.IO.File.ReadAllText(path).Trim() : "";
+                        Debug.Log("[Net] dev join: room " + target);
+                    }
+                    Join(target);
+                }
             }
         }
     }

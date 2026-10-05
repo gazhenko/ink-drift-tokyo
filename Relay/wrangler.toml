@@ -1,0 +1,20 @@
+# INK DRIFT TOKYO online relay. Deploy: CLOUDFLARE_ACCOUNT_ID=... npx wrangler deploy (needs a token that can edit
+# Workers scripts and the gazhenko.dev zone). Local test server: npx wrangler dev, then point the game at it with
+# -relay ws://127.0.0.1:8787
+name = "inkdrift-relay"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [{ pattern = "inkdrift-relay.gazhenko.dev", custom_domain = true }]
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]
+
+# no request logs: the relay keeps nothing about players
+[observability]
+enabled = false

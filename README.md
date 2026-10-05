@@ -44,8 +44,8 @@ Pop a good drift and Tokyo shouts at you: graffiti comic callouts burst onto the
 - **CPU rivals** — four difficulty levels (Settings ▸ CPU RIVALS: EASY · NORMAL · HARD · EXPERT, HARD by default). They
   race for the win: they don't ease off when they're ahead of you, they pass on the side with room, keep a car's width
   from anyone alongside and sit behind a car they can't pass instead of driving into it.
-- **Online multiplayer** — race up to 7 friends who have the game. No account or server: one of you hosts, the others
-  join from the list of games on your network, with an invite code, or with the host's address. See
+- **Online multiplayer** — race up to 7 friends who have the game. No account and no router setup: one of you hosts and
+  sends the others a short room code (`K7Q-4MZ`); friends on the same network can also pick the game from a list. See
   [Racing friends online](#racing-friends-online).
 - **Procedural engine audio** per car (boxer rumble, inline-six scream, V6 growl), turbo whistle, blow-off flutter, pops & bangs;
   original synthesized eurobeat/city-pop soundtrack. The announcer is Japanese TTS (regenerate with ElevenLabs via
@@ -94,30 +94,35 @@ Clutch-kick (hold the clutch with throttle, release) to snap the rear loose mid-
 
 Everyone needs the same version of the game. Pick **ONLINE** on the main menu.
 
-- **Host:** press **HOST GAME**. You get a lobby with an **invite code** (`INK-XXXX-XXXX`, press **COPY** to put it on
-  the clipboard) and your address. Pick the track and the number of laps with the arrows, wait for your friends, then
-  press **START RACE**.
-- **Join:** a game hosted on the same Wi-Fi or network shows up under **GAMES ON YOUR NETWORK**. Click it to join.
-  For a game somewhere else, paste the host's invite code (or type their address, e.g. `203.0.113.7` or
-  `myhost.example.com:7777`) and press **JOIN**. Change your car in the lobby and press **READY**.
+- **Host:** press **HOST GAME**. You get a lobby with a **room code** such as `K7Q-4MZ` (press **COPY** to put it on
+  the clipboard). Send it to your friends. Pick the track and the number of laps with the arrows, wait for your friends,
+  then press **START RACE**.
+- **Join:** type your friend's room code (upper or lower case, with or without the dash) and press **JOIN**. A game
+  hosted on the same Wi-Fi or network also shows up under **GAMES ON YOUR NETWORK**: click it to join. Change your car
+  in the lobby and press **READY**.
 - **During the race** every player drives their own car; the others' cars appear with their names above them,
   positions and the finishing order are shared, and the results screen fills in as each player crosses the line.
   **LOBBY** takes everyone back for the next race. The pause menu doesn't stop time online.
 
-**Over the internet** the host's router has to let the game in on **UDP port 7777**. When you host, the game asks the
-router to open it automatically (UPnP), and the lobby says whether that worked. If it didn't:
+Room codes work from any network, with nothing to set up on anyone's router: every game connects out to a small relay
+service (`inkdrift-relay.gazhenko.dev`, a Cloudflare Worker; its source is in [`Relay/`](Relay/)), which passes the race
+traffic between the host and the friends in that room. A room lasts as long as the host's lobby is open.
 
-- forward UDP port 7777 on the host's router to the host's computer, or
-- put everyone on a free virtual LAN such as [Tailscale](https://tailscale.com) or [ZeroTier](https://www.zerotier.com)
-  and join with the host's Tailscale/ZeroTier address (the game then works exactly as on a home network).
+If the relay can't be reached, the lobby shows a direct **invite code** (`INK-XXXX-XXXX`) instead. That only works over
+the internet if the host's router lets the game in on **UDP port 7777**: the game asks the router to open it (UPnP) and
+says whether that worked. Otherwise forward UDP 7777 to the host's computer, or put everyone on a virtual LAN such as
+[Tailscale](https://tailscale.com) or [ZeroTier](https://www.zerotier.com) and join with the host's address there.
+You can also type an address directly (`192.168.1.20`, `myhost.example.com:7777`).
 
-The first time you host, macOS or Windows asks whether INK DRIFT TOKYO may accept incoming network connections:
-allow it, or friends can't connect.
+The first time you host, macOS or Windows may ask whether INK DRIFT TOKYO may accept incoming network connections.
+Allow it so friends on your own network can join; room codes work either way.
 
 What the game sends over the network: only while you're hosting or in an online game. Your player name, car and the
-race itself go to the other players. To make the invite code, the host asks its router to open the port (UPnP) and asks
-a public STUN server (Google's or Cloudflare's) for its public address. Nothing else is sent anywhere, and there's no
-account or tracking.
+race itself go to the other players, through the relay when you use a room code. The relay keeps nothing and logs nothing:
+it forwards packets while the room is open and forgets the room when the host leaves (Cloudflare, which runs it, sees
+the connections as it would for any website). Only when the relay is unreachable does the
+host ask its router to open the port (UPnP) and ask a public STUN server (Google's or Cloudflare's) for its public
+address. There's no account or tracking.
 
 ## Installation
 
@@ -127,10 +132,10 @@ You do not need a coding agent, Unity, or a terminal. Both installers contain th
 
 | Computer | Installer filename | How to install |
 | --- | --- | --- |
-| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** onto **Applications**, then open it from Applications. |
-| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-Windows-x64-Setup.exe) | Open Setup, choose **Next → Install → Finish**, then use the desktop or Start menu shortcut. No administrator password is needed. |
+| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/InkDriftTokyo-v2.1.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** onto **Applications**, then open it from Applications. |
+| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/InkDriftTokyo-v2.1.0-Windows-x64-Setup.exe) | Open Setup, choose **Next → Install → Finish**, then use the desktop or Start menu shortcut. No administrator password is needed. |
 
-Each installer includes a **START HERE** guide. You can also [read the guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) before downloading. Portable archives and Linux downloads are available on the release page.
+Each installer includes a **START HERE** guide. You can also [read the guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/START-HERE.txt) before downloading. Portable archives and Linux downloads are available on the release page.
 
 Quit the game before updating. Updates and removal keep your saved progress. On Windows, remove the game in **Settings → Apps**; on Mac, move it from Applications to the Trash.
 
@@ -141,13 +146,13 @@ The Mac app is ad-hoc signed and has not been notarized by Apple. If blocked, tr
 Paste this into Claude Code, Codex, Cursor or any other coding agent that can run commands on your computer:
 
 ```text
-Install INK DRIFT: TOKYO v2.0.0 on this computer from its official GitHub release, then tell me how to start it.
+Install INK DRIFT: TOKYO v2.1.0 on this computer from its official GitHub release, then tell me how to start it.
 
-Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v2.0.0
-Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/<file>
-  macOS, Apple Silicon or Intel  InkDriftTokyo-v2.0.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
-  Windows 10/11, x64             InkDriftTokyo-v2.0.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
-  Linux, x64                     InkDriftTokyo-v2.0.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
+Release: https://github.com/gazhenko/ink-drift-tokyo/releases/tag/v2.1.0
+Download each file from https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/<file>
+  macOS, Apple Silicon or Intel  InkDriftTokyo-v2.1.0-macOS-universal.zip  contains "INK DRIFT TOKYO.app"
+  Windows 10/11, x64             InkDriftTokyo-v2.1.0-Windows-x64.zip      files at the zip root; the game is InkDriftTokyo.exe
+  Linux, x64                     InkDriftTokyo-v2.1.0-Linux-x64.tar.gz     files at the archive root; the game is InkDriftTokyo.x86_64
   Checksums                      SHA256SUMS.txt
 
 1. Detect the OS and CPU. If this computer is not one of the three platforms above (for example Windows or Linux on ARM), stop and tell me.
@@ -168,7 +173,7 @@ Download the archive for your computer from the [latest release](../../releases/
 - **macOS** (Apple Silicon + Intel): unzip, right-click `INK DRIFT TOKYO.app` → Open (the build is unsigned).
   If macOS says it's damaged: `xattr -dr com.apple.quarantine "INK DRIFT TOKYO.app"`.
 - **Windows** (x64): extract the zip into a new folder and run `InkDriftTokyo.exe`.
-- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v2.0.0-Linux-x64.tar.gz`, then
+- **Linux** (x64): extract into a new folder with `tar -xzf InkDriftTokyo-v2.1.0-Linux-x64.tar.gz`, then
   `chmod +x InkDriftTokyo.x86_64 && ./InkDriftTokyo.x86_64` (Vulkan or OpenGL 4.5).
 
 The Windows and Linux archives have no top-level folder, so extract them into an empty folder of their own.

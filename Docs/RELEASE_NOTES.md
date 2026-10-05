@@ -1,21 +1,33 @@
-# INK DRIFT: TOKYO — v2.0.0: race your friends online
+# INK DRIFT: TOKYO — v2.1.0: room codes, no router setup
 
 <!-- easy-installers:start -->
 ## Easy installers — no coding tools needed
 
 | Computer | Download | Install |
 | --- | --- | --- |
-| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** to **Applications**, then open it from Applications. |
-| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/InkDriftTokyo-v2.0.0-Windows-x64-Setup.exe) | Open Setup and choose **Next → Install → Finish**. Use the desktop or Start menu shortcut. |
+| Mac, Apple Silicon or Intel | [Download Mac installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/InkDriftTokyo-v2.1.0-macOS-universal.dmg) | Open the disk image, drag **INK DRIFT TOKYO** to **Applications**, then open it from Applications. |
+| Windows 10/11, Intel/AMD 64-bit | [Download Windows installer](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/InkDriftTokyo-v2.1.0-Windows-x64-Setup.exe) | Open Setup and choose **Next → Install → Finish**. Use the desktop or Start menu shortcut. |
 
 The installers include the whole game and work offline. No agent, Unity editor or terminal is needed; Windows installation needs no administrator password. Quit the game before updating. Your saved progress is kept during updates and removal.
 
-[Read the installation guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/START-HERE.txt) for first-launch approval prompts and removal instructions. [Installer checksums](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/INSTALLER-SHA256SUMS.txt) · [Packaging validation](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.0.0/installer-manifest.json).
+[Read the installation guide](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/START-HERE.txt) for first-launch approval prompts and removal instructions. [Installer checksums](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/INSTALLER-SHA256SUMS.txt) · [Packaging validation](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v2.1.0/installer-manifest.json).
 
 The Mac app is ad-hoc signed and not Apple-notarized; the Windows installer is unsigned. All packaged game files were checked against this release's source archives. The Windows installer has not been run on Windows hardware.
 <!-- easy-installers:end -->
 
 A comic-book cel-shaded drift racer through Tokyo. **Watch the trailer:** [INK-DRIFT-TOKYO-trailer.mp4](https://github.com/gazhenko/ink-drift-tokyo/releases/download/v1.0.0/INK-DRIFT-TOKYO-trailer.mp4).
+
+## What's new in 2.1.0
+- **Room codes: race friends anywhere, with no router setup.** When you host, the lobby now shows a short room code such as `K7Q-4MZ`. Friends type it under **ONLINE → JOIN** and they're in, from any network.
+  - Nobody has to open ports, forward anything or install a virtual LAN: every game connects out to a small relay service, which passes the race traffic between the players in the room.
+  - Codes are six letters and digits, without the easily confused I, O, 0 and 1, and upper or lower case both work.
+  - Up to 8 drivers per room, as before. A room lasts as long as the host's lobby is open.
+  - Friends on the same Wi-Fi still see the game in their list and connect directly.
+  - If the relay can't be reached, the lobby falls back to the direct invite code from 2.0.0 and keeps trying to get a room code in the background.
+- **Fairer online results.** Online race times now come from the race clock all players share. Before, a game that stuttered (a slow computer, or a window in the background) lost time off its own clock and could post a faster time than it actually drove.
+- **Slow computers can join.** A game that freezes for a while as it joins (loading, or compiling shaders on a slow graphics chip) no longer gives up on the host before it has even asked.
+- **Privacy.** The relay forwards packets and keeps no logs. The host only asks its router to open a port (UPnP) when the relay can't be reached.
+- 2.1.0 can't play online with 2.0.0: everyone needs the new version.
 
 ## What's new in 2.0.0
 - **Online multiplayer.** Race up to 7 friends who have the game, with no account or server needed. Pick **ONLINE** on the main menu.

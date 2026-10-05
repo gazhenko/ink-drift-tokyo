@@ -462,7 +462,7 @@ namespace InkDrift
 
         void JoinGame(string address)
         {
-            if (string.IsNullOrWhiteSpace(address)) { onlineMessage = "Type an invite code or address first."; Go(Screen.Online); return; }
+            if (string.IsNullOrWhiteSpace(address)) { onlineMessage = "Type your friend's room code first."; Go(Screen.Online); return; }
             UISfx.Play("ui_confirm");
             SaveName();
             PlayerPrefs.SetString("mp_last_join", address.Trim());
@@ -487,8 +487,8 @@ namespace InkDrift
 
             var host = UIKit.Button("Host", C, "HOST GAME", "ホスト", new Vector2(0, 0.5f), new Vector2(390, 60), new Vector2(620, 104), HostGame, Palette.Magenta);
 
-            UIKit.Text("JoinL", C, "JOIN A FRIEND · invite code or address", F ? F.comic : null, 32, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 0.5f), new Vector2(430, -60), new Vector2(640, 50));
-            joinField = UIKit.InputField("JoinCode", C, PlayerPrefs.GetString("mp_last_join", ""), "INK-XXXX-XXXX  or  192.168.1.20", new Vector2(0, 0.5f), new Vector2(390, -125), new Vector2(620, 80), 64);
+            UIKit.Text("JoinL", C, "JOIN A FRIEND · their room code", F ? F.comic : null, 32, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 0.5f), new Vector2(430, -60), new Vector2(640, 50));
+            joinField = UIKit.InputField("JoinCode", C, PlayerPrefs.GetString("mp_last_join", ""), "K7Q-4MZ", new Vector2(0, 0.5f), new Vector2(390, -125), new Vector2(620, 80), 64);
             joinField.onSubmit.AddListener(JoinGame);
             UIKit.Button("Paste", C, "PASTE", null, new Vector2(0, 0.5f), new Vector2(235, -230), new Vector2(300, 84), () => { joinField.text = GUIUtility.systemCopyBuffer?.Trim() ?? ""; }, Palette.Paper);
             UIKit.Button("Join", C, connecting ? "JOINING…" : "JOIN", "参加", new Vector2(0, 0.5f), new Vector2(550, -230), new Vector2(300, 84), () => JoinGame(joinField.text), Palette.Cyan);
@@ -560,12 +560,20 @@ namespace InkDrift
                 UIKit.Button("LapsDown", info, "−", null, new Vector2(1, 1), new Vector2(-170, -175), new Vector2(80, 60), () => ns.SetLaps(ns.Laps - 1), Palette.Paper);
                 UIKit.Button("LapsUp", info, "+", null, new Vector2(1, 1), new Vector2(-80, -175), new Vector2(80, 60), () => ns.SetLaps(ns.Laps + 1), Palette.Paper);
 
-                UIKit.Text("InvL", info, "INVITE CODE · send it to your friends", F ? F.comic : null, 28, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -240), new Vector2(680, 44));
-                var code = UIKit.Text("Code", info, ns.InviteCode ?? "…", F ? F.hud : null, 64, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -305), new Vector2(680, 80));
-                UIKit.Inked(code, 0.25f);
-                UIKit.Button("Copy", info, "COPY", null, new Vector2(1, 1), new Vector2(-125, -305), new Vector2(170, 70), () => { GUIUtility.systemCopyBuffer = ns.InviteCode ?? ""; UISfx.Play("ui_confirm"); }, Palette.Yellow);
+                // the room code works from anywhere; the direct invite code is only the fallback when the relay is unreachable
+                bool room = ns.RoomCode != null, pending = !room && ns.RelayPending;
+                string shown = room ? ns.RoomCode : pending ? "…" : ns.InviteCode ?? "…";
                 string lan = ns.LanAddresses.Count > 0 ? string.Join("  ", ns.LanAddresses) : "-";
-                var det = UIKit.Text("Det", info, $"Same network: {lan}  ·  port {ns.Port}\n{ns.PortStatus}", F ? F.hudRegular : null, 24, Palette.Paper.WithA(0.85f), TextAlignmentOptions.TopLeft, new Vector2(0, 1), new Vector2(430, -420), new Vector2(780, 150));
+                string label = room || pending ? "ROOM CODE · send it to your friends" : "INVITE CODE · direct connection";
+                string detail = room ? "Friends type it under ONLINE → JOIN, from any network. No router setup needed.\nFriends on your Wi-Fi also see your game in their list."
+                    : pending ? "Getting a room code from the online service…"
+                    : $"{ns.RelayStatus}\nSame network: {lan}  ·  port {ns.Port}\n{ns.PortStatus}";
+                UIKit.Text("InvL", info, label, F ? F.comic : null, 28, Palette.Cyan, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -240), new Vector2(680, 44));
+                var code = UIKit.Text("Code", info, shown, F ? F.hud : null, room ? 80 : 64, Palette.Yellow, TextAlignmentOptions.Left, new Vector2(0, 1), new Vector2(390, -305), new Vector2(680, 90));
+                UIKit.Inked(code, 0.25f);
+                if (room || !pending)
+                    UIKit.Button("Copy", info, "COPY", null, new Vector2(1, 1), new Vector2(-125, -305), new Vector2(170, 70), () => { GUIUtility.systemCopyBuffer = shown; UISfx.Play("ui_confirm"); }, Palette.Yellow);
+                var det = UIKit.Text("Det", info, detail, F ? F.hudRegular : null, 24, Palette.Paper.WithA(0.85f), TextAlignmentOptions.TopLeft, new Vector2(0, 1), new Vector2(430, -420), new Vector2(780, 160));
                 det.textWrappingMode = TextWrappingModes.Normal;
             }
             else

@@ -9,7 +9,8 @@ namespace InkDrift.EditorTools
 {
     /// <summary>
     /// Headless checks for the multiplayer layer: -executeMethod InkDrift.EditorTools.NetSelfTest.Run
-    /// (message round trips, invite codes, and reliable ordered delivery between two real sockets with packet loss).
+    /// (message round trips, invite and room codes, reliable ordered delivery between two real sockets with packet loss,
+    /// and a host and guest talking through the online relay).
     /// </summary>
     public static class NetSelfTest
     {
@@ -19,6 +20,62 @@ namespace InkDrift.EditorTools
         {
             if (ok) pass++; else fail++;
             Debug.Log($"[NetTest] {(ok ? "PASS" : "FAIL")} {what}");
+        }
+
+        /// <summary>Host and guest transports talking through the real relay (or -relay url): room code, reliable order, leaving.</summary>
+        static void RelayRoundTrip()
+        {
+            var h = new NetTransport(0); var g = new NetTransport(0);
+            var hostLink = RelayLink.Host();
+            h.AttachRelay(hostLink);
+            var clock = System.Diagnostics.Stopwatch.StartNew();
+            bool Wait(System.Func<bool> done, int ms)
+            {
+                var until = clock.ElapsedMilliseconds + ms;
+                while (!done() && clock.ElapsedMilliseconds < until) { Thread.Sleep(5); h.Poll(); g.Poll(); }
+                return done();
+            }
+            var hostEvents = new List<RelayLink.Event>();
+            void Drain(RelayLink l, List<RelayLink.Event> into) { while (l.Events.TryDequeue(out var e)) into.Add(e); }
+            bool open = Wait(() => { Drain(hostLink, hostEvents); return hostLink.IsOpen || hostEvents.Exists(e => e.kind == RelayLink.EventKind.Error); }, 15000);
+            Check(open && hostLink.IsOpen && hostLink.LocalId == 0, $"relay gives the host a room code ({RelayLink.Format(hostLink.RoomCode)}) via {RelayLink.Url} in {clock.ElapsedMilliseconds} ms"
+                  + (hostEvents.Exists(e => e.kind == RelayLink.EventKind.Error) ? ": " + hostEvents.Find(e => e.kind == RelayLink.EventKind.Error).text : ""));
+            if (!hostLink.IsOpen) { h.Dispose(); g.Dispose(); return; }
+
+            var guestLink = RelayLink.Join(hostLink.RoomCode.ToLowerInvariant());
+            g.AttachRelay(guestLink);
+            var guestEvents = new List<RelayLink.Event>();
+            Wait(() => guestLink.IsOpen, 10000);
+            Check(guestLink.IsOpen && guestLink.LocalId > 0, $"guest joins the room as peer {guestLink.LocalId}");
+            Check(Wait(() => { Drain(hostLink, hostEvents); return hostEvents.Exists(e => e.kind == RelayLink.EventKind.Joined && e.id == guestLink.LocalId); }, 5000), "host hears the guest join");
+
+            var gotH = new List<int>(); var gotG = new List<int>();
+            h.OnMessage += (from, data) => { var rr = new NetReader(data); if (rr.Type == Msg.Results && from.Equals(NetTransport.RelayEndpoint(guestLink.LocalId))) gotH.Add(rr.I32()); };
+            g.OnMessage += (from, data) => { var rr = new NetReader(data); if (rr.Type == Msg.Results && from.Equals(NetTransport.RelayEndpoint(0))) gotG.Add(rr.I32()); };
+            const int N = 300;
+            var t0 = clock.ElapsedMilliseconds;
+            for (int i = 0; i < N; i++)
+            {
+                var m = new NetWriter(Msg.Results).I32(i).Bytes;
+                g.SendReliable(NetTransport.RelayEndpoint(0), m, m.Length);
+                h.SendReliable(NetTransport.RelayEndpoint(guestLink.LocalId), m, m.Length);
+            }
+            Wait(() => gotH.Count >= N && gotG.Count >= N, 15000);
+            bool inOrder = true;
+            for (int i = 0; i < gotH.Count; i++) if (gotH[i] != i) inOrder = false;
+            for (int i = 0; i < gotG.Count; i++) if (gotG[i] != i) inOrder = false;
+            Check(gotH.Count == N && gotG.Count == N && inOrder, $"reliable traffic both ways through the relay ({gotH.Count}/{N}, {gotG.Count}/{N} in order, {clock.ElapsedMilliseconds - t0} ms, {guestLink.FramesOut} frames for {N} packets)");
+
+            g.Dispose();
+            Check(Wait(() => { Drain(hostLink, hostEvents); return hostEvents.Exists(e => e.kind == RelayLink.EventKind.Left && e.id == guestLink.LocalId); }, 8000), "host hears the guest leave");
+
+            var lost = RelayLink.Join("ZZZZZZ");
+            var lostEvents = new List<RelayLink.Event>();
+            Wait(() => { Drain(lost, lostEvents); return lostEvents.Exists(e => e.kind == RelayLink.EventKind.Error); }, 10000);
+            var err = lostEvents.Find(e => e.kind == RelayLink.EventKind.Error);
+            Check(err.text != null && err.text.Contains("No game found"), "joining an unknown room explains why: " + err.text);
+            lost.Dispose();
+            h.Dispose();
         }
 
         public static void Run()
@@ -75,6 +132,16 @@ namespace InkDrift.EditorTools
             Check(gotA.Count == N && gotB.Count == N, $"reliable delivery under 30% loss ({gotB.Count}/{N} and {gotA.Count}/{N} in {start.ElapsedMilliseconds} ms)");
             Check(ordered, "reliable delivery is in order and without duplicates");
             a.Dispose(); b.Dispose();
+
+            // ---- room codes and relay endpoints
+            Check(RelayLink.TryParseCode(" k7q-4mz ", out var rc) && rc == "K7Q4MZ" && RelayLink.Format(rc) == "K7Q-4MZ", "room code is case/separator tolerant");
+            Check(!RelayLink.TryParseCode("192.168.1.20", out _) && !RelayLink.TryParseCode("INK-ABCD-EFGH", out _) && !RelayLink.TryParseCode("K7Q-4M0", out _)
+                  && !RelayLink.TryParseCode("laptop:7777", out _), "addresses and invite codes aren't room codes");
+            var rep = NetTransport.RelayEndpoint(5);
+            Check(NetTransport.IsRelay(rep) && rep.Equals(NetTransport.RelayEndpoint(5)) && !NetTransport.IsRelay(new IPEndPoint(IPAddress.Parse("10.0.1.5"), 0))
+                  && !NetTransport.IsRelay(new IPEndPoint(IPAddress.Loopback, 7777)), "relay stand-in endpoints");
+
+            RelayRoundTrip();
 
             Debug.Log($"[NetTest] {pass} passed, {fail} failed");
             if (Application.isBatchMode) EditorApplication.Exit(fail == 0 ? 0 : 1);

@@ -12,16 +12,20 @@ namespace InkDrift.Net
     /// UDP socket with a receive thread, plus per-peer reliable ordered delivery (sequence numbers, acks and resends)
     /// on top of plain unreliable datagrams. Packet: 'I','K', protocol, kind, then for reliable packets a u16 sequence.
     /// Everything except Receive runs on the main thread; received datagrams queue up for Poll.
+    /// Peers can also sit behind the online relay (<see cref="RelayLink"/>): they get stand-in endpoints 0.0.1.id:0, so
+    /// the session treats them like any other address while their packets travel over the relay's WebSocket.
     /// </summary>
     public class NetTransport : IDisposable
     {
         public const byte Protocol = 3;
         const byte KindUnreliable = 1, KindReliable = 2, KindAck = 3, KindKeepAlive = 4;
         const float ResendInterval = 0.15f;
+        const float RelayResendInterval = 1f;      // the relay runs over TCP: nothing is lost unless the link dies
         const int MaxResends = 60;                 // ~9 s before a reliable message gives up (the peer times out first)
 
         public int LocalPort { get; private set; }
         public long BytesIn, BytesOut;
+        public RelayLink Relay { get; private set; }
 
         readonly Socket socket;
         readonly Thread thread, heartbeat;
@@ -77,6 +81,7 @@ namespace InkDrift.Net
                 lock (heartbeatTargets) targets.AddRange(heartbeatTargets);
                 foreach (var t in targets)
                 {
+                    if (IsRelay(t)) { Relay?.Send(RelayId(t), pkt, pkt.Length); continue; }
                     try { socket.SendTo(pkt, 0, pkt.Length, SocketFlags.None, t); }
                     catch { if (!running) return; }
                 }
@@ -107,7 +112,39 @@ namespace InkDrift.Net
         {
             running = false;
             try { socket.Close(); } catch { }
+            Relay?.Dispose();
         }
+
+        // ---------------------------------------------------------------- relay peers
+        /// <summary>Route packets for relay peers through this link (and deliver what it receives).</summary>
+        public void AttachRelay(RelayLink link)
+        {
+            if (Relay != null) DetachRelay();
+            Relay = link;
+            link.OnPacket = (id, data) => inbox.Enqueue((data, data.Length, RelayEndpoint(id)));
+        }
+
+        /// <summary>Close the relay link and forget its peers.</summary>
+        public void DetachRelay()
+        {
+            if (Relay != null) { Relay.OnPacket = null; Relay.Dispose(); }
+            Relay = null;
+            var gone = new List<IPEndPoint>();
+            foreach (var p in peers.Values) if (IsRelay(p.ep)) gone.Add(p.ep);
+            foreach (var ep in gone) RemovePeer(ep);
+        }
+
+        /// <summary>The stand-in endpoint for a peer in the relay room (0 = the room's host).</summary>
+        public static IPEndPoint RelayEndpoint(int id) => new IPEndPoint(new IPAddress(new byte[] { 0, 0, 1, (byte)id }), 0);
+
+        public static bool IsRelay(IPEndPoint ep)
+        {
+            if (ep == null || ep.Port != 0) return false;
+            var b = ep.Address.GetAddressBytes();
+            return b.Length == 4 && b[0] == 0 && b[1] == 0 && b[2] == 1;
+        }
+
+        static int RelayId(IPEndPoint ep) => ep.Address.GetAddressBytes()[3];
 
         static string Key(IPEndPoint ep) => ep.Address + ":" + ep.Port;
 
@@ -136,6 +173,7 @@ namespace InkDrift.Net
         public void SendRaw(IPEndPoint to, byte[] data, int len)
         {
             if (TestDropRate > 0f && dropRng.NextDouble() < TestDropRate) return;
+            if (IsRelay(to)) { Relay?.Send(RelayId(to), data, len); BytesOut += len; return; }
             try { socket.SendTo(data, 0, len, SocketFlags.None, to); BytesOut += len; }
             catch (Exception e) { Debug.LogWarning("[Net] send to " + to + ": " + e.Message); }
         }
@@ -156,7 +194,7 @@ namespace InkDrift.Net
             pkt[0] = (byte)'I'; pkt[1] = (byte)'K'; pkt[2] = Protocol; pkt[3] = KindReliable;
             pkt[4] = (byte)(seq & 0xFF); pkt[5] = (byte)(seq >> 8);
             Buffer.BlockCopy(payload, 0, pkt, 6, len);
-            peer.pendingOut.Add(new Pending { seq = seq, packet = pkt, nextSend = Time.realtimeSinceStartup + ResendInterval });
+            peer.pendingOut.Add(new Pending { seq = seq, packet = pkt, nextSend = Time.realtimeSinceStartup + (IsRelay(to) ? RelayResendInterval : ResendInterval) });
             SendRaw(to, pkt, pkt.Length);
         }
 
@@ -209,7 +247,7 @@ namespace InkDrift.Net
                     var o = (Pending)p.pendingOut[i];
                     if (now < o.nextSend) continue;
                     if (++o.tries > MaxResends) { p.pendingOut.RemoveAt(i); continue; }
-                    o.nextSend = now + ResendInterval;
+                    o.nextSend = now + (IsRelay(p.ep) ? RelayResendInterval : ResendInterval);
                     SendRaw(p.ep, o.packet, o.packet.Length);
                 }
         }
